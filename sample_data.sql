@@ -1,126 +1,90 @@
--- Comprehensive Sample Data for DFS Manager Portal
--- Generated on 2025-06-08
+-- Sample Data for DFS Manager Portal
+-- This script will populate all tables with realistic test data
 
--- Clear existing data (if any)
-TRUNCATE TABLE task_assignments CASCADE;
-TRUNCATE TABLE tasks CASCADE;
-TRUNCATE TABLE project_members CASCADE;
-TRUNCATE TABLE projects CASCADE;
-TRUNCATE TABLE employees CASCADE;
+-- Insert sample employees
+INSERT INTO employees (employee_id, first_name, last_name, email, phone, position, station, hire_date, salary, is_active, date_of_birth, current_address, mailing_address, reference_name, id_document_type) VALUES
+('EMP001', 'John', 'Smith', 'john.smith@dfs.com', '555-0101', 'Store Manager', 'Station Alpha', '2024-01-15', 55000, true, '1985-03-12', '123 Main St, City, State 12345', '123 Main St, City, State 12345', 'Jane Doe', 'Driver License'),
+('EMP002', 'Sarah', 'Johnson', 'sarah.johnson@dfs.com', '555-0102', 'Assistant Manager', 'Station Alpha', '2024-02-01', 45000, true, '1990-07-22', '456 Oak Ave, City, State 12345', '456 Oak Ave, City, State 12345', 'Mike Wilson', 'State ID'),
+('EMP003', 'Mike', 'Davis', 'mike.davis@dfs.com', '555-0103', 'Cashier', 'Station Alpha', '2024-03-10', 35000, true, '1992-11-05', '789 Pine St, City, State 12345', '789 Pine St, City, State 12345', 'Lisa Brown', 'Driver License'),
+('EMP004', 'Lisa', 'Brown', 'lisa.brown@dfs.com', '555-0104', 'Store Manager', 'Station Beta', '2024-01-20', 55000, true, '1988-05-18', '321 Elm St, City, State 12345', '321 Elm St, City, State 12345', 'Tom Green', 'Driver License'),
+('EMP005', 'Tom', 'Wilson', 'tom.wilson@dfs.com', '555-0105', 'Cashier', 'Station Beta', '2024-04-01', 35000, true, '1993-09-30', '654 Cedar Rd, City, State 12345', '654 Cedar Rd, City, State 12345', 'Sarah Johnson', 'State ID'),
+('EMP006', 'Amanda', 'Garcia', 'amanda.garcia@dfs.com', '555-0106', 'Assistant Manager', 'Station Gamma', '2024-02-15', 45000, true, '1987-12-08', '987 Maple Dr, City, State 12345', '987 Maple Dr, City, State 12345', 'John Smith', 'Driver License');
 
--- Insert Employees (DFS team members)
-INSERT INTO employees (id, name, email, phone, department, position, hire_date, status, salary, benefits, emergency_contact, skills, certifications, performance_rating, manager_id) VALUES
-(1, 'Alex Rodriguez', 'alex.rodriguez@dfsportal.com', '+1-555-0101', 'Engineering', 'Senior Full Stack Developer', '2023-01-15', 'active', 95000.00, '{"health_insurance": true, "dental": true, "vision": true, "401k": "6% match", "pto_days": 25}', '{"name": "Maria Rodriguez", "phone": "+1-555-0102", "relationship": "spouse"}', '["React", "Node.js", "TypeScript", "PostgreSQL", "AWS", "Docker"]', '["AWS Solutions Architect", "React Certified Developer"]', 4.7, NULL),
+-- Insert sample vendors
+INSERT INTO vendors (vendor_name, contact_person, email, phone, address, category, payment_terms, is_active, station) VALUES
+('Coca-Cola Distributors', 'Robert Miller', 'rmiller@cocacola.com', '555-1001', '100 Beverage Blvd, Atlanta, GA 30309', 'Beverages', 'Net 30', true, 'All Stations'),
+('Frito-Lay Inc', 'Jennifer Lopez', 'jlopez@fritolay.com', '555-1002', '200 Snack Street, Dallas, TX 75201', 'Snacks', 'Net 15', true, 'All Stations'),
+('Shell Oil Company', 'David Anderson', 'danderson@shell.com', '555-1003', '300 Fuel Avenue, Houston, TX 77002', 'Fuel', 'Net 7', true, 'All Stations'),
+('Red Bull Distribution', 'Maria Rodriguez', 'mrodriguez@redbull.com', '555-1004', '400 Energy Way, Los Angeles, CA 90210', 'Energy Drinks', 'Net 30', true, 'Station Alpha'),
+('Marlboro Tobacco Co', 'James Taylor', 'jtaylor@marlboro.com', '555-1005', '500 Tobacco Road, Richmond, VA 23219', 'Tobacco', 'Net 15', true, 'All Stations'),
+('Local Bakery Supply', 'Emily Chen', 'echen@localbakery.com', '555-1006', '600 Fresh Street, Local City, State 12345', 'Food', 'Net 14', true, 'Station Beta');
 
-(2, 'Sarah Chen', 'sarah.chen@dfsportal.com', '+1-555-0103', 'Engineering', 'Frontend Developer', '2023-03-22', 'active', 78000.00, '{"health_insurance": true, "dental": true, "vision": false, "401k": "4% match", "pto_days": 20}', '{"name": "David Chen", "phone": "+1-555-0104", "relationship": "brother"}', '["React", "Vue.js", "CSS", "JavaScript", "Figma", "Tailwind"]', '["Frontend Masters Certificate"]', 4.5, 1),
+-- Insert sample products
+INSERT INTO products (product_name, product_code, category, price, quantity_in_stock, minimum_stock, supplier, description, department, bar_code_case, bar_code_unit, case_price, unit_per_case, unit_price, retail_price, overdue) VALUES
+('Coca-Cola 12oz Cans', 'CC12OZ', 'Beverages', 1.99, 144, 24, 'Coca-Cola Distributors', 'Classic Coca-Cola 12oz aluminum cans', 'Convenience Store', '1234567890123', '1234567890124', 23.88, 24, 0.99, 1.99, false),
+('Pepsi 20oz Bottles', 'PEPSI20OZ', 'Beverages', 2.49, 48, 12, 'Coca-Cola Distributors', 'Pepsi Cola 20oz plastic bottles', 'Convenience Store', '2345678901234', '2345678901235', 29.88, 24, 1.25, 2.49, false),
+('Lays Classic Chips', 'LAYS001', 'Snacks', 1.79, 72, 12, 'Frito-Lay Inc', 'Original flavor potato chips', 'Convenience Store', '3456789012345', '3456789012346', 21.48, 12, 1.79, 3.99, false),
+('Red Bull Energy Drink', 'RB001', 'Energy Drinks', 3.99, 24, 6, 'Red Bull Distribution', '8.4oz Red Bull energy drink', 'Convenience Store', '4567890123456', '4567890123457', 95.76, 24, 3.99, 4.99, false),
+('Marlboro Red Pack', 'MARL001', 'Tobacco', 8.99, 200, 50, 'Marlboro Tobacco Co', 'Marlboro Red cigarettes pack', 'Convenience Store', '5678901234567', '5678901234568', 179.80, 20, 8.99, 12.99, false),
+('Regular Gasoline', 'GAS87', 'Fuel', 3.45, 5000, 1000, 'Shell Oil Company', '87 Octane Regular Unleaded', 'Fuel', '', '', 0, 1, 3.45, 3.45, false),
+('Premium Gasoline', 'GAS93', 'Fuel', 3.75, 3000, 800, 'Shell Oil Company', '93 Octane Premium Unleaded', 'Fuel', '', '', 0, 1, 3.75, 3.75, false),
+('Diesel Fuel', 'DIESEL', 'Fuel', 3.85, 2000, 500, 'Shell Oil Company', 'Ultra Low Sulfur Diesel', 'Fuel', '', '', 0, 1, 3.85, 3.85, false),
+('Fresh Donuts', 'DONUT001', 'Food', 1.25, 36, 6, 'Local Bakery Supply', 'Fresh glazed donuts', 'Convenience Store', '6789012345678', '6789012345679', 15.00, 12, 1.25, 2.50, false),
+('Coffee 16oz', 'COFFEE16', 'Beverages', 1.99, 100, 20, 'Local Bakery Supply', 'Fresh brewed coffee 16oz', 'Convenience Store', '', '', 0, 1, 1.99, 1.99, false);
 
-(3, 'Marcus Johnson', 'marcus.johnson@dfsportal.com', '+1-555-0105', 'Engineering', 'Backend Developer', '2023-02-10', 'active', 82000.00, '{"health_insurance": true, "dental": true, "vision": true, "401k": "5% match", "pto_days": 22}', '{"name": "Lisa Johnson", "phone": "+1-555-0106", "relationship": "wife"}', '["Python", "Django", "FastAPI", "PostgreSQL", "Redis", "Docker"]', '["Python Institute Certification"]', 4.6, 1),
+-- Insert sample orders
+INSERT INTO orders (order_number, vendor_id, order_date, expected_delivery, station, total_amount, status, notes) VALUES
+('ORD-2025-001', 1, '2025-06-01', '2025-06-05', 'Station Alpha', 500.00, 'Delivered', 'Regular beverage restock'),
+('ORD-2025-002', 2, '2025-06-02', '2025-06-06', 'Station Alpha', 300.50, 'Pending', 'Snack inventory replenishment'),
+('ORD-2025-003', 3, '2025-06-03', '2025-06-07', 'All Stations', 15000.00, 'Shipped', 'Weekly fuel delivery'),
+('ORD-2025-004', 4, '2025-06-04', '2025-06-08', 'Station Beta', 250.75, 'Processing', 'Energy drink promotion stock'),
+('ORD-2025-005', 5, '2025-06-05', '2025-06-09', 'Station Gamma', 800.25, 'Confirmed', 'Tobacco products monthly order'),
+('ORD-2025-006', 6, '2025-06-06', '2025-06-10', 'Station Beta', 120.00, 'Pending', 'Fresh bakery items delivery');
 
-(4, 'Emily Davis', 'emily.davis@dfsportal.com', '+1-555-0107', 'Product', 'Product Manager', '2022-11-05', 'active', 105000.00, '{"health_insurance": true, "dental": true, "vision": true, "401k": "6% match", "pto_days": 25}', '{"name": "Michael Davis", "phone": "+1-555-0108", "relationship": "husband"}', '["Product Strategy", "Agile", "Scrum", "Analytics", "User Research"]', '["Certified Scrum Product Owner", "Google Analytics"]', 4.8, NULL),
+-- Insert sample licenses and certificates
+INSERT INTO licenses_certificates (license_name, license_number, issuing_authority, issue_date, expiry_date, station, category, status) VALUES
+('Business License', 'BL-2024-001', 'City Business Department', '2024-01-01', '2025-12-31', 'Station Alpha', 'Business', 'Active'),
+('Tobacco Retail License', 'TRL-2024-001', 'State Revenue Department', '2024-01-01', '2025-12-31', 'Station Alpha', 'Tobacco', 'Active'),
+('Food Service Permit', 'FSP-2024-001', 'Health Department', '2024-01-01', '2024-12-31', 'Station Alpha', 'Food', 'Expiring Soon'),
+('Fuel Dealer License', 'FDL-2024-001', 'Environmental Agency', '2024-01-01', '2026-12-31', 'Station Alpha', 'Fuel', 'Active'),
+('Business License', 'BL-2024-002', 'City Business Department', '2024-01-01', '2025-12-31', 'Station Beta', 'Business', 'Active'),
+('Tobacco Retail License', 'TRL-2024-002', 'State Revenue Department', '2024-01-01', '2025-12-31', 'Station Beta', 'Tobacco', 'Active'),
+('Business License', 'BL-2024-003', 'City Business Department', '2024-01-01', '2025-12-31', 'Station Gamma', 'Business', 'Active'),
+('Lottery Retailer License', 'LRL-2024-001', 'State Lottery Commission', '2024-01-01', '2025-12-31', 'Station Gamma', 'Lottery', 'Active');
 
-(5, 'Jordan Kim', 'jordan.kim@dfsportal.com', '+1-555-0109', 'Design', 'UX/UI Designer', '2023-04-18', 'active', 72000.00, '{"health_insurance": true, "dental": false, "vision": true, "401k": "4% match", "pto_days": 20}', '{"name": "Alex Kim", "phone": "+1-555-0110", "relationship": "sibling"}', '["Figma", "Adobe XD", "Sketch", "Prototyping", "User Research"]', '["UX Design Institute Certificate"]', 4.4, 4),
+-- Insert sample daily sales reports (enhanced)
+INSERT INTO daily_sales_reports_enhanced (report_date, station, employee_name, cash_collection_on_hand, total_short_over, credit_card_amount, debit_card_amount, mobile_amount, cash_amount, grocery_sales, ebt_sales, lottery_net_sales, scratch_off_sales, lottery_total_cash, regular_gallons, super_gallons, diesel_gallons, total_gallons, total_sales, employee_id, shift) VALUES
+('2025-06-07', 'Station Alpha', 'John Smith', 500.00, -5.50, 1250.75, 800.25, 150.00, 300.00, 450.50, 75.25, 200.00, 150.00, 350.00, 850.5, 320.2, 180.8, 1351.5, 2501.00, 'EMP001', 'DAY'),
+('2025-06-07', 'Station Alpha', 'Mike Davis', 350.00, 2.25, 950.50, 600.75, 100.00, 250.00, 320.25, 50.00, 175.50, 125.75, 301.25, 620.3, 280.7, 145.2, 1046.2, 1901.25, 'EMP003', 'NIGHT'),
+('2025-06-07', 'Station Beta', 'Lisa Brown', 475.00, -3.00, 1100.25, 750.50, 125.00, 275.00, 400.75, 60.50, 180.25, 140.00, 320.25, 720.8, 300.5, 160.3, 1181.6, 2250.75, 'EMP004', 'DAY'),
+('2025-06-06', 'Station Alpha', 'Sarah Johnson', 525.00, 0.00, 1300.00, 850.25, 175.00, 325.00, 475.25, 80.00, 220.50, 165.75, 386.25, 900.2, 350.8, 200.5, 1451.5, 2650.25, 'EMP002', 'DAY'),
+('2025-06-06', 'Station Beta', 'Tom Wilson', 400.00, -8.75, 1050.75, 700.00, 90.00, 200.00, 350.00, 45.25, 160.75, 120.50, 281.25, 680.5, 260.3, 140.8, 1081.6, 2040.75, 'EMP005', 'NIGHT'),
+('2025-06-05', 'Station Alpha', 'John Smith', 550.00, 1.50, 1400.50, 900.75, 200.00, 350.00, 500.25, 85.50, 240.75, 180.25, 421.00, 950.7, 380.2, 220.3, 1551.2, 2801.50, 'EMP001', 'DAY');
 
-(6, 'Ryan Thompson', 'ryan.thompson@dfsportal.com', '+1-555-0111', 'DevOps', 'DevOps Engineer', '2023-01-30', 'active', 88000.00, '{"health_insurance": true, "dental": true, "vision": true, "401k": "5% match", "pto_days": 23}', '{"name": "Kate Thompson", "phone": "+1-555-0112", "relationship": "spouse"}', '["AWS", "Kubernetes", "Docker", "Terraform", "Jenkins", "monitoring"]', '["AWS Certified DevOps Engineer"]', 4.7, 1),
+-- Insert sample daily sales reports (basic)
+INSERT INTO daily_sales_reports (report_date, station, total_sales, cash_sales, credit_card_sales, fuel_sales, convenience_sales, employee_id) VALUES
+('2025-06-07', 'Station Alpha', 4402.25, 550.00, 2050.00, 3200.25, 1202.00, 'EMP001'),
+('2025-06-07', 'Station Beta', 2250.75, 275.00, 1850.75, 1800.50, 450.25, 'EMP004'),
+('2025-06-06', 'Station Alpha', 2650.25, 325.00, 2150.25, 2100.00, 550.25, 'EMP002'),
+('2025-06-06', 'Station Beta', 2040.75, 200.00, 1750.75, 1650.50, 390.25, 'EMP005'),
+('2025-06-05', 'Station Alpha', 2801.50, 350.00, 2300.25, 2250.75, 550.75, 'EMP001'),
+('2025-06-05', 'Station Gamma', 1950.25, 280.00, 1500.25, 1400.00, 550.25, 'EMP006');
 
-(7, 'Priya Patel', 'priya.patel@dfsportal.com', '+1-555-0113', 'QA', 'QA Engineer', '2023-05-12', 'active', 68000.00, '{"health_insurance": true, "dental": true, "vision": false, "401k": "4% match", "pto_days": 20}', '{"name": "Raj Patel", "phone": "+1-555-0114", "relationship": "father"}', '["Manual Testing", "Automation", "Selenium", "Jest", "Cypress"]', '["ISTQB Foundation Level"]', 4.3, 4),
+-- Insert some tasks for project management
+INSERT INTO tasks (task_name, description, assignee_id, due_date, priority, status, station, created_by) VALUES
+('Inventory Count - Beverages', 'Complete physical count of all beverage inventory', 1, '2025-06-15', 'High', 'In Progress', 'Station Alpha', 1),
+('License Renewal - Food Service', 'Renew food service permit before expiration', 4, '2025-06-30', 'Critical', 'Pending', 'Station Alpha', 1),
+('Staff Training - New POS System', 'Train all staff on updated point of sale system', 2, '2025-06-20', 'Medium', 'Not Started', 'All Stations', 1),
+('Fuel Tank Inspection', 'Quarterly fuel tank safety inspection', 6, '2025-06-25', 'High', 'Scheduled', 'Station Gamma', 4),
+('Vendor Meeting - Coca Cola', 'Quarterly business review with Coca Cola distributor', 1, '2025-06-18', 'Medium', 'Scheduled', 'Station Alpha', 1),
+('Equipment Maintenance - Coffee Machine', 'Routine maintenance on coffee brewing equipment', 5, '2025-06-12', 'Low', 'In Progress', 'Station Beta', 4);
 
-(8, 'David Wilson', 'david.wilson@dfsportal.com', '+1-555-0115', 'Sales', 'Sales Representative', '2023-06-01', 'active', 65000.00, '{"health_insurance": true, "dental": true, "vision": true, "401k": "3% match", "pto_days": 18, "commission": true}', '{"name": "Sarah Wilson", "phone": "+1-555-0116", "relationship": "wife"}', '["Sales", "CRM", "Lead Generation", "Customer Relations"]', '["Salesforce Certified"]', 4.2, NULL);
+-- Insert some projects
+INSERT INTO projects (project_name, description, start_date, end_date, status, station, created_by) VALUES
+('Q2 2025 Store Renovation', 'Complete renovation of Station Alpha including new flooring and lighting', '2025-06-01', '2025-07-31', 'Active', 'Station Alpha', 1),
+('New POS System Implementation', 'Deploy and train staff on new point of sale system across all locations', '2025-06-10', '2025-07-10', 'Active', 'All Stations', 1),
+('Fuel Tank Upgrade Project', 'Replace aging fuel storage tanks with new environmentally compliant units', '2025-07-01', '2025-09-30', 'Planning', 'Station Beta', 4),
+('Digital Signage Installation', 'Install digital menu boards and promotional displays', '2025-06-15', '2025-07-15', 'Planning', 'Station Gamma', 6),
+('Security System Upgrade', 'Upgrade surveillance cameras and alarm systems', '2025-06-20', '2025-08-20', 'Active', 'All Stations', 1);
 
--- Insert Projects (DFS Portal development phases)
-INSERT INTO projects (id, name, description, start_date, end_date, status, budget, client_id, manager_id, priority, tags, requirements, milestones, risk_assessment) VALUES
-(1, 'DFS Portal MVP', 'Initial development of the DFS Manager Portal with core functionality including employee management, project tracking, and basic analytics.', '2023-01-15', '2023-06-30', 'completed', 150000.00, NULL, 1, 'high', '["MVP", "Core Features", "Employee Management"]', '{"features": ["Employee CRUD", "Project Management", "Basic Dashboard", "Authentication"], "tech_stack": ["React", "TypeScript", "Supabase", "Tailwind"]}', '{"phase1": "2023-02-15", "phase2": "2023-04-15", "launch": "2023-06-30"}', '{"technical": "medium", "timeline": "low", "budget": "low"}'),
-
-(2, 'Advanced Analytics Module', 'Development of advanced analytics and reporting features including real-time dashboards, custom reports, and data visualization components.', '2023-07-01', '2023-11-30', 'completed', 80000.00, NULL, 4, 'high', '["Analytics", "Reporting", "Dashboards"]', '{"features": ["Real-time Charts", "Custom Reports", "Data Export", "Advanced Filtering"], "integrations": ["Chart.js", "D3.js", "Excel Export"]}', '{"design": "2023-07-15", "development": "2023-09-30", "testing": "2023-11-15"}', '{"technical": "high", "timeline": "medium", "budget": "low"}'),
-
-(3, 'Mobile App Development', 'Creation of a mobile application for iOS and Android to complement the web portal, focusing on essential features for field employees.', '2023-12-01', '2024-05-31', 'in_progress', 120000.00, NULL, 1, 'medium', '["Mobile", "iOS", "Android", "React Native"]', '{"features": ["Employee Check-in", "Task Management", "Push Notifications", "Offline Mode"], "platforms": ["iOS", "Android"]}', '{"prototype": "2024-01-15", "alpha": "2024-03-15", "beta": "2024-04-30"}', '{"technical": "high", "timeline": "high", "budget": "medium"}'),
-
-(4, 'AI Integration Phase', 'Integration of AI features including Claude AI for automated insights, smart scheduling, and predictive analytics for employee performance.', '2024-01-15', '2024-08-31', 'in_progress', 95000.00, NULL, 4, 'high', '["AI", "Machine Learning", "Claude AI", "Automation"]', '{"features": ["AI Chat Assistant", "Predictive Analytics", "Smart Scheduling", "Automated Reports"], "ai_models": ["Claude AI", "Custom ML Models"]}', '{"research": "2024-02-15", "mvp": "2024-05-15", "full_integration": "2024-08-31"}', '{"technical": "very_high", "timeline": "high", "budget": "medium"}'),
-
-(5, 'Security Enhancement', 'Comprehensive security audit and implementation of advanced security features including multi-factor authentication, encryption, and compliance measures.', '2024-03-01', '2024-07-31', 'planned', 60000.00, NULL, 1, 'high', '["Security", "Compliance", "MFA", "Encryption"]', '{"features": ["Multi-factor Auth", "End-to-end Encryption", "Security Audit", "Compliance Dashboard"], "standards": ["SOC2", "GDPR", "HIPAA"]}', '{"audit": "2024-03-31", "implementation": "2024-06-30", "certification": "2024-07-31"}', '{"technical": "medium", "timeline": "low", "budget": "low"}');
-
--- Insert Project Members (assign employees to projects)
-INSERT INTO project_members (project_id, employee_id, role, join_date, hourly_rate, allocation_percentage, responsibilities) VALUES
--- DFS Portal MVP team
-(1, 1, 'Tech Lead', '2023-01-15', 55.00, 100, '["Architecture Design", "Code Review", "Team Leadership"]'),
-(1, 2, 'Frontend Developer', '2023-01-15', 40.00, 100, '["UI Development", "Component Library", "User Experience"]'),
-(1, 3, 'Backend Developer', '2023-01-15', 42.00, 100, '["API Development", "Database Design", "Backend Services"]'),
-(1, 4, 'Product Manager', '2023-01-15', 50.00, 80, '["Requirements", "Stakeholder Management", "Product Strategy"]'),
-(1, 6, 'DevOps Engineer', '2023-01-15', 45.00, 60, '["CI/CD Setup", "Infrastructure", "Deployment"]'),
-
--- Advanced Analytics Module team
-(2, 1, 'Tech Lead', '2023-07-01', 55.00, 70, '["Technical Architecture", "Performance Optimization"]'),
-(2, 2, 'Frontend Developer', '2023-07-01', 40.00, 90, '["Data Visualization", "Dashboard Development"]'),
-(2, 4, 'Product Manager', '2023-07-01', 50.00, 60, '["Analytics Requirements", "User Stories"]'),
-(2, 7, 'QA Engineer', '2023-07-01', 35.00, 80, '["Testing Analytics", "Data Validation"]'),
-
--- Mobile App Development team
-(3, 1, 'Technical Advisor', '2023-12-01', 55.00, 40, '["Mobile Architecture", "Technical Guidance"]'),
-(3, 2, 'Mobile Developer', '2023-12-01', 40.00, 100, '["React Native Development", "Mobile UI"]'),
-(3, 5, 'UI/UX Designer', '2023-12-01', 38.00, 80, '["Mobile Design", "User Experience"]'),
-(3, 7, 'QA Engineer', '2023-12-01', 35.00, 60, '["Mobile Testing", "Device Testing"]'),
-
--- AI Integration Phase team
-(4, 1, 'AI Lead', '2024-01-15', 55.00, 80, '["AI Architecture", "Model Integration"]'),
-(4, 3, 'Backend Developer', '2024-01-15', 42.00, 70, '["AI API Development", "Data Pipeline"]'),
-(4, 4, 'Product Manager', '2024-01-15', 50.00, 90, '["AI Feature Planning", "User Experience"]'),
-
--- Security Enhancement team
-(5, 1, 'Security Lead', '2024-03-01', 55.00, 60, '["Security Architecture", "Code Review"]'),
-(5, 6, 'DevOps Engineer', '2024-03-01', 45.00, 80, '["Security Infrastructure", "Compliance"]');
-
--- Insert Tasks (detailed work items)
-INSERT INTO tasks (id, title, description, project_id, assignee_id, status, priority, due_date, estimated_hours, actual_hours, tags, dependencies, progress_percentage, notes) VALUES
--- DFS Portal MVP tasks
-(1, 'Setup Project Infrastructure', 'Initialize React TypeScript project with Vite, setup Supabase integration, configure Tailwind CSS and basic project structure.', 1, 1, 'completed', 'high', '2023-01-20', 16, 18, '["setup", "infrastructure"]', '[]', 100, 'Project successfully initialized with all required dependencies.'),
-
-(2, 'Employee Management CRUD', 'Implement complete employee management system with create, read, update, delete operations and form validation.', 1, 2, 'completed', 'high', '2023-02-15', 32, 35, '["frontend", "crud"]', '[1]', 100, 'All CRUD operations working with proper validation and error handling.'),
-
-(3, 'Database Schema Design', 'Design and implement comprehensive database schema for employees, projects, tasks, and relationships.', 1, 3, 'completed', 'high', '2023-01-25', 24, 22, '["database", "backend"]', '[1]', 100, 'Schema implemented with proper constraints and indexes.'),
-
-(4, 'Authentication System', 'Implement user authentication with Supabase Auth, including login, registration, and role-based access control.', 1, 3, 'completed', 'high', '2023-02-10', 20, 24, '["auth", "security"]', '[3]', 100, 'Auth system working with proper role management.'),
-
-(5, 'Project Management Interface', 'Create project management dashboard with project creation, member assignment, and progress tracking.', 1, 2, 'completed', 'medium', '2023-03-15', 28, 32, '["frontend", "projects"]', '[2, 4]', 100, 'Project management interface complete with all features.'),
-
--- Advanced Analytics Module tasks
-(6, 'Real-time Dashboard Framework', 'Develop framework for real-time data visualization using Chart.js and WebSocket connections.', 2, 2, 'completed', 'high', '2023-08-15', 40, 45, '["analytics", "realtime"]', '[]', 100, 'Dashboard framework implemented with excellent performance.'),
-
-(7, 'Custom Report Builder', 'Build flexible report builder allowing users to create custom reports with various filters and export options.', 2, 2, 'completed', 'medium', '2023-09-30', 36, 38, '["reporting", "export"]', '[6]', 100, 'Report builder working with PDF and Excel export.'),
-
-(8, 'Performance Analytics', 'Implement employee performance analytics with charts, trends, and automated insights.', 2, 1, 'completed', 'medium', '2023-10-15', 32, 30, '["analytics", "performance"]', '[6]', 100, 'Performance analytics providing valuable insights.'),
-
--- Mobile App Development tasks
-(9, 'Mobile App Architecture', 'Design React Native architecture and setup development environment for iOS and Android.', 3, 1, 'completed', 'high', '2024-01-15', 24, 26, '["mobile", "architecture"]', '[]', 100, 'Mobile architecture designed with scalability in mind.'),
-
-(10, 'Employee Check-in Feature', 'Develop mobile check-in functionality with GPS tracking and photo capture capabilities.', 3, 2, 'in_progress', 'high', '2024-02-28', 32, 28, '["mobile", "checkin"]', '[9]', 85, 'Check-in feature nearly complete, testing GPS accuracy.'),
-
-(11, 'Push Notification System', 'Implement push notification system for task assignments, reminders, and important updates.', 3, 2, 'planned', 'medium', '2024-03-31', 20, 0, '["mobile", "notifications"]', '[10]', 0, 'Waiting for check-in feature completion.'),
-
--- AI Integration Phase tasks
-(12, 'Claude AI Integration Setup', 'Setup Claude AI API integration and design conversation framework for employee assistance.', 4, 1, 'in_progress', 'high', '2024-03-15', 32, 24, '["ai", "integration"]', '[]', 75, 'API integration working, refining conversation flow.'),
-
-(13, 'Predictive Analytics Model', 'Develop machine learning models for predicting employee performance and project outcomes.', 4, 3, 'planned', 'high', '2024-05-15', 48, 0, '["ai", "ml", "prediction"]', '[12]', 0, 'Waiting for data collection and Claude AI setup.'),
-
-(14, 'AI-Powered Smart Scheduling', 'Implement intelligent scheduling system that optimizes employee assignments based on skills and availability.', 4, 1, 'planned', 'medium', '2024-06-30', 40, 0, '["ai", "scheduling"]', '[12, 13]', 0, 'Design phase, waiting for AI framework completion.'),
-
--- Security Enhancement tasks
-(15, 'Security Audit', 'Comprehensive security audit of the entire application including penetration testing and vulnerability assessment.', 5, 6, 'planned', 'high', '2024-04-15', 32, 0, '["security", "audit"]', '[]', 0, 'Security firm selected, audit scheduled for March.'),
-
-(16, 'Multi-Factor Authentication', 'Implement MFA using TOTP, SMS, and email verification methods.', 5, 1, 'planned', 'high', '2024-05-31', 24, 0, '["security", "mfa"]', '[15]', 0, 'Design approved, implementation starts after audit.');
-
--- Insert Task Assignments (additional assignments for collaborative tasks)
-INSERT INTO task_assignments (task_id, employee_id, assigned_date, role, notes) VALUES
-(1, 6, '2023-01-15', 'DevOps Support', 'Assist with CI/CD pipeline setup and deployment configuration.'),
-(2, 7, '2023-02-01', 'QA Support', 'Test employee management features and validate form submissions.'),
-(5, 4, '2023-02-20', 'Product Owner', 'Define requirements and user stories for project management features.'),
-(6, 7, '2023-07-15', 'QA Engineer', 'Test dashboard performance and validate real-time data accuracy.'),
-(10, 5, '2024-01-20', 'UX Designer', 'Design mobile check-in user interface and user experience flow.'),
-(12, 4, '2024-01-20', 'Product Manager', 'Define AI assistant requirements and conversation scenarios.');
-
--- Verify data insertion
-SELECT 'Sample data insertion completed successfully!' as status;
-
--- Quick verification queries
-SELECT COUNT(*) as employee_count FROM employees;
-SELECT COUNT(*) as project_count FROM projects;
-SELECT COUNT(*) as task_count FROM tasks;
-SELECT COUNT(*) as assignment_count FROM task_assignments;
+COMMIT;

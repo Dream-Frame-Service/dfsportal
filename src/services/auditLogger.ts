@@ -1,4 +1,4 @@
-import { ezsiteApisReplacement } from './supabaseService';
+import { supabase } from '@/lib/supabase';
 
 interface AuditLogEntry {
   event_type: string;
@@ -101,7 +101,9 @@ class AuditLoggerService {
         additional_data: JSON.stringify(details.additional_data || {})
       };
 
-      const { error } = await ezsiteApisReplacement.tableCreate(this.tableId, logEntry);
+      const { error } = await supabase
+        .from('audit_logs')
+        .insert(logEntry);
       if (error) {
         console.error('Failed to create audit log:', error);
         // Don't throw error to avoid breaking main functionality
@@ -322,15 +324,16 @@ class AuditLoggerService {
         });
       }
 
-      const { data, error } = await ezsiteApisReplacement.tablePage(this.tableId, {
-        PageNo: pageNo,
-        PageSize: pageSize,
-        OrderByField: 'event_timestamp',
-        IsAsc: false,
-        Filters: queryFilters
-      });
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('event_timestamp', { ascending: false })
+        .range((pageNo - 1) * pageSize, pageNo * pageSize - 1);
 
-      return { data, error };
+      return { 
+        data: data ? { List: data, VirtualCount: data.length } : null, 
+        error: error ? error.message : null 
+      };
     } catch (error) {
       return { data: null, error: error instanceof Error ? error.message : 'Unknown error' };
     }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface RealtimeAdminConfig {
   enableAutoRefresh?: boolean;
@@ -89,7 +90,6 @@ config: RealtimeAdminConfig = {}) =>
 
 export const useRealtimeData = <T,>(
 tableName: string,
-tableId: number,
 config: RealtimeAdminConfig = {}) =>
 {
   const [data, setData] = useState<T[]>([]);
@@ -99,19 +99,17 @@ config: RealtimeAdminConfig = {}) =>
   const fetchData = async () => {
     try {
       setError(null);
-      const { data: result, error: apiError } = await window.ezsite.apis.tablePage(tableId, {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'id',
-        IsAsc: false,
-        Filters: []
-      });
+      const { data: result, error: apiError } = await supabase
+        .from(tableName)
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(100);
 
       if (apiError) {
-        throw new Error(apiError);
+        throw new Error(apiError.message);
       }
 
-      setData(result?.List || []);
+      setData(result || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
       console.error(`Error fetching ${tableName}:`, err);

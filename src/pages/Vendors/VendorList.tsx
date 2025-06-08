@@ -9,7 +9,7 @@ import { Plus, Search, Edit, Trash2, Building2, Mail, Phone, MapPin, Eye, Downlo
 import { useNavigate } from 'react-router-dom';
 import ViewModal from '@/components/ViewModal';
 import { useListKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/lib/supabase';
 import { motion } from 'motion/react';
 
 interface Vendor {
@@ -45,24 +45,26 @@ const VendorList: React.FC = () => {
   const loadVendors = async () => {
     try {
       setLoading(true);
-      const filters = [];
+      
+      let query = supabase
+        .from('vendors')
+        .select('*', { count: 'exact' })
+        .order('vendor_name', { ascending: true });
 
       if (searchTerm) {
-        filters.push({ name: 'vendor_name', op: 'StringContains', value: searchTerm });
+        query = query.ilike('vendor_name', `%${searchTerm}%`);
       }
 
-      const { data, error } = await ezsiteApisReplacement.tablePage('11729', {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'vendor_name',
-        IsAsc: true,
-        Filters: filters
-      });
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+
+      const { data, count, error } = await query;
 
       if (error) throw error;
 
-      setVendors(data?.List || []);
-      setTotalCount(data?.VirtualCount || 0);
+      setVendors(data || []);
+      setTotalCount(count || 0);
     } catch (error) {
       console.error('Error loading vendors:', error);
       toast({
@@ -91,7 +93,11 @@ const VendorList: React.FC = () => {
     }
 
     try {
-      const { error } = await ezsiteApisReplacement.tableDelete('11729', { ID: vendorId });
+      const { error } = await supabase
+        .from('vendors')
+        .delete()
+        .eq('id', vendorId);
+        
       if (error) throw error;
 
       toast({

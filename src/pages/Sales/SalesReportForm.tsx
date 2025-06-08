@@ -16,7 +16,7 @@ import GasTankReportSection from '@/components/SalesReportSections/GasTankReport
 import ExpensesSection from '@/components/SalesReportSections/ExpensesSection';
 import DocumentsUploadSection from '@/components/SalesReportSections/DocumentsUploadSection';
 import CashCollectionSection from '@/components/SalesReportSections/CashCollectionSection';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/lib/supabase';
 
 interface Expense {
   id: string;
@@ -88,16 +88,17 @@ export default function SalesReportForm() {
 
   const loadExistingReport = async () => {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(12356, {
-        PageNo: 1,
-        PageSize: 1,
-        Filters: [{ name: 'id', op: 'Equal', value: parseInt(id!) }]
-      });
+      const { data, error } = await supabase
+        .from('daily_sales_reports_enhanced')
+        .select('*')
+        .eq('id', parseInt(id!))
+        .limit(1)
+        .single();
 
       if (error) throw error;
 
-      if (data?.List && data.List.length > 0) {
-        const report = data.List[0];
+      if (data) {
+        const report = data;
         setSelectedStation(report.station);
         setFormData({
           report_date: report.report_date.split('T')[0],
@@ -146,19 +147,16 @@ export default function SalesReportForm() {
   const loadEmployees = async (station: string) => {
     setIsLoadingEmployees(true);
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(11727, {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'first_name',
-        IsAsc: true,
-        Filters: [
-        { name: 'station', op: 'Equal', value: station },
-        { name: 'is_active', op: 'Equal', value: true }]
-
-      });
+      const { data, error } = await supabase
+        .from('employees')
+        .select('*')
+        .eq('station', station)
+        .eq('is_active', true)
+        .order('first_name', { ascending: true })
+        .limit(100);
 
       if (error) throw error;
-      setEmployees(data?.List || []);
+      setEmployees(data || []);
     } catch (error) {
       console.error('Error loading employees:', error);
       toast({
@@ -240,13 +238,18 @@ export default function SalesReportForm() {
     try {
       let result;
       if (isEditing) {
-        result = await ezsiteApisReplacement.tableUpdate(12356, { ...submitData, ID: parseInt(id!) });
+        result = await supabase
+          .from('daily_sales_reports_enhanced')
+          .update(submitData)
+          .eq('id', parseInt(id!));
       } else {
-        result = await ezsiteApisReplacement.tableCreate(12356, submitData);
+        result = await supabase
+          .from('daily_sales_reports_enhanced')
+          .insert(submitData);
       }
 
       if (result.error) {
-        throw new Error(result.error);
+        throw new Error(result.error.message);
       }
 
       toast({

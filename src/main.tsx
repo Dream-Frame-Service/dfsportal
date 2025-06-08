@@ -1,16 +1,9 @@
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { ezsiteApisReplacement } from './services/supabaseService';
 
-// Initialize legacy ezsite.apis compatibility layer
-if (!window.ezsite) {
-  window.ezsite = { apis: ezsiteApisReplacement };
-}
-
-// Simplified main.tsx without complex error monitoring that might block initialization
+// Simplified main.tsx
 console.log('🚀 Starting DFS Manager Portal...');
-console.log('✅ Legacy ezsite.apis initialized');
 
 try {
   const container = document.getElementById("root");

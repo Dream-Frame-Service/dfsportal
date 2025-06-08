@@ -1,6 +1,6 @@
 // Enhanced SMS Service with Real Twilio Integration and Comprehensive Debugging
 
-import { ezsiteApisReplacement } from './supabaseService';
+import { supabase } from '@/lib/supabase';
 
 export interface SMSResponse {
   success: boolean;
@@ -74,18 +74,17 @@ class EnhancedSMSService {
 
   async loadConfiguration(): Promise<void> {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(12640, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'ID',
-        IsAsc: false,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('sms_providers')
+        .select('*')
+        .eq('is_active', true)
+        .order('id', { ascending: false })
+        .limit(1);
 
-      if (error) throw new Error(error);
+      if (error) throw new Error(error.message);
 
-      if (data?.List && data.List.length > 0) {
-        const config = data.List[0];
+      if (data && data.length > 0) {
+        const config = data[0];
         await this.configure({
           accountSid: config.account_sid,
           authToken: config.auth_token,
@@ -460,18 +459,16 @@ class EnhancedSMSService {
   // Helper methods from original service
   private async processTemplate(templateId: number, placeholders: Record<string, string>): Promise<string> {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(12641, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'ID',
-        IsAsc: false,
-        Filters: [{ name: 'ID', op: 'Equal', value: templateId }]
-      });
+      const { data, error } = await supabase
+        .from('sms_templates')
+        .select('*')
+        .eq('id', templateId)
+        .single();
 
-      if (error) throw new Error(error);
+      if (error) throw new Error(error.message);
 
-      if (data?.List && data.List.length > 0) {
-        let message = data.List[0].message_content;
+      if (data) {
+        let message = data.message_content;
 
         // Replace placeholders
         Object.entries(placeholders).forEach(([key, value]) => {
@@ -490,19 +487,16 @@ class EnhancedSMSService {
 
   private async checkMonthlyLimit(): Promise<void> {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(12640, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'ID',
-        IsAsc: false,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('sms_providers')
+        .select('*')
+        .eq('is_active', true)
+        .single();
 
-      if (error) throw new Error(error);
+      if (error) throw new Error(error.message);
 
-      if (data?.List && data.List.length > 0) {
-        const config = data.List[0];
-        if (config.current_month_count >= config.monthly_limit) {
+      if (data) {
+        if (data.current_month_count >= data.monthly_limit) {
           throw new Error('Monthly SMS limit exceeded. Please upgrade your plan or wait for next month.');
         }
       }
@@ -514,22 +508,21 @@ class EnhancedSMSService {
 
   private async updateMonthlyCount(): Promise<void> {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(12640, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'ID',
-        IsAsc: false,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('sms_providers')
+        .select('*')
+        .eq('is_active', true)
+        .single();
 
-      if (error) throw new Error(error);
+      if (error) throw new Error(error.message);
 
-      if (data?.List && data.List.length > 0) {
-        const config = data.List[0];
-        await ezsiteApisReplacement.tableUpdate(12640, {
-          ID: config.ID,
-          current_month_count: config.current_month_count + 1
-        });
+      if (data) {
+        await supabase
+          .from('sms_providers')
+          .update({
+            current_month_count: data.current_month_count + 1
+          })
+          .eq('id', data.id);
       }
     } catch (error) {
       this.log('Error updating monthly count:', error);
@@ -538,10 +531,12 @@ class EnhancedSMSService {
 
   private async logSMSHistory(historyData: any): Promise<void> {
     try {
-      await ezsiteApisReplacement.tableCreate(12613, {
-        ...historyData,
-        created_by: 1 // This should be the current user ID
-      });
+      await supabase
+        .from('sms_alert_history')
+        .insert({
+          ...historyData,
+          created_by: 1 // This should be the current user ID
+        });
     } catch (error) {
       this.log('Error logging SMS history:', error);
     }

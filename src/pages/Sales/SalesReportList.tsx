@@ -9,7 +9,7 @@ import { Plus, Search, Edit, Trash2, TrendingUp, DollarSign, Calendar, Printer }
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import EnhancedSalesReportPrintDialog from '@/components/EnhancedSalesReportPrintDialog';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/lib/supabase';
 
 interface SalesReport {
   ID: number;
@@ -33,10 +33,10 @@ interface SalesReport {
   diesel_gallons: number;
   total_gallons: number;
   expenses_data: string;
-  day_report_file_id?: number;
-  veeder_root_file_id?: number;
-  lotto_report_file_id?: number;
-  scratch_off_report_file_id?: number;
+  day_report_file_id: number;
+  veeder_root_file_id: number;
+  lotto_report_file_id: number;
+  scratch_off_report_file_id: number;
   total_sales: number;
   notes: string;
   created_by: number;
@@ -62,24 +62,26 @@ const SalesReportList: React.FC = () => {
   const loadReports = async () => {
     try {
       setLoading(true);
-      const filters = [];
+      
+      let query = supabase
+        .from('daily_sales_reports_enhanced')
+        .select('*', { count: 'exact' })
+        .order('report_date', { ascending: false });
 
       if (searchTerm) {
-        filters.push({ name: 'station', op: 'StringContains', value: searchTerm });
+        query = query.ilike('station', `%${searchTerm}%`);
       }
 
-      const { data, error } = await ezsiteApisReplacement.tablePage('12356', {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'report_date',
-        IsAsc: false,
-        Filters: filters
-      });
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+
+      const { data, count, error } = await query;
 
       if (error) throw error;
 
-      setReports(data?.List || []);
-      setTotalCount(data?.VirtualCount || 0);
+      setReports(data || []);
+      setTotalCount(count || 0);
     } catch (error) {
       console.error('Error loading sales reports:', error);
       toast({
@@ -98,7 +100,11 @@ const SalesReportList: React.FC = () => {
     }
 
     try {
-      const { error } = await ezsiteApisReplacement.tableDelete('12356', { ID: reportId });
+      const { error } = await supabase
+        .from('daily_sales_reports_enhanced')
+        .delete()
+        .eq('id', reportId);
+        
       if (error) throw error;
 
       toast({
@@ -153,15 +159,15 @@ const SalesReportList: React.FC = () => {
 
   // Calculate totals for all visible reports with proper validation
   const totals = reports.reduce((acc, report) => {
-    // Ensure all values are properly parsed as numbers
-    const totalSales = parseFloat(report.total_sales) || 0;
-    const cashAmount = parseFloat(report.cash_amount) || 0;
-    const creditCardAmount = parseFloat(report.credit_card_amount) || 0;
-    const debitCardAmount = parseFloat(report.debit_card_amount) || 0;
-    const mobileAmount = parseFloat(report.mobile_amount) || 0;
-    const grocerySales = parseFloat(report.grocery_sales) || 0;
-    const totalGallons = parseFloat(report.total_gallons) || 0;
-    const lotteryTotalCash = parseFloat(report.lottery_total_cash) || 0;
+    // Since values are already numbers from the database, just use them directly
+    const totalSales = report.total_sales || 0;
+    const cashAmount = report.cash_amount || 0;
+    const creditCardAmount = report.credit_card_amount || 0;
+    const debitCardAmount = report.debit_card_amount || 0;
+    const mobileAmount = report.mobile_amount || 0;
+    const grocerySales = report.grocery_sales || 0;
+    const totalGallons = report.total_gallons || 0;
+    const lotteryTotalCash = report.lottery_total_cash || 0;
 
     // Calculate payment method totals
     const paymentTotal = cashAmount + creditCardAmount + debitCardAmount + mobileAmount;
@@ -346,12 +352,12 @@ const SalesReportList: React.FC = () => {
                         <div className="flex items-center space-x-2" data-id="o6lmw26e1" data-path="src/pages/Sales/SalesReportList.tsx">
                           <span data-id="6g5smdd5u" data-path="src/pages/Sales/SalesReportList.tsx">{formatCurrency(report.total_sales)}</span>
                           {(() => {
-                        const total = parseFloat(report.total_sales) || 0;
-                        const cash = parseFloat(report.cash_amount) || 0;
-                        const credit = parseFloat(report.credit_card_amount) || 0;
-                        const debit = parseFloat(report.debit_card_amount) || 0;
-                        const mobile = parseFloat(report.mobile_amount) || 0;
-                        const grocery = parseFloat(report.grocery_sales) || 0;
+                        const total = report.total_sales || 0;
+                        const cash = report.cash_amount || 0;
+                        const credit = report.credit_card_amount || 0;
+                        const debit = report.debit_card_amount || 0;
+                        const mobile = report.mobile_amount || 0;
+                        const grocery = report.grocery_sales || 0;
                         const paymentTotal = cash + credit + debit + mobile + grocery;
                         const isPaymentCorrect = Math.abs(paymentTotal - total) <= 0.01;
 
@@ -363,7 +369,7 @@ const SalesReportList: React.FC = () => {
                       </TableCell>
                       <TableCell data-id="8f6fxcj56" data-path="src/pages/Sales/SalesReportList.tsx">
                         <div className="flex items-center space-x-2" data-id="tdylbfoiz" data-path="src/pages/Sales/SalesReportList.tsx">
-                          <span data-id="7kkdzpoti" data-path="src/pages/Sales/SalesReportList.tsx">{parseFloat(report.total_gallons || '0').toFixed(2)}</span>
+                          <span data-id="7kkdzpoti" data-path="src/pages/Sales/SalesReportList.tsx">{(report.total_gallons || 0).toFixed(2)}</span>
                         </div>
                       </TableCell>
                       <TableCell data-id="qi55yv2zj" data-path="src/pages/Sales/SalesReportList.tsx">

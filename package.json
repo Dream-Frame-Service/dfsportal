@@ -5,6 +5,7 @@
   "type": "module",  "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:vercel": "vite build",
     "build:dev": "tsc && vite build --mode development",
     "build:prod": "tsc && vite build --mode production --minify=true",
     "build:analyze": "vite build --mode production && npx vite-bundle-analyzer dist/assets/*.js",

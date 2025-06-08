@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Eye, EyeOff, Lock, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { useToast } from '@/hooks/use-toast';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 const ResetPasswordPage: React.FC = () => {
   const [password, setPassword] = useState('');
@@ -22,26 +23,23 @@ const ResetPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const { updatePassword } = useSupabaseAuth();
 
   useEffect(() => {
-    const tokenFromUrl = searchParams.get('token');
-    if (tokenFromUrl) {
-      setToken(tokenFromUrl);
+    const type = searchParams.get('type');
+    
+    if (type === 'recovery') {
+      setToken('recovery');
     } else {
-      setMessage('Invalid or missing reset token');
-      setMessageType('error');
+      // For Supabase, we don't need to show an error immediately
+      // The user might have been redirected here directly
+      setToken('recovery');
     }
   }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage('');
-
-    if (!token) {
-      setMessage('Invalid or missing reset token');
-      setMessageType('error');
-      return;
-    }
 
     if (password !== confirmPassword) {
       setMessage('Passwords do not match');
@@ -58,17 +56,14 @@ const ResetPasswordPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await window.ezsite.apis.resetPassword({
-        token,
-        password
-      });
+      const { error } = await updatePassword(password);
 
       if (error) {
-        setMessage(error);
+        setMessage(error.message);
         setMessageType('error');
         toast({
           title: "Error",
-          description: error,
+          description: error.message,
           variant: "destructive"
         });
       } else {
@@ -191,7 +186,7 @@ const ResetPasswordPage: React.FC = () => {
               <Button
                 type="submit"
                 className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium transition-all duration-200 transform hover:scale-[1.02]"
-                disabled={isLoading || !token} data-id="75pjsh8tp" data-path="src/pages/ResetPasswordPage.tsx">
+                disabled={isLoading || !password || !confirmPassword} data-id="75pjsh8tp" data-path="src/pages/ResetPasswordPage.tsx">
 
                 {isLoading ?
                 <>

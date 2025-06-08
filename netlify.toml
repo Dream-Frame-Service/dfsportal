@@ -1,9 +1,12 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "chmod +x netlify-build.sh && ./netlify-build.sh"
 
 [build.environment]
   NODE_VERSION = "18"
+  NPM_FLAGS = ""
+  CI = "true"
+  NETLIFY_USE_YARN = "false"
 
 [[redirects]]
   from = "/*"

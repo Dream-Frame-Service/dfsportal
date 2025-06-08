@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"deno.path": "C:\\Users\\MOBIN (Work)\\AppData\\Local\\Microsoft\\WinGet\\Packages\\DenoLand.Deno_Microsoft.Winget.Source_8wekyb3d8bbwe\\deno.exe",
+		"github.copilot.chat.agent.thinkingTool": true,
+		"github.copilot.chat.codesearch.enabled": true,
+		"github.copilot.chat.editor.temporalContext.enabled": true,
+		"github.copilot.chat.followUps": "firstOnly",
+		"github.copilot.chat.generateTests.codeLens": true,
+		"github.copilot.chat.scopeSelection": true,
+		"github.copilot.chat.search.keywordSuggestions": true,
+		"github.copilot.enable": {
+			"markdown": true,
+			"plaintext": true,
+			"scminput": true
+		},
+		"githubPullRequests.experimental.chat": true,
+		"githubPullRequests.experimental.notificationsView": true,
+		"githubPullRequests.experimental.useQuickChat": true,
+		"terminal.integrated.sendKeybindingsToShell": true
+	}
+}

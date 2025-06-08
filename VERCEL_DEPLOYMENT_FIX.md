@@ -1,19 +1,26 @@
 # Vercel Deployment Fix
 
-## Problem
-The Vercel deployment was failing with the error:
+## Problems Encountered
+
+### 1. First Error: TypeScript Compiler Permission Issue
 ```
 sh: line 1: /vercel/path0/node_modules/.bin/tsc: Permission denied
 Error: Command "npm run build" exited with 126
 ```
 
-## Root Cause
-The TypeScript compiler binary (`tsc`) didn't have execute permissions in Vercel's build environment, causing the `tsc && vite build` command to fail.
+### 2. Second Error: Invalid Function Runtime
+```
+Error: Function Runtimes must have a valid version, for example `now-php@1.0.0`.
+```
 
-## Solution Applied
+## Root Causes
+1. **TypeScript Compiler**: The `tsc` binary didn't have execute permissions in Vercel's build environment
+2. **Invalid Function Runtime**: The `"nodejs18.x"` runtime specification in the functions configuration was invalid for Vercel
 
-### 1. Created Vercel-Specific Build Script
-Added a new build script that bypasses the explicit TypeScript compilation step:
+## Solutions Applied
+
+### 1. Fixed TypeScript Compilation Issue
+Created a Vercel-specific build script that bypasses explicit TypeScript compilation:
 
 ```json
 "build:vercel": "vite build"
@@ -21,14 +28,59 @@ Added a new build script that bypasses the explicit TypeScript compilation step:
 
 This works because Vite already handles TypeScript compilation internally via its built-in TypeScript support.
 
-### 2. Updated Vercel Configuration
-Modified `vercel.json` to use the new build command:
+### 2. Fixed Invalid Function Runtime
+Removed the invalid functions configuration since this is a static React app that doesn't need serverless functions:
 
+**Before (Invalid):**
+```json
+{
+  "functions": {
+    "app/api/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
+```
+
+**After (Fixed):**
 ```json
 {
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
   "framework": "vite"
+}
+```
+
+### 3. Updated Vercel Configuration
+Final clean `vercel.json` configuration:
+
+```json
+{
+  "buildCommand": "npm run build:vercel",
+  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
 ```
 

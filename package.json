@@ -5,7 +5,9 @@
   "type": "module",  "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:vercel": "npx vite build",
+    "build:vercel": "node simple-build.mjs",
+    "build:vercel-ultra": "node ultra-simple-build.mjs",
+    "build:vercel-complex": "node vercel-build.mjs",
     "build:vercel-alt": "bash vercel-build.sh",
     "build:dev": "tsc && vite build --mode development",
     "build:prod": "tsc && vite build --mode production --minify=true",

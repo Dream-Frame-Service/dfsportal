@@ -19,5 +19,8 @@
     "github.copilot.nextEditSuggestions.fixes": true,
     "github.copilot.nextEditSuggestions.enabled": true,
     "github.copilot.chat.scopeSelection": true,
-    "github.copilot.chat.followUps": "firstOnly"
+    "github.copilot.chat.followUps": "firstOnly",
+    "supabase.connectionMethod": "cloud",
+    "supabase.projectUrl": "https://vetufvhzmawjbsumtplq.supabase.co",
+    "supabase.useLocal": false
 }

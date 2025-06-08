@@ -14,7 +14,7 @@ import { ArrowLeft, Save, Calculator, Upload, Eye, Plus, Download, FileText, Ale
 import BarcodeScanner from '@/components/BarcodeScanner';
 import { useAuth } from '@/contexts/AuthContext';
 import { FormErrorBoundary } from '@/components/ErrorBoundary';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/lib/supabase';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -170,16 +170,15 @@ const ProductForm = () => {
 
   const fetchVendors = async () => {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage('11729', {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'vendor_name',
-        IsAsc: true,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('vendors')
+        .select('*')
+        .eq('is_active', true)
+        .order('vendor_name', { ascending: true })
+        .limit(100);
 
       if (error) throw error;
-      setVendors(data?.List || []);
+      setVendors(data || []);
     } catch (error) {
       console.error('Error fetching vendors:', error);
     }
@@ -187,16 +186,15 @@ const ProductForm = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage('14389', {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'category_name',
-        IsAsc: true,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('product_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('category_name', { ascending: true })
+        .limit(100);
 
       if (error) throw error;
-      setCategories(data?.List || []);
+      setCategories(data || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -204,16 +202,14 @@ const ProductForm = () => {
 
   const generateSerialNumber = async () => {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage('11726', {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'serial_number',
-        IsAsc: false,
-        Filters: []
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .select('serial_number')
+        .order('serial_number', { ascending: false })
+        .limit(1);
 
       if (error) throw error;
-      const lastSerial = data?.List?.[0]?.serial_number || 0;
+      const lastSerial = data?.[0]?.serial_number || 0;
       setFormData((prev) => ({ ...prev, serial_number: lastSerial + 1 }));
     } catch (error) {
       console.error('Error generating serial number:', error);
@@ -226,18 +222,17 @@ const ProductForm = () => {
 
     setIsLoading(true);
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage('11726', {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'id',
-        IsAsc: true,
-        Filters: [{ name: 'id', op: 'Equal', value: parseInt(id) }]
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .limit(1)
+        .single();
 
       if (error) throw error;
 
-      if (data?.List?.[0]) {
-        const product = data.List[0];
+      if (data) {
+        const product = data;
         const productData = {
           product_name: product.product_name || '',
           weight: product.weight || 0,
@@ -425,15 +420,13 @@ const ProductForm = () => {
       const errors: string[] = [];
 
       // Get the latest serial number
-      const serialResponse = await ezsiteApisReplacement.tablePage('11726', {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'serial_number',
-        IsAsc: false,
-        Filters: []
-      });
+      const serialResponse = await supabase
+        .from('products')
+        .select('serial_number')
+        .order('serial_number', { ascending: false })
+        .limit(1);
 
-      let lastSerial = serialResponse.data?.List?.[0]?.serial_number || 0;
+      let lastSerial = serialResponse.data?.[0]?.serial_number || 0;
 
       for (const productData of bulkUploadData) {
         try {
@@ -473,7 +466,9 @@ const ProductForm = () => {
             productPayload.last_shopping_date = new Date(productData.last_shopping_date).toISOString();
           }
 
-          const { error } = await ezsiteApisReplacement.tableCreate('11726', productPayload);
+          const { error } = await supabase
+            .from('products')
+            .insert(productPayload);
 
           if (error) {
             errors.push(`${productData.product_name}: ${error}`);
@@ -524,14 +519,16 @@ const ProductForm = () => {
 
   const logFieldChange = async (productId: number, fieldName: string, oldValue: any, newValue: any, userId: number) => {
     try {
-      const { error } = await ezsiteApisReplacement.tableCreate('11756', {
-        product_id: productId,
-        field_name: fieldName,
-        old_value: oldValue?.toString() || '',
-        new_value: newValue?.toString() || '',
-        change_date: new Date().toISOString(),
-        changed_by: userId
-      });
+      const { error } = await supabase
+        .from('product_field_changes')
+        .insert({
+          product_id: productId,
+          field_name: fieldName,
+          old_value: oldValue?.toString() || '',
+          new_value: newValue?.toString() || '',
+          change_date: new Date().toISOString(),
+          changed_by: userId
+        });
       if (error) {
         console.error('Error logging field change:', error);
       }
@@ -572,8 +569,8 @@ const ProductForm = () => {
       };
 
       const { error } = isEdit ?
-      await ezsiteApisReplacement.tableUpdate('11726', { id: parseInt(id!), ...payload }) :
-      await ezsiteApisReplacement.tableCreate('11726', payload);
+        await supabase.from('products').update(payload).eq('id', parseInt(id!)) :
+        await supabase.from('products').insert(payload);
 
       if (error) throw error;
 

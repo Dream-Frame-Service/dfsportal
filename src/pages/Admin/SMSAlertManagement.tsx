@@ -19,6 +19,7 @@ import { ComponentErrorBoundary } from '@/components/ErrorBoundary';
 import AccessDenied from '@/components/AccessDenied';
 import CustomSMSSendingForm from '@/components/CustomSMSSendingForm';
 import EnhancedSMSTestManager from '@/components/EnhancedSMSTestManager';
+import { supabase } from '@/lib/supabase';
 import SMSConfigurationValidator from '@/components/SMSConfigurationValidator';
 import SMSTroubleshootingGuide from '@/components/SMSTroubleshootingGuide';
 
@@ -86,15 +87,14 @@ const SMSAlertManagement: React.FC = () => {
 
   const loadSettings = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('12611', {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'id',
-        IsAsc: false,
-        Filters: []
-      });
+      const { data, error } = await supabase
+        .from('sms_settings')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(100);
+        
       if (error) throw error;
-      setSettings(data?.List || []);
+      setSettings(data || []);
     } catch (error) {
       console.error('Error loading SMS settings:', error);
       toast({
@@ -107,15 +107,14 @@ const SMSAlertManagement: React.FC = () => {
 
   const loadContacts = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('12612', {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'id',
-        IsAsc: false,
-        Filters: []
-      });
+      const { data, error } = await supabase
+        .from('sms_contacts')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(100);
+        
       if (error) throw error;
-      setContacts(data?.List || []);
+      setContacts(data || []);
     } catch (error) {
       console.error('Error loading SMS contacts:', error);
       toast({
@@ -128,15 +127,13 @@ const SMSAlertManagement: React.FC = () => {
 
   const loadHistory = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('12613', {
-        PageNo: 1,
-        PageSize: 50,
-        OrderByField: 'sent_date',
-        IsAsc: false,
-        Filters: []
-      });
+      const { data, error } = await supabase
+        .from('sms_alert_history')
+        .select('*')
+        .order('sent_date', { ascending: false })
+        .limit(50);
       if (error) throw error;
-      setHistory(data?.List || []);
+      setHistory(data || []);
     } catch (error) {
       console.error('Error loading SMS history:', error);
       toast({
@@ -191,16 +188,18 @@ const SMSAlertManagement: React.FC = () => {
         }
 
         // Create history record
-        await window.ezsite.apis.tableCreate('12613', {
-          license_id: 0, // Test SMS
-          contact_id: contact.id,
-          mobile_number: contact.mobile_number,
-          message_content: testMessage,
-          sent_date: new Date().toISOString(),
-          delivery_status: smsResult.success ? 'Sent' : `Failed - ${smsResult.error}`,
-          days_before_expiry: 0,
-          created_by: 1
-        });
+        await supabase
+          .from('sms_alert_history')
+          .insert({
+            license_id: 0, // Test SMS
+            contact_id: contact.id,
+            mobile_number: contact.mobile_number,
+            message_content: testMessage,
+            sent_date: new Date().toISOString(),
+            delivery_status: smsResult.success ? 'Sent' : `Failed - ${smsResult.error}`,
+            days_before_expiry: 0,
+            created_by: 1
+          });
       }
 
       // Show results

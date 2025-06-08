@@ -10,6 +10,7 @@ import { ShoppingCart, Save, ArrowLeft, Camera, Plus, Minus, Trash2 } from 'luci
 import { useNavigate, useParams } from 'react-router-dom';
 import ProductSearchBar from '@/components/ProductSearchBar';
 import ProductSelectionDialog from '@/components/ProductSelectionDialog';
+import { supabase } from '@/lib/supabase';
 
 interface Product {
   ID: number;
@@ -99,18 +100,15 @@ const OrderForm: React.FC = () => {
       setLoading(true);
 
       // Search for products matching the barcode
-      const { data, error } = await window.ezsite.apis.tablePage('11726', {
-        PageNo: 1,
-        PageSize: 10,
-        Filters: [
-        { name: 'bar_code_case', op: 'Equal', value: barcode },
-        { name: 'bar_code_unit', op: 'Equal', value: barcode }]
-
-      });
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .or(`bar_code_case.eq.${barcode},bar_code_unit.eq.${barcode}`)
+        .limit(10);
 
       if (error) throw error;
 
-      const products = data?.List || [];
+      const products = data || [];
       setMatchedProducts(products);
 
       if (products.length === 0) {
@@ -302,7 +300,10 @@ const OrderForm: React.FC = () => {
         created_by: 1
       };
 
-      const { error } = await window.ezsite.apis.tableCreate('11730', orderData);
+      const { error } = await supabase
+        .from('orders')
+        .insert(orderData);
+        
       if (error) throw error;
 
       toast({

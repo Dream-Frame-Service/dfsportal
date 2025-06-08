@@ -8,7 +8,7 @@ import { toast } from '@/hooks/use-toast';
 import { FileText, Save, ArrowLeft, Upload, FileIcon } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EnhancedFileUpload from '@/components/EnhancedFileUpload';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/services/supabaseService';
 
 interface LicenseFormData {
   license_name: string;
@@ -56,26 +56,25 @@ const LicenseForm: React.FC = () => {
   const loadLicense = async (licenseId: number) => {
     try {
       setLoading(true);
-      const { data, error } = await ezsiteApisReplacement.tablePage('11731', {
-        PageNo: 1,
-        PageSize: 1,
-        Filters: [{ name: 'ID', op: 'Equal', value: licenseId }]
-      });
+      const { data, error } = await supabase
+        .from('licenses_certificates')
+        .select('*')
+        .eq('ID', licenseId)
+        .single();
 
       if (error) throw error;
 
-      if (data && data.List && data.List.length > 0) {
-        const license = data.List[0];
+      if (data) {
         setFormData({
-          license_name: license.license_name || '',
-          license_number: license.license_number || '',
-          issuing_authority: license.issuing_authority || '',
-          issue_date: license.issue_date ? license.issue_date.split('T')[0] : '',
-          expiry_date: license.expiry_date ? license.expiry_date.split('T')[0] : '',
-          station: license.station || '',
-          category: license.category || '',
-          status: license.status || 'Active',
-          document_file_id: license.document_file_id || 0
+          license_name: data.license_name || '',
+          license_number: data.license_number || '',
+          issuing_authority: data.issuing_authority || '',
+          issue_date: data.issue_date ? data.issue_date.split('T')[0] : '',
+          expiry_date: data.expiry_date ? data.expiry_date.split('T')[0] : '',
+          station: data.station || '',
+          category: data.category || '',
+          status: data.status || 'Active',
+          document_file_id: data.document_file_id || 0
         });
       }
     } catch (error) {
@@ -93,14 +92,34 @@ const LicenseForm: React.FC = () => {
   const handleFileUpload = async (file: File) => {
     try {
       setUploadLoading(true);
-      const { data, error } = await ezsiteApisReplacement.upload({
-        filename: file.name,
-        file: file
-      });
+      
+      // Generate unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      // Upload file to Supabase storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('documents')
+        .upload(fileName, file);
 
-      if (error) throw error;
+      if (uploadError) throw uploadError;
 
-      setFormData((prev) => ({ ...prev, document_file_id: data }));
+      // Store file reference in database
+      const { data: fileRecord, error: fileError } = await supabase
+        .from('files')
+        .insert({
+          filename: file.name,
+          storage_path: uploadData.path,
+          file_size: file.size,
+          mime_type: file.type,
+          uploaded_at: new Date().toISOString()
+        })
+        .select('id')
+        .single();
+
+      if (fileError) throw fileError;
+
+      setFormData((prev) => ({ ...prev, document_file_id: fileRecord.id }));
       setUploadedFile(file);
 
       toast({
@@ -133,10 +152,11 @@ const LicenseForm: React.FC = () => {
       };
 
       if (isEditing && id) {
-        const { error } = await ezsiteApisReplacement.tableUpdate('11731', {
-          ID: parseInt(id),
-          ...dataToSubmit
-        });
+        const { error } = await supabase
+          .from('licenses_certificates')
+          .update(dataToSubmit)
+          .eq('ID', parseInt(id));
+          
         if (error) throw error;
 
         toast({
@@ -144,7 +164,10 @@ const LicenseForm: React.FC = () => {
           description: "License updated successfully"
         });
       } else {
-        const { error } = await ezsiteApisReplacement.tableCreate('11731', dataToSubmit);
+        const { error } = await supabase
+          .from('licenses_certificates')
+          .insert(dataToSubmit);
+          
         if (error) throw error;
 
         toast({

@@ -12,6 +12,7 @@ import SupabaseConnectionTest from '@/components/SupabaseConnectionTest';
 import DatabasePerformanceMonitor from '@/components/DatabasePerformanceMonitor';
 import AlertThresholdManager from '@/components/AlertThresholdManager';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface PerformanceMetrics {
   connectionTime: number;
@@ -116,13 +117,11 @@ const SupabaseConnectionTestPage = () => {
   const testDatabaseConnection = async () => {
     try {
       // Test with a simple query
-      const { data, error } = await window.ezsite.apis.tablePage(11725, { // user_profiles table
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "ID",
-        IsAsc: false,
-        Filters: []
-      });
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .order('ID', { ascending: false })
+        .limit(1);
 
       if (error) {
         return { success: false, error };
@@ -137,10 +136,10 @@ const SupabaseConnectionTestPage = () => {
   const testQueryPerformance = async () => {
     // Run multiple test queries to measure performance
     const queries = [
-    () => window.ezsite.apis.tablePage(11725, { PageNo: 1, PageSize: 5, OrderByField: "ID", IsAsc: false, Filters: [] }),
-    () => window.ezsite.apis.tablePage(11726, { PageNo: 1, PageSize: 5, OrderByField: "ID", IsAsc: false, Filters: [] }),
-    () => window.ezsite.apis.tablePage(11727, { PageNo: 1, PageSize: 5, OrderByField: "ID", IsAsc: false, Filters: [] })];
-
+      () => supabase.from('user_profiles').select('*').order('ID', { ascending: false }).limit(5),
+      () => supabase.from('products').select('*').order('ID', { ascending: false }).limit(5),
+      () => supabase.from('employees').select('*').order('ID', { ascending: false }).limit(5)
+    ];
 
     for (const query of queries) {
       await query();

@@ -9,6 +9,7 @@ import { Plus, Search, Edit, Trash2, ShoppingCart, Calendar, DollarSign, Eye, Do
 import { useNavigate } from 'react-router-dom';
 import ViewModal from '@/components/ViewModal';
 import { useListKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { supabase } from '@/lib/supabase';
 import { motion } from 'motion/react';
 
 interface Order {
@@ -44,24 +45,26 @@ const OrderList: React.FC = () => {
   const loadOrders = async () => {
     try {
       setLoading(true);
-      const filters = [];
+      
+      let query = supabase
+        .from('orders')
+        .select('*', { count: 'exact' })
+        .order('order_date', { ascending: false });
 
       if (searchTerm) {
-        filters.push({ name: 'order_number', op: 'StringContains', value: searchTerm });
+        query = query.ilike('order_number', `%${searchTerm}%`);
       }
 
-      const { data, error } = await window.ezsite.apis.tablePage('11730', {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'order_date',
-        IsAsc: false,
-        Filters: filters
-      });
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+
+      const { data, count, error } = await query;
 
       if (error) throw error;
 
-      setOrders(data?.List || []);
-      setTotalCount(data?.VirtualCount || 0);
+      setOrders(data || []);
+      setTotalCount(count || 0);
     } catch (error) {
       console.error('Error loading orders:', error);
       toast({
@@ -90,7 +93,11 @@ const OrderList: React.FC = () => {
     }
 
     try {
-      const { error } = await window.ezsite.apis.tableDelete('11730', { ID: orderId });
+      const { error } = await supabase
+        .from('orders')
+        .delete()
+        .eq('id', orderId);
+        
       if (error) throw error;
 
       toast({

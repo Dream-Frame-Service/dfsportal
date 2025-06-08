@@ -12,6 +12,7 @@ import BatchActionBar from '@/components/BatchActionBar';
 import BatchDeleteDialog from '@/components/BatchDeleteDialog';
 import AccessDenied from '@/components/AccessDenied';
 import useAdminAccess from '@/hooks/use-admin-access';
+import { supabase } from '@/lib/supabase';
 import {
   FileText,
   Download,
@@ -80,13 +81,11 @@ const SystemLogs: React.FC = () => {
   const fetchAuditLogs = async () => {
     try {
       console.log('Fetching audit logs from database...');
-      const { data, error } = await window.ezsite.apis.tablePage(12706, {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'event_timestamp',
-        IsAsc: false,
-        Filters: []
-      });
+      const { data, error } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('event_timestamp', { ascending: false })
+        .limit(100);
 
       if (error) {
         console.error('Error fetching audit logs:', error);
@@ -96,7 +95,7 @@ const SystemLogs: React.FC = () => {
       }
 
       console.log('Audit logs data received:', data);
-      setLogs(data?.List || []);
+      setLogs(data || []);
     } catch (error) {
       console.error('Error fetching audit logs:', error);
       toast({

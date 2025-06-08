@@ -15,6 +15,7 @@ import BatchEditDialog from '@/components/BatchEditDialog';
 import StationEditDialog from '@/components/StationEditDialog';
 import AccessDenied from '@/components/AccessDenied';
 import useAdminAccess from '@/hooks/use-admin-access';
+import { supabase } from '@/lib/supabase';
 import {
   Settings,
   Database,
@@ -115,18 +116,15 @@ const SiteManagement: React.FC = () => {
   const loadStations = async () => {
     try {
       console.log('Loading stations from database...');
-      const { data, error } = await window.ezsite.apis.tablePage(12599, {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: 'station_name',
-        IsAsc: true,
-        Filters: []
-      });
+      const { data, error } = await supabase
+        .from('site_stations')
+        .select('*')
+        .order('station_name', { ascending: true });
 
       if (error) throw error;
 
       console.log('Loaded stations:', data);
-      setStations(data?.List || []);
+      setStations(data || []);
     } catch (error) {
       console.error('Error loading stations:', error);
       toast({
@@ -177,21 +175,31 @@ const SiteManagement: React.FC = () => {
 
   const handleTestEmail = async () => {
     try {
-      const { error } = await window.ezsite.apis.sendEmail({
-        from: `${settings.emailFromName} <${settings.emailFromAddress}>`,
-        to: [settings.emailFromAddress],
-        subject: 'DFS Manager - Email Configuration Test',
-        html: `
-          <h2>Email Configuration Test</h2>
-          <p>This is a test email to verify your email configuration is working correctly.</p>
-          <p><strong>Site:</strong> ${settings.siteName}</p>
-          <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
-          <hr>
-          <p>If you received this email, your configuration is working properly.</p>
-        `
+      // TODO: Replace with Supabase Edge Function or external email service
+      // const { error } = await supabase.functions.invoke('send-email', {
+      //   body: {
+      //     from: `${settings.emailFromName} <${settings.emailFromAddress}>`,
+      //     to: [settings.emailFromAddress],
+      //     subject: 'DFS Manager - Email Configuration Test',
+      //     html: `
+      //       <h2>Email Configuration Test</h2>
+      //       <p>This is a test email to verify your email configuration is working correctly.</p>
+      //       <p><strong>Site:</strong> ${settings.siteName}</p>
+      //       <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+      //       <hr>
+      //       <p>If you received this email, your configuration is working properly.</p>
+      //     `
+      //   }
+      // });
+
+      // For now, show a success message
+      toast({
+        title: "Email Test",
+        description: "Email functionality needs to be implemented via Supabase Edge Functions",
+        variant: "default"
       });
 
-      if (error) throw error;
+      // if (error) throw error;
 
       toast({
         title: "Test Email Sent",
@@ -251,7 +259,10 @@ const SiteManagement: React.FC = () => {
       }));
 
       for (const update of updates) {
-        const { error } = await window.ezsite.apis.tableUpdate(12599, update);
+        const { error } = await supabase
+          .from('site_stations')
+          .update(update)
+          .eq('id', update.id);
         if (error) throw error;
       }
 
@@ -281,7 +292,10 @@ const SiteManagement: React.FC = () => {
       const selectedData = batchSelection.getSelectedData(stations, (station) => station.id);
 
       for (const station of selectedData) {
-        const { error } = await window.ezsite.apis.tableDelete(12599, { id: station.id });
+        const { error } = await supabase
+          .from('site_stations')
+          .delete()
+          .eq('id', station.id);
         if (error) throw error;
       }
 

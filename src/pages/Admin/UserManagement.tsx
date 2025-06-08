@@ -22,6 +22,7 @@ import ComprehensivePermissionDialog from '@/components/ComprehensivePermissionD
 import AccessDenied from '@/components/AccessDenied';
 import useAdminAccess from '@/hooks/use-admin-access';
 import CreateUserDialog from '@/components/CreateUserDialog';
+import { supabase } from '@/services/supabaseService';
 import {
   Users,
   Plus,
@@ -133,13 +134,10 @@ const UserManagement: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data: currentUser, error: userError } = await window.ezsite.apis.getUserInfo();
-      if (userError) {
-        console.log('User info not available:', userError);
-        setUsers([]);
-        return;
-      }
-      setUsers([currentUser]);
+      // Since we're migrating away from ezsite, we'll use the user profile data instead
+      // This is a simplified approach as user management is now handled through Supabase
+      console.log('User info now managed through Supabase user profiles');
+      setUsers([]);
     } catch (error) {
       console.error('Error fetching current user info:', error);
       setUsers([]);
@@ -148,14 +146,11 @@ const UserManagement: React.FC = () => {
 
   const fetchUserProfiles = async () => {
     try {
-      console.log('Fetching user profiles from table ID: 11725');
-      const { data, error } = await window.ezsite.apis.tablePage(11725, {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: []
-      });
+      console.log('Fetching user profiles from user_profiles table');
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .order('id', { ascending: false });
 
       if (error) {
         console.error('API returned error:', error);
@@ -163,7 +158,7 @@ const UserManagement: React.FC = () => {
       }
 
       console.log('User profiles data received:', data);
-      setUserProfiles(data?.List || []);
+      setUserProfiles(data || []);
     } catch (error) {
       console.error('Error fetching user profiles:', error);
       toast({
@@ -186,7 +181,10 @@ const UserManagement: React.FC = () => {
     }
 
     try {
-      const { error } = await window.ezsite.apis.tableCreate(11725, formData);
+      const { error } = await supabase
+        .from('user_profiles')
+        .insert(formData);
+        
       if (error) throw error;
 
       toast({
@@ -228,10 +226,11 @@ const UserManagement: React.FC = () => {
     }
 
     try {
-      const { error } = await window.ezsite.apis.tableUpdate(11725, {
-        id: selectedUserProfile.id,
-        ...formData
-      });
+      const { error } = await supabase
+        .from('user_profiles')
+        .update(formData)
+        .eq('id', selectedUserProfile.id);
+        
       if (error) throw error;
 
       toast({
@@ -256,7 +255,11 @@ const UserManagement: React.FC = () => {
     if (!confirm('Are you sure you want to delete this user profile? This action cannot be undone.')) return;
 
     try {
-      const { error } = await window.ezsite.apis.tableDelete(11725, { id: profileId });
+      const { error } = await supabase
+        .from('user_profiles')
+        .delete()
+        .eq('id', profileId);
+        
       if (error) throw error;
 
       toast({
@@ -314,7 +317,11 @@ const UserManagement: React.FC = () => {
       }));
 
       for (const update of updates) {
-        const { error } = await window.ezsite.apis.tableUpdate(11725, update);
+        const { id, ...updateData } = update;
+        const { error } = await supabase
+          .from('user_profiles')
+          .update(updateData)
+          .eq('id', id);
         if (error) throw error;
       }
 
@@ -344,7 +351,10 @@ const UserManagement: React.FC = () => {
       const selectedData = batchSelection.getSelectedData(filteredProfiles, (profile) => profile.id);
 
       for (const profile of selectedData) {
-        const { error } = await window.ezsite.apis.tableDelete(11725, { id: profile.id });
+        const { error } = await supabase
+          .from('user_profiles')
+          .delete()
+          .eq('id', profile.id);
         if (error) throw error;
       }
 

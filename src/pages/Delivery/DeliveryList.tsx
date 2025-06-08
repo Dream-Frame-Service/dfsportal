@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Search, Edit, Trash2, Truck, Filter, Download, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
 
 import EnhancedDeliveryPrintDialog from '@/components/EnhancedDeliveryPrintDialog';
 
@@ -49,36 +50,28 @@ const DeliveryList: React.FC = () => {
     try {
       setLoading(true);
 
-      const filters = [];
+      let query = supabase
+        .from('delivery_records')
+        .select('*', { count: 'exact' })
+        .order('delivery_date', { ascending: false });
 
       if (stationFilter !== 'all') {
-        filters.push({
-          name: 'station',
-          op: 'Equal',
-          value: stationFilter
-        });
+        query = query.eq('station', stationFilter);
       }
 
       if (searchTerm) {
-        filters.push({
-          name: 'bol_number',
-          op: 'StringContains',
-          value: searchTerm
-        });
+        query = query.ilike('bol_number', `%${searchTerm}%`);
       }
 
-      const { data, error } = await window.ezsite.apis.tablePage(12196, {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'delivery_date',
-        IsAsc: false,
-        Filters: filters
-      });
+      const startRange = (currentPage - 1) * pageSize;
+      const endRange = startRange + pageSize - 1;
+      
+      const { data, error, count } = await query.range(startRange, endRange);
 
       if (error) throw error;
 
-      setDeliveries(data?.List || []);
-      setTotalCount(data?.VirtualCount || 0);
+      setDeliveries(data || []);
+      setTotalCount(count || 0);
     } catch (error) {
       console.error('Error loading deliveries:', error);
       toast({
@@ -97,7 +90,10 @@ const DeliveryList: React.FC = () => {
     }
 
     try {
-      const { error } = await window.ezsite.apis.tableDelete(12196, { ID: id });
+      const { error } = await supabase
+        .from('delivery_records')
+        .delete()
+        .eq('id', id);
       if (error) throw error;
 
       toast({

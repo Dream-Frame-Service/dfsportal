@@ -12,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import EnhancedLicensePrintDialog from '@/components/EnhancedLicensePrintDialog';
 import { smsService } from '@/services/smsService';
 import licenseAlertService from '@/services/licenseAlertService';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/lib/supabase';
 
 interface License {
   ID: number;
@@ -53,28 +53,29 @@ const LicenseList: React.FC = () => {
   const loadLicenses = async () => {
     try {
       setLoading(true);
-      const filters = [];
+      let query = supabase
+        .from('licenses_certificates')
+        .select('*', { count: 'exact' })
+        .order('expiry_date', { ascending: true });
 
       if (searchTerm) {
-        filters.push({ name: 'license_name', op: 'StringContains', value: searchTerm });
+        query = query.ilike('license_name', `%${searchTerm}%`);
       }
 
       if (!showCancelled) {
-        filters.push({ name: 'status', op: 'StringContains', value: 'Active' });
+        query = query.ilike('status', '%Active%');
       }
 
-      const { data, error } = await ezsiteApisReplacement.tablePage('11731', {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'expiry_date',
-        IsAsc: true,
-        Filters: filters
-      });
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
 
       if (error) throw error;
 
-      setLicenses(data?.List || []);
-      setTotalCount(data?.VirtualCount || 0);
+      setLicenses(data || []);
+      setTotalCount(count || 0);
     } catch (error) {
       console.error('Error loading licenses:', error);
       toast({
@@ -97,10 +98,10 @@ const LicenseList: React.FC = () => {
       setDeletingLicenseId(licenseId);
 
       // Update status to "Cancelled" or "Inactive"
-      const { error } = await ezsiteApisReplacement.tableUpdate('11731', {
-        ID: licenseId,
-        status: 'Cancelled'
-      });
+      const { error } = await supabase
+        .from('licenses_certificates')
+        .update({ status: 'Cancelled' })
+        .eq('ID', licenseId);
 
       if (error) throw error;
 
@@ -129,15 +130,16 @@ const LicenseList: React.FC = () => {
 
     try {
       // Step 1: Get license details to check for associated files
-      const { data: licenseData, error: fetchError } = await ezsiteApisReplacement.tablePage('11731', {
-        PageNo: 1,
-        PageSize: 1,
-        Filters: [{ name: 'ID', op: 'Equal', value: licenseId }]
-      });
+      const { data: licenseData, error: fetchError } = await supabase
+        .from('licenses_certificates')
+        .select('*')
+        .eq('ID', licenseId)
+        .limit(1)
+        .single();
 
       if (fetchError) throw fetchError;
 
-      const license = licenseData?.List?.[0];
+      const license = licenseData;
       if (!license) {
         throw new Error('License not found');
       }
@@ -162,17 +164,17 @@ const LicenseList: React.FC = () => {
 
       // Step 3: Delete SMS alert history for this license
       try {
-        const { data: alertHistory, error: alertHistoryError } = await ezsiteApisReplacement.tablePage('12613', {
-          PageNo: 1,
-          PageSize: 100,
-          Filters: [{ name: 'license_id', op: 'Equal', value: licenseId }]
-        });
+        const { data: alertHistory, error: alertHistoryError } = await supabase
+          .from('sms_alert_history')
+          .select('*')
+          .eq('license_id', licenseId);
 
-        if (!alertHistoryError && alertHistory?.List?.length > 0) {
-          for (const alert of alertHistory.List) {
-            await ezsiteApisReplacement.tableDelete('12613', { ID: alert.ID });
-          }
-          console.log(`Deleted ${alertHistory.List.length} SMS alert history records`);
+        if (!alertHistoryError && alertHistory?.length > 0) {
+          await supabase
+            .from('sms_alert_history')
+            .delete()
+            .eq('license_id', licenseId);
+          console.log(`Deleted ${alertHistory.length} SMS alert history records`);
         }
       } catch (alertError) {
         console.warn('SMS alert history cleanup warning:', alertError);
@@ -181,17 +183,14 @@ const LicenseList: React.FC = () => {
 
       // Step 4: Delete any scheduled alerts for this license
       try {
-        const { data: schedules, error: scheduleError } = await ezsiteApisReplacement.tablePage('12642', {
-          PageNo: 1,
-          PageSize: 100,
-          Filters: [
-          { name: 'alert_type', op: 'Equal', value: 'License Expiry' },
-          { name: 'station_filter', op: 'Equal', value: license.station }]
+        const { data: schedules, error: scheduleError } = await supabase
+          .from('sms_alert_schedules')
+          .select('*')
+          .eq('alert_type', 'License Expiry')
+          .eq('station_filter', license.station);
 
-        });
-
-        if (!scheduleError && schedules?.List?.length > 0) {
-          console.log(`Found ${schedules.List.length} related alert schedules`);
+        if (!scheduleError && schedules?.length > 0) {
+          console.log(`Found ${schedules.length} related alert schedules`);
           // Note: We might not want to delete all schedules, just log for now
         }
       } catch (scheduleError) {
@@ -199,7 +198,10 @@ const LicenseList: React.FC = () => {
       }
 
       // Step 5: Finally delete the license record
-      const { error: deleteError } = await ezsiteApisReplacement.tableDelete('11731', { ID: licenseId });
+      const { error: deleteError } = await supabase
+        .from('licenses_certificates')
+        .delete()
+        .eq('ID', licenseId);
       if (deleteError) throw deleteError;
 
       // Success message with details
@@ -293,20 +295,17 @@ const LicenseList: React.FC = () => {
   const checkShouldSendAlert = async (licenseId: number, frequencyDays: number) => {
     try {
       // Check if we've sent an alert for this license recently
-      const { data, error } = await ezsiteApisReplacement.tablePage('12613', {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'sent_date',
-        IsAsc: false,
-        Filters: [
-        { name: 'license_id', op: 'Equal', value: licenseId }]
-
-      });
+      const { data, error } = await supabase
+        .from('sms_alert_history')
+        .select('*')
+        .eq('license_id', licenseId)
+        .order('sent_date', { ascending: false })
+        .limit(1);
 
       if (error) throw error;
 
-      if (data?.List && data.List.length > 0) {
-        const lastAlert = data.List[0];
+      if (data && data.length > 0) {
+        const lastAlert = data[0];
         const lastAlertDate = new Date(lastAlert.sent_date);
         const daysSinceLastAlert = Math.ceil((new Date().getTime() - lastAlertDate.getTime()) / (1000 * 3600 * 24));
 
@@ -327,10 +326,10 @@ const LicenseList: React.FC = () => {
     try {
       setDeletingLicenseId(licenseId);
 
-      const { error } = await ezsiteApisReplacement.tableUpdate('11731', {
-        ID: licenseId,
-        status: 'Active'
-      });
+      const { error } = await supabase
+        .from('licenses_certificates')
+        .update({ status: 'Active' })
+        .eq('ID', licenseId);
 
       if (error) throw error;
 

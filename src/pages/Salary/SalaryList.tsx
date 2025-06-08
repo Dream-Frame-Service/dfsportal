@@ -11,7 +11,7 @@ import { Plus, Search, Eye, Edit, Trash2, Download, DollarSign, Calendar, Users,
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useRealtime, useRealtimeData } from '@/hooks/use-realtime';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/lib/supabase';
 
 interface SalaryRecord {
   id: number;
@@ -140,17 +140,16 @@ const SalaryList: React.FC = () => {
     try {
       console.log('👥 Fetching employees data...');
 
-      const { data, error } = await ezsiteApisReplacement.tablePage(EMPLOYEES_TABLE_ID, {
-        PageNo: 1,
-        PageSize: 1000,
-        OrderByField: 'first_name',
-        IsAsc: true,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('employees')
+        .select('*')
+        .eq('is_active', true)
+        .order('first_name', { ascending: true })
+        .limit(1000);
 
       if (error) throw error;
 
-      const employees = data?.List || [];
+      const employees = data || [];
       console.log('✅ Employees fetched successfully:', employees.length);
 
       setEmployees(employees);
@@ -167,49 +166,49 @@ const SalaryList: React.FC = () => {
   const fetchSalaryRecords = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const filters = [];
+      let query = supabase
+        .from('salary_records')
+        .select('*', { count: 'exact' })
+        .order('pay_date', { ascending: false });
 
       if (statusFilter !== 'all') {
-        filters.push({ name: 'status', op: 'Equal', value: statusFilter });
+        query = query.eq('status', statusFilter);
       }
 
       if (stationFilter !== 'all') {
-        filters.push({ name: 'station', op: 'Equal', value: stationFilter });
+        query = query.eq('station', stationFilter);
       }
 
       if (searchTerm) {
-        filters.push({ name: 'employee_id', op: 'StringContains', value: searchTerm });
+        query = query.ilike('employee_id', `%${searchTerm}%`);
       }
+
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
 
       console.log('🔄 Fetching salary records - Real-time update:', {
         currentPage,
         pageSize,
-        filters,
+        statusFilter,
+        stationFilter,
+        searchTerm,
         silent,
         timestamp: new Date().toISOString()
       });
 
-      const { data, error } = await ezsiteApisReplacement.tablePage(SALARY_TABLE_ID, {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'pay_date',
-        IsAsc: false,
-        Filters: filters
-      });
+      const { data: records, error, count } = await query;
 
       if (error) throw error;
 
-      const records = data?.List || [];
-      const totalCount = data?.VirtualCount || 0;
-
       console.log('✅ Salary records fetched successfully:', {
-        recordsCount: records.length,
-        totalCount,
+        recordsCount: records?.length || 0,
+        totalCount: count || 0,
         timestamp: new Date().toISOString()
       });
 
-      setSalaryRecords(records);
-      setTotalRecords(totalCount);
+      setSalaryRecords(records || []);
+      setTotalRecords(count || 0);
       setLastUpdateTime(new Date());
       setRetryCount(0); // Reset retry count on successful fetch
     } catch (error) {
@@ -296,7 +295,11 @@ const SalaryList: React.FC = () => {
     try {
       console.log('🗑️ Deleting salary record:', id);
 
-      const { error } = await ezsiteApisReplacement.tableDelete(SALARY_TABLE_ID, { ID: id });
+      const { error } = await supabase
+        .from('salary_records')
+        .delete()
+        .eq('id', id);
+
       if (error) throw error;
 
       console.log('✅ Salary record deleted successfully');
@@ -326,14 +329,15 @@ const SalaryList: React.FC = () => {
       const employeeName = getEmployeeName(record.employee_id);
       console.log('🔄 Updating salary record status:', { id, newStatus, employeeName });
 
-      const { error } = await ezsiteApisReplacement.tableUpdate(SALARY_TABLE_ID, {
-        ID: id,
-        ...record,
-        status: newStatus,
-        pay_period_start: new Date(record.pay_period_start).toISOString(),
-        pay_period_end: new Date(record.pay_period_end).toISOString(),
-        pay_date: new Date(record.pay_date).toISOString()
-      });
+      const { error } = await supabase
+        .from('salary_records')
+        .update({
+          status: newStatus,
+          pay_period_start: new Date(record.pay_period_start).toISOString(),
+          pay_period_end: new Date(record.pay_period_end).toISOString(),
+          pay_date: new Date(record.pay_date).toISOString()
+        })
+        .eq('id', id);
 
       if (error) throw error;
 

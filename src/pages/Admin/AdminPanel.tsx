@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { supabase } from '@/lib/supabase';
 import {
   UserCheck,
   Globe,
@@ -43,7 +44,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import AccessDenied from '@/components/AccessDenied';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/lib/supabase';
 
 interface AdminFeature {
   title: string;
@@ -357,38 +357,34 @@ const AdminPanel: React.FC = () => {
       setLoading(true);
 
       // Fetch user profiles
-      const { data: profiles, error: profilesError } = await window.ezsite.apis.tablePage(11725, {
-        "PageNo": 1,
-        "PageSize": 100,
-        "OrderByField": "ID",
-        "IsAsc": false,
-        "Filters": []
-      });
+      const { data: profiles, error: profilesError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(100);
 
       if (profilesError) throw profilesError;
 
       // Fetch stations data
-      const { data: stations, error: stationsError } = await window.ezsite.apis.tablePage(12599, {
-        "PageNo": 1,
-        "PageSize": 100,
-        "OrderByField": "ID",
-        "IsAsc": false,
-        "Filters": []
-      });
+      const { data: stations, error: stationsError } = await supabase
+        .from('site_stations')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(100);
 
       if (stationsError) throw stationsError;
 
       // Update user profiles state
-      setUserProfiles(profiles?.List || []);
+      setUserProfiles(profiles || []);
 
       // Calculate real-time stats
-      const totalUsers = profiles?.VirtualCount || 0;
-      const activeUsers = profiles?.List?.filter((user: UserProfile) => user.is_active)?.length || 0;
-      const totalStations = stations?.VirtualCount || 0;
+      const totalUsers = profiles?.length || 0;
+      const activeUsers = profiles?.filter((user: UserProfile) => user.is_active)?.length || 0;
+      const totalStations = stations?.length || 0;
 
       // Check system health based on real data
-      const memoryUsage = performance.memory ?
-      Math.round(performance.memory.usedJSHeapSize / performance.memory.totalJSHeapSize * 100) :
+      const memoryUsage = (performance as any).memory ?
+      Math.round((performance as any).memory.usedJSHeapSize / (performance as any).memory.totalJSHeapSize * 100) :
       Math.floor(Math.random() * 30) + 45; // Fallback for browsers without memory API
 
       const systemHealth: 'healthy' | 'warning' | 'error' =
@@ -469,24 +465,26 @@ const AdminPanel: React.FC = () => {
         console.warn('Could not fetch user list, creating profile anyway');
       }
 
-      const newSupabaseUser = users?.find((u) => u.email === email);
+      const newSupabaseUser = users?.find((u: any) => u.email === email);
       const supabaseUserId = newSupabaseUser?.id || Math.floor(Math.random() * 100000);
 
       // Create user profile in database
-      const { error: dbError } = await window.ezsite.apis.tableCreate(11725, {
-        user_id: supabaseUserId,
-        role: 'Employee',
-        station: 'MOBIL',
-        employee_id: employeeId,
-        phone: '',
-        hire_date: new Date().toISOString(),
-        is_active: true,
-        detailed_permissions: JSON.stringify({
-          canViewReports: true,
-          canEditProducts: false,
-          canManageUsers: false
-        })
-      });
+      const { error: dbError } = await supabase
+        .from('user_profiles')
+        .insert({
+          user_id: supabaseUserId,
+          role: 'Employee',
+          station: 'MOBIL',
+          employee_id: employeeId,
+          phone: '',
+          hire_date: new Date().toISOString(),
+          is_active: true,
+          detailed_permissions: JSON.stringify({
+            canViewReports: true,
+            canEditProducts: false,
+            canManageUsers: false
+          })
+        });
 
       if (dbError) throw dbError;
 

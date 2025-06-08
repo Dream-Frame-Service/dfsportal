@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { AlertTriangle, Bell, Mail, Settings, Package, TrendingDown, RefreshCw, Eye, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
 
 interface Product {
   id: number;
@@ -48,7 +49,6 @@ const InventoryAlerts: React.FC = () => {
   const { toast } = useToast();
 
   const pageSize = 20;
-  const PRODUCTS_TABLE_ID = '11726';
 
   useEffect(() => {
     fetchProducts();
@@ -74,29 +74,30 @@ const InventoryAlerts: React.FC = () => {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const filters = [];
+      let query = supabase
+        .from('products')
+        .select('*', { count: 'exact' })
+        .order('quantity_in_stock', { ascending: true });
 
       if (categoryFilter !== 'all') {
-        filters.push({ name: 'category', op: 'Equal', value: categoryFilter });
+        query = query.eq('category', categoryFilter);
       }
 
       if (searchTerm) {
-        filters.push({ name: 'product_name', op: 'StringContains', value: searchTerm });
+        query = query.ilike('product_name', `%${searchTerm}%`);
       }
 
-      const { data, error } = await window.ezsite.apis.tablePage(PRODUCTS_TABLE_ID, {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'quantity_in_stock',
-        IsAsc: true,
-        Filters: filters
-      });
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
 
       if (error) throw error;
 
-      const allProducts = data?.List || [];
+      const allProducts = data || [];
       setProducts(allProducts);
-      setTotalRecords(data?.VirtualCount || 0);
+      setTotalRecords(count || 0);
 
       // Filter products that need attention
       const alertProducts = allProducts.filter((product) => {
@@ -183,24 +184,23 @@ const InventoryAlerts: React.FC = () => {
         <p>Please review and take appropriate action to restock these items.</p>
       `;
 
-      const { error } = await window.ezsite.apis.sendEmail({
-        from: 'support@ezsite.ai',
-        to: ['manager@gasstation.com'], // Replace with actual manager email
+      // TODO: Implement proper email service using Supabase Edge Functions or external service
+      console.log('Email alert would be sent:', {
+        from: 'support@gasstation.com',
+        to: ['manager@gasstation.com'],
         subject: `🚨 Inventory Alert: ${lowStockProducts.length} products need attention`,
         html: emailContent
       });
 
-      if (error) throw error;
-
       toast({
-        title: 'Alert Sent',
-        description: `Email alert sent for ${lowStockProducts.length} products`
+        title: 'Alert Prepared',
+        description: `Alert for ${lowStockProducts.length} products logged to console (email service needs implementation)`
       });
     } catch (error) {
-      console.error('Error sending alert:', error);
+      console.error('Error preparing alert:', error);
       toast({
         title: 'Error',
-        description: 'Failed to send email alert',
+        description: 'Failed to prepare email alert',
         variant: 'destructive'
       });
     }

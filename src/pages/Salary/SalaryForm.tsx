@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, Calculator, Save, DollarSign } from 'lucide-react';
 import { format } from 'date-fns';
-import { ezsiteApisReplacement } from '@/services/supabaseService';
+import { supabase } from '@/lib/supabase';
 
 interface SalaryRecord {
   id?: number;
@@ -114,16 +114,15 @@ const SalaryForm: React.FC = () => {
 
   const fetchEmployees = async () => {
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(EMPLOYEES_TABLE_ID, {
-        PageNo: 1,
-        PageSize: 1000,
-        OrderByField: 'first_name',
-        IsAsc: true,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('employees')
+        .select('*')
+        .eq('is_active', true)
+        .order('first_name', { ascending: true })
+        .limit(1000);
 
       if (error) throw error;
-      setEmployees(data?.List || []);
+      setEmployees(data || []);
     } catch (error) {
       console.error('Error fetching employees:', error);
       toast({
@@ -139,21 +138,21 @@ const SalaryForm: React.FC = () => {
 
     setLoading(true);
     try {
-      const { data, error } = await ezsiteApisReplacement.tablePage(SALARY_TABLE_ID, {
-        PageNo: 1,
-        PageSize: 1,
-        Filters: [{ name: 'id', op: 'Equal', value: parseInt(id) }]
-      });
+      const { data, error } = await supabase
+        .from('salary_records')
+        .select('*')
+        .eq('id', parseInt(id))
+        .limit(1)
+        .single();
 
       if (error) throw error;
 
-      if (data?.List && data.List.length > 0) {
-        const record = data.List[0];
+      if (data) {
         setFormData({
-          ...record,
-          pay_period_start: format(new Date(record.pay_period_start), 'yyyy-MM-dd'),
-          pay_period_end: format(new Date(record.pay_period_end), 'yyyy-MM-dd'),
-          pay_date: format(new Date(record.pay_date), 'yyyy-MM-dd')
+          ...data,
+          pay_period_start: format(new Date(data.pay_period_start), 'yyyy-MM-dd'),
+          pay_period_end: format(new Date(data.pay_period_end), 'yyyy-MM-dd'),
+          pay_date: format(new Date(data.pay_date), 'yyyy-MM-dd')
         });
       }
     } catch (error) {
@@ -218,13 +217,15 @@ const SalaryForm: React.FC = () => {
       };
 
       if (isEditing) {
-        const { error } = await ezsiteApisReplacement.tableUpdate(SALARY_TABLE_ID, {
-          ID: parseInt(id!),
-          ...submitData
-        });
+        const { error } = await supabase
+          .from('salary_records')
+          .update(submitData)
+          .eq('id', parseInt(id!));
         if (error) throw error;
       } else {
-        const { error } = await ezsiteApisReplacement.tableCreate(SALARY_TABLE_ID, submitData);
+        const { error } = await supabase
+          .from('salary_records')
+          .insert(submitData);
         if (error) throw error;
       }
 

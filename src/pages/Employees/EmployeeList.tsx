@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import ViewModal from '@/components/ViewModal';
 import { useListKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
 import { motion } from 'motion/react';
+import { supabase } from '@/lib/supabase';
 
 interface Employee {
   ID: number;
@@ -48,28 +49,30 @@ const EmployeeList: React.FC = () => {
   const loadEmployees = async () => {
     try {
       setLoading(true);
-      const filters = [];
+      
+      let query = supabase
+        .from('employees')
+        .select('*', { count: 'exact' })
+        .order('ID', { ascending: false });
 
       if (searchTerm) {
-        filters.push({ name: 'first_name', op: 'StringContains', value: searchTerm });
+        query = query.or(`first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,employee_id.ilike.%${searchTerm}%`);
       }
 
       if (selectedStation && selectedStation !== 'ALL') {
-        filters.push({ name: 'station', op: 'Equal', value: selectedStation });
+        query = query.eq('station', selectedStation);
       }
 
-      const { data, error } = await window.ezsite.apis.tablePage('11727', {
-        PageNo: currentPage,
-        PageSize: pageSize,
-        OrderByField: 'ID',
-        IsAsc: false,
-        Filters: filters
-      });
+      const from = (currentPage - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+
+      const { data, count, error } = await query;
 
       if (error) throw error;
 
-      setEmployees(data?.List || []);
-      setTotalCount(data?.VirtualCount || 0);
+      setEmployees(data || []);
+      setTotalCount(count || 0);
     } catch (error) {
       console.error('Error loading employees:', error);
       toast({
@@ -98,7 +101,11 @@ const EmployeeList: React.FC = () => {
     }
 
     try {
-      const { error } = await window.ezsite.apis.tableDelete('11727', { ID: employeeId });
+      const { error } = await supabase
+        .from('employees')
+        .delete()
+        .eq('id', employeeId);
+        
       if (error) throw error;
 
       toast({

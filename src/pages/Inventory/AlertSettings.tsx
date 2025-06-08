@@ -108,8 +108,9 @@ const AlertSettingsPage: React.FC = () => {
       // Optional: Send a test email to verify settings
       if (settings.emailNotifications) {
         try {
-          await window.ezsite.apis.sendEmail({
-            from: 'support@ezsite.ai',
+          // TODO: Implement proper email service using Supabase Edge Functions or external service
+          console.log('Confirmation email would be sent:', {
+            from: 'support@gasstation.com',
             to: settings.notificationEmails,
             subject: '✅ Inventory Alert Settings Updated',
             html: `
@@ -127,10 +128,10 @@ const AlertSettingsPage: React.FC = () => {
             `
           });
         } catch (emailError) {
-          console.error('Error sending confirmation email:', emailError);
+          console.error('Error preparing confirmation email:', emailError);
           toast({
             title: 'Warning',
-            description: 'Settings saved but failed to send confirmation email',
+            description: 'Settings saved but email service needs implementation',
             variant: 'destructive'
           });
         }
@@ -151,8 +152,9 @@ const AlertSettingsPage: React.FC = () => {
 
   const sendTestAlert = async () => {
     try {
-      await window.ezsite.apis.sendEmail({
-        from: 'support@ezsite.ai',
+      // TODO: Implement proper email service using Supabase Edge Functions or external service
+      console.log('Test alert email would be sent:', {
+        from: 'support@gasstation.com',
         to: settings.notificationEmails,
         subject: '🧪 Test Inventory Alert',
         html: `
@@ -188,14 +190,14 @@ const AlertSettingsPage: React.FC = () => {
       });
 
       toast({
-        title: 'Test Alert Sent',
-        description: 'Check your email to verify notifications are working'
+        title: 'Test Alert Prepared',
+        description: 'Test alert logged to console (email service needs implementation)'
       });
     } catch (error) {
-      console.error('Error sending test alert:', error);
+      console.error('Error preparing test alert:', error);
       toast({
         title: 'Error',
-        description: 'Failed to send test alert email',
+        description: 'Failed to prepare test alert email',
         variant: 'destructive'
       });
     }

@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { Users, Save, ArrowLeft, Upload } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EnhancedFileUpload from '@/components/EnhancedFileUpload';
+import { supabase } from '@/lib/supabase';
 
 interface EmployeeFormData {
   employee_id: string;
@@ -75,13 +76,12 @@ const EmployeeForm: React.FC = () => {
   const generateEmployeeId = async () => {
     try {
       // Get all existing employee IDs that start with 'DFS' to find the next number
-      const { data, error } = await window.ezsite.apis.tablePage('11727', {
-        PageNo: 1,
-        PageSize: 1000, // Get enough records to find the highest number
-        OrderByField: 'employee_id',
-        IsAsc: false,
-        Filters: [{ name: 'employee_id', op: 'StringStartsWith', value: 'DFS' }]
-      });
+      const { data, error } = await supabase
+        .from('employees')
+        .select('employee_id')
+        .ilike('employee_id', 'DFS%')
+        .order('employee_id', { ascending: false })
+        .limit(1000);
 
       if (error) {
         console.error('Error fetching existing employee IDs:', error);
@@ -91,8 +91,8 @@ const EmployeeForm: React.FC = () => {
       let nextNumber = 1001; // Start from DFS1001
 
       // If there are existing DFS IDs, find the highest number and increment
-      if (data && data.List && data.List.length > 0) {
-        const existingNumbers = data.List.
+      if (data && data.length > 0) {
+        const existingNumbers = data.
         map((emp) => {
           const match = emp.employee_id.match(/^DFS(\d+)$/);
           return match ? parseInt(match[1]) : 0;
@@ -107,18 +107,18 @@ const EmployeeForm: React.FC = () => {
       const uniqueId = `DFS${nextNumber}`;
 
       // Double-check that this ID doesn't exist
-      const { data: checkData, error: checkError } = await window.ezsite.apis.tablePage('11727', {
-        PageNo: 1,
-        PageSize: 1,
-        Filters: [{ name: 'employee_id', op: 'Equal', value: uniqueId }]
-      });
+      const { data: checkData, error: checkError } = await supabase
+        .from('employees')
+        .select('employee_id')
+        .eq('employee_id', uniqueId)
+        .limit(1);
 
       if (checkError) {
         console.error('Error checking employee ID uniqueness:', checkError);
         throw checkError;
       }
 
-      if (checkData && checkData.List && checkData.List.length > 0) {
+      if (checkData && checkData.length > 0) {
         // If somehow the ID exists, try the next number
         const fallbackId = `DFS${nextNumber + 1}`;
         setFormData((prev) => ({ ...prev, employee_id: fallbackId }));
@@ -140,16 +140,17 @@ const EmployeeForm: React.FC = () => {
   const loadEmployee = async (employeeId: number) => {
     try {
       setLoading(true);
-      const { data, error } = await window.ezsite.apis.tablePage('11727', {
-        PageNo: 1,
-        PageSize: 1,
-        Filters: [{ name: 'ID', op: 'Equal', value: employeeId }]
-      });
+      const { data, error } = await supabase
+        .from('employees')
+        .select('*')
+        .eq('ID', employeeId)
+        .limit(1)
+        .single();
 
       if (error) throw error;
 
-      if (data && data.List && data.List.length > 0) {
-        const employee = data.List[0];
+      if (data) {
+        const employee = data;
         setFormData({
           employee_id: employee.employee_id || '',
           first_name: employee.first_name || '',
@@ -186,12 +187,33 @@ const EmployeeForm: React.FC = () => {
 
     setIsUploading(true);
     try {
-      const { data: fileId, error } = await window.ezsite.apis.upload({
-        filename: selectedFile.name,
-        file: selectedFile
-      });
-      if (error) throw error;
-      return fileId;
+      // Generate unique filename
+      const fileExt = selectedFile.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      // Upload file to Supabase storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('documents')
+        .upload(fileName, selectedFile);
+
+      if (uploadError) throw uploadError;
+
+      // Store file reference in database
+      const { data: fileRecord, error: fileError } = await supabase
+        .from('files')
+        .insert({
+          filename: selectedFile.name,
+          storage_path: uploadData.path,
+          file_size: selectedFile.size,
+          mime_type: selectedFile.type,
+          uploaded_at: new Date().toISOString()
+        })
+        .select('id')
+        .single();
+
+      if (fileError) throw fileError;
+
+      return fileRecord.id;
     } catch (error) {
       console.error('Error uploading file:', error);
       toast({
@@ -230,10 +252,11 @@ const EmployeeForm: React.FC = () => {
       };
 
       if (isEditing && id) {
-        const { error } = await window.ezsite.apis.tableUpdate('11727', {
-          ID: parseInt(id),
-          ...dataToSubmit
-        });
+        const { error } = await supabase
+          .from('employees')
+          .update(dataToSubmit)
+          .eq('ID', parseInt(id));
+          
         if (error) throw error;
 
         toast({
@@ -241,7 +264,10 @@ const EmployeeForm: React.FC = () => {
           description: "Employee updated successfully"
         });
       } else {
-        const { error } = await window.ezsite.apis.tableCreate('11727', dataToSubmit);
+        const { error } = await supabase
+          .from('employees')
+          .insert(dataToSubmit);
+          
         if (error) throw error;
 
         toast({

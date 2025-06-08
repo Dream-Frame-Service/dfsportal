@@ -9,6 +9,7 @@ import { Plus, Search, Edit, Trash2, Building2, Mail, Phone, MapPin, Eye, Downlo
 import { useNavigate } from 'react-router-dom';
 import ViewModal from '@/components/ViewModal';
 import { useListKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 import { motion } from 'motion/react';
 
 interface Vendor {
@@ -50,7 +51,7 @@ const VendorList: React.FC = () => {
         filters.push({ name: 'vendor_name', op: 'StringContains', value: searchTerm });
       }
 
-      const { data, error } = await window.ezsite.apis.tablePage('11729', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('11729', {
         PageNo: currentPage,
         PageSize: pageSize,
         OrderByField: 'vendor_name',
@@ -90,7 +91,7 @@ const VendorList: React.FC = () => {
     }
 
     try {
-      const { error } = await window.ezsite.apis.tableDelete('11729', { ID: vendorId });
+      const { error } = await ezsiteApisReplacement.tableDelete('11729', { ID: vendorId });
       if (error) throw error;
 
       toast({

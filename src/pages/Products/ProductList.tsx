@@ -13,6 +13,7 @@ import HighlightText from '@/components/HighlightText';
 import { ResponsiveTable, ResponsiveStack } from '@/components/ResponsiveWrapper';
 import { useResponsiveLayout } from '@/hooks/use-mobile';
 import ProductCards from '@/components/ProductCards';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 
 
 interface Product {
@@ -88,7 +89,7 @@ const ProductList: React.FC = () => {
     try {
       setLoading(true);
 
-      const { data, error } = await window.ezsite.apis.tablePage('11726', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('11726', {
         PageNo: 1,
         PageSize: 1000, // Load a large number to get all products
         OrderByField: 'ID',
@@ -168,7 +169,7 @@ const ProductList: React.FC = () => {
 
     try {
       console.log('Attempting to delete product with ID:', productId);
-      const { error } = await window.ezsite.apis.tableDelete('11726', { ID: productId });
+      const { error } = await ezsiteApisReplacement.tableDelete('11726', { ID: productId });
 
       if (error) {
         console.error('API returned error:', error);
@@ -220,7 +221,7 @@ const ProductList: React.FC = () => {
 
         // Create a new product with minimal required data
         // Generate new serial number
-        const { data: serialData } = await window.ezsite.apis.tablePage('11726', {
+        const { data: serialData } = await ezsiteApisReplacement.tablePage('11726', {
           PageNo: 1,
           PageSize: 1,
           OrderByField: 'serial_number',
@@ -256,7 +257,7 @@ const ProductList: React.FC = () => {
         };
 
         console.log('Creating new product with data:', newProductData);
-        const { error } = await window.ezsite.apis.tableCreate('11726', newProductData);
+        const { error } = await ezsiteApisReplacement.tableCreate('11726', newProductData);
 
         if (error) {
           console.error('API returned error:', error);
@@ -313,7 +314,7 @@ const ProductList: React.FC = () => {
         };
 
         console.log('Updating product with data:', updateData);
-        const { error } = await window.ezsite.apis.tableUpdate('11726', updateData);
+        const { error } = await ezsiteApisReplacement.tableUpdate('11726', updateData);
 
         if (error) {
           console.error('API returned error:', error);

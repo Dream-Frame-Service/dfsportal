@@ -9,6 +9,7 @@ import { Plus, Search, Edit, Trash2, TrendingUp, DollarSign, Calendar, Printer }
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import EnhancedSalesReportPrintDialog from '@/components/EnhancedSalesReportPrintDialog';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 
 interface SalesReport {
   ID: number;
@@ -67,7 +68,7 @@ const SalesReportList: React.FC = () => {
         filters.push({ name: 'station', op: 'StringContains', value: searchTerm });
       }
 
-      const { data, error } = await window.ezsite.apis.tablePage('12356', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('12356', {
         PageNo: currentPage,
         PageSize: pageSize,
         OrderByField: 'report_date',
@@ -97,7 +98,7 @@ const SalesReportList: React.FC = () => {
     }
 
     try {
-      const { error } = await window.ezsite.apis.tableDelete('12356', { ID: reportId });
+      const { error } = await ezsiteApisReplacement.tableDelete('12356', { ID: reportId });
       if (error) throw error;
 
       toast({

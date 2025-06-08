@@ -8,6 +8,7 @@ import { toast } from '@/hooks/use-toast';
 import { FileText, Save, ArrowLeft, Upload, FileIcon } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import EnhancedFileUpload from '@/components/EnhancedFileUpload';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 
 interface LicenseFormData {
   license_name: string;
@@ -55,7 +56,7 @@ const LicenseForm: React.FC = () => {
   const loadLicense = async (licenseId: number) => {
     try {
       setLoading(true);
-      const { data, error } = await window.ezsite.apis.tablePage('11731', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('11731', {
         PageNo: 1,
         PageSize: 1,
         Filters: [{ name: 'ID', op: 'Equal', value: licenseId }]
@@ -92,7 +93,7 @@ const LicenseForm: React.FC = () => {
   const handleFileUpload = async (file: File) => {
     try {
       setUploadLoading(true);
-      const { data, error } = await window.ezsite.apis.upload({
+      const { data, error } = await ezsiteApisReplacement.upload({
         filename: file.name,
         file: file
       });
@@ -132,7 +133,7 @@ const LicenseForm: React.FC = () => {
       };
 
       if (isEditing && id) {
-        const { error } = await window.ezsite.apis.tableUpdate('11731', {
+        const { error } = await ezsiteApisReplacement.tableUpdate('11731', {
           ID: parseInt(id),
           ...dataToSubmit
         });
@@ -143,7 +144,7 @@ const LicenseForm: React.FC = () => {
           description: "License updated successfully"
         });
       } else {
-        const { error } = await window.ezsite.apis.tableCreate('11731', dataToSubmit);
+        const { error } = await ezsiteApisReplacement.tableCreate('11731', dataToSubmit);
         if (error) throw error;
 
         toast({

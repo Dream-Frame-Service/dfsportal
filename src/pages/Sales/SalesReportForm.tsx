@@ -16,6 +16,7 @@ import GasTankReportSection from '@/components/SalesReportSections/GasTankReport
 import ExpensesSection from '@/components/SalesReportSections/ExpensesSection';
 import DocumentsUploadSection from '@/components/SalesReportSections/DocumentsUploadSection';
 import CashCollectionSection from '@/components/SalesReportSections/CashCollectionSection';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 
 interface Expense {
   id: string;
@@ -87,7 +88,7 @@ export default function SalesReportForm() {
 
   const loadExistingReport = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12356, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(12356, {
         PageNo: 1,
         PageSize: 1,
         Filters: [{ name: 'id', op: 'Equal', value: parseInt(id!) }]
@@ -145,7 +146,7 @@ export default function SalesReportForm() {
   const loadEmployees = async (station: string) => {
     setIsLoadingEmployees(true);
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11727, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(11727, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'first_name',
@@ -239,9 +240,9 @@ export default function SalesReportForm() {
     try {
       let result;
       if (isEditing) {
-        result = await window.ezsite.apis.tableUpdate(12356, { ...submitData, ID: parseInt(id!) });
+        result = await ezsiteApisReplacement.tableUpdate(12356, { ...submitData, ID: parseInt(id!) });
       } else {
-        result = await window.ezsite.apis.tableCreate(12356, submitData);
+        result = await ezsiteApisReplacement.tableCreate(12356, submitData);
       }
 
       if (result.error) {

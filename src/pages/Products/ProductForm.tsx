@@ -14,6 +14,7 @@ import { ArrowLeft, Save, Calculator, Upload, Eye, Plus, Download, FileText, Ale
 import BarcodeScanner from '@/components/BarcodeScanner';
 import { useAuth } from '@/contexts/AuthContext';
 import { FormErrorBoundary } from '@/components/ErrorBoundary';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -169,7 +170,7 @@ const ProductForm = () => {
 
   const fetchVendors = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('11729', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('11729', {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'vendor_name',
@@ -186,7 +187,7 @@ const ProductForm = () => {
 
   const fetchCategories = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('14389', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('14389', {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'category_name',
@@ -203,7 +204,7 @@ const ProductForm = () => {
 
   const generateSerialNumber = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('11726', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('11726', {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'serial_number',
@@ -225,7 +226,7 @@ const ProductForm = () => {
 
     setIsLoading(true);
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('11726', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('11726', {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'id',
@@ -424,7 +425,7 @@ const ProductForm = () => {
       const errors: string[] = [];
 
       // Get the latest serial number
-      const serialResponse = await window.ezsite.apis.tablePage('11726', {
+      const serialResponse = await ezsiteApisReplacement.tablePage('11726', {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'serial_number',
@@ -472,7 +473,7 @@ const ProductForm = () => {
             productPayload.last_shopping_date = new Date(productData.last_shopping_date).toISOString();
           }
 
-          const { error } = await window.ezsite.apis.tableCreate('11726', productPayload);
+          const { error } = await ezsiteApisReplacement.tableCreate('11726', productPayload);
 
           if (error) {
             errors.push(`${productData.product_name}: ${error}`);
@@ -523,7 +524,7 @@ const ProductForm = () => {
 
   const logFieldChange = async (productId: number, fieldName: string, oldValue: any, newValue: any, userId: number) => {
     try {
-      const { error } = await window.ezsite.apis.tableCreate('11756', {
+      const { error } = await ezsiteApisReplacement.tableCreate('11756', {
         product_id: productId,
         field_name: fieldName,
         old_value: oldValue?.toString() || '',
@@ -571,8 +572,8 @@ const ProductForm = () => {
       };
 
       const { error } = isEdit ?
-      await window.ezsite.apis.tableUpdate('11726', { id: parseInt(id!), ...payload }) :
-      await window.ezsite.apis.tableCreate('11726', payload);
+      await ezsiteApisReplacement.tableUpdate('11726', { id: parseInt(id!), ...payload }) :
+      await ezsiteApisReplacement.tableCreate('11726', payload);
 
       if (error) throw error;
 

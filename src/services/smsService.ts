@@ -1,5 +1,7 @@
 // Enhanced SMS Service for Twilio integration and production use
 
+import { ezsiteApisReplacement } from './supabaseService';
+
 export interface SMSResponse {
   success: boolean;
   messageId?: string;
@@ -57,7 +59,7 @@ class SMSService {
 
   async loadConfiguration(): Promise<void> {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(12640, {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'ID',
@@ -178,7 +180,7 @@ class SMSService {
 
   private async processTemplate(templateId: number, placeholders: Record<string, string>): Promise<string> {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12641, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(12641, {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'ID',
@@ -208,7 +210,7 @@ class SMSService {
 
   private async checkMonthlyLimit(): Promise<void> {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(12640, {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'ID',
@@ -232,7 +234,7 @@ class SMSService {
 
   private async updateMonthlyCount(): Promise<void> {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(12640, {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'ID',
@@ -244,7 +246,7 @@ class SMSService {
 
       if (data?.List && data.List.length > 0) {
         const config = data.List[0];
-        await window.ezsite.apis.tableUpdate(12640, {
+        await ezsiteApisReplacement.tableUpdate(12640, {
           ID: config.ID,
           current_month_count: config.current_month_count + 1
         });
@@ -256,7 +258,7 @@ class SMSService {
 
   private async logSMSHistory(historyData: any): Promise<void> {
     try {
-      await window.ezsite.apis.tableCreate(12613, {
+      await ezsiteApisReplacement.tableCreate(12613, {
         ...historyData,
         created_by: 1 // This should be the current user ID
       });
@@ -333,7 +335,7 @@ class SMSService {
 
   async getMonthlyUsage(): Promise<{used: number;limit: number;percentage: number;}> {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(12640, {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'ID',
@@ -430,7 +432,7 @@ class SMSService {
   // Get available provider numbers
   async getAvailableFromNumbers(): Promise<{number: string;provider: string;isActive: boolean;testMode: boolean;}[]> {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('12640', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('12640', {
         PageNo: 1,
         PageSize: 10,
         OrderByField: 'id',

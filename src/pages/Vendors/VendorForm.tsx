@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import { Building2, Save, ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 
 interface VendorFormData {
   vendor_name: string;
@@ -78,7 +79,7 @@ const VendorForm: React.FC = () => {
   const loadVendor = async (vendorId: number) => {
     try {
       setLoading(true);
-      const { data, error } = await window.ezsite.apis.tablePage('11729', {
+      const { data, error } = await ezsiteApisReplacement.tablePage('11729', {
         PageNo: 1,
         PageSize: 1,
         Filters: [{ name: 'ID', op: 'Equal', value: vendorId }]
@@ -126,7 +127,7 @@ const VendorForm: React.FC = () => {
       };
 
       if (isEditing && id) {
-        const { error } = await window.ezsite.apis.tableUpdate('11729', {
+        const { error } = await ezsiteApisReplacement.tableUpdate('11729', {
           ID: parseInt(id),
           ...dataToSubmit
         });
@@ -137,7 +138,7 @@ const VendorForm: React.FC = () => {
           description: "Vendor updated successfully"
         });
       } else {
-        const { error } = await window.ezsite.apis.tableCreate('11729', dataToSubmit);
+        const { error } = await ezsiteApisReplacement.tableCreate('11729', dataToSubmit);
         if (error) throw error;
 
         toast({

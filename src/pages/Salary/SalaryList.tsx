@@ -11,6 +11,7 @@ import { Plus, Search, Eye, Edit, Trash2, Download, DollarSign, Calendar, Users,
 import { Link, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { useRealtime, useRealtimeData } from '@/hooks/use-realtime';
+import { ezsiteApisReplacement } from '@/services/supabaseService';
 
 interface SalaryRecord {
   id: number;
@@ -139,7 +140,7 @@ const SalaryList: React.FC = () => {
     try {
       console.log('👥 Fetching employees data...');
 
-      const { data, error } = await window.ezsite.apis.tablePage(EMPLOYEES_TABLE_ID, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(EMPLOYEES_TABLE_ID, {
         PageNo: 1,
         PageSize: 1000,
         OrderByField: 'first_name',
@@ -188,7 +189,7 @@ const SalaryList: React.FC = () => {
         timestamp: new Date().toISOString()
       });
 
-      const { data, error } = await window.ezsite.apis.tablePage(SALARY_TABLE_ID, {
+      const { data, error } = await ezsiteApisReplacement.tablePage(SALARY_TABLE_ID, {
         PageNo: currentPage,
         PageSize: pageSize,
         OrderByField: 'pay_date',
@@ -295,7 +296,7 @@ const SalaryList: React.FC = () => {
     try {
       console.log('🗑️ Deleting salary record:', id);
 
-      const { error } = await window.ezsite.apis.tableDelete(SALARY_TABLE_ID, { ID: id });
+      const { error } = await ezsiteApisReplacement.tableDelete(SALARY_TABLE_ID, { ID: id });
       if (error) throw error;
 
       console.log('✅ Salary record deleted successfully');
@@ -325,7 +326,7 @@ const SalaryList: React.FC = () => {
       const employeeName = getEmployeeName(record.employee_id);
       console.log('🔄 Updating salary record status:', { id, newStatus, employeeName });
 
-      const { error } = await window.ezsite.apis.tableUpdate(SALARY_TABLE_ID, {
+      const { error } = await ezsiteApisReplacement.tableUpdate(SALARY_TABLE_ID, {
         ID: id,
         ...record,
         status: newStatus,

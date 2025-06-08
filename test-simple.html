@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple HTML</title>
+</head>
+<body>
+    <h1>Test Page</h1>
+    <p>If you can see this, the server is working fine.</p>
+    <script>
+        console.log('Simple HTML test loaded successfully');
+        fetch('/src/main.tsx')
+            .then(response => {
+                console.log('React main.tsx fetch status:', response.status);
+                return response.text();
+            })
+            .then(text => {
+                console.log('React main.tsx first 200 chars:', text.substring(0, 200));
+            })
+            .catch(error => {
+                console.error('Error fetching main.tsx:', error);
+            });
+    </script>
+</body>
+</html>

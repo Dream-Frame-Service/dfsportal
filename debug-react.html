@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Debug Test</title>
+</head>
+<body>
+    <div id="debug-info">
+        <h1>React App Debug Information</h1>
+        <div id="status">Loading...</div>
+        <div id="console-logs"></div>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const logsDiv = document.getElementById('console-logs');
+        
+        // Capture console logs
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, arguments);
+            logsDiv.innerHTML += `<p style="color: blue;">LOG: ${args.join(' ')}</p>`;
+        };
+        
+        console.error = function(...args) {
+            originalConsoleError.apply(console, arguments);
+            logsDiv.innerHTML += `<p style="color: red;">ERROR: ${args.join(' ')}</p>`;
+        };
+
+        // Test fetching the main React entry point
+        fetch('/')
+            .then(response => {
+                statusDiv.innerHTML = `Main page response: ${response.status} ${response.statusText}`;
+                return response.text();
+            })
+            .then(html => {
+                console.log('Main page HTML length:', html.length);
+                console.log('Contains React script tag:', html.includes('/src/main.tsx'));
+                
+                // Try to load the main script directly
+                return fetch('/src/main.tsx');
+            })
+            .then(response => {
+                console.log('main.tsx response:', response.status, response.statusText);
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error(`Failed to load main.tsx: ${response.status}`);
+                }
+            })
+            .then(mainTsx => {
+                console.log('main.tsx loaded successfully, length:', mainTsx.length);
+                console.log('First 200 chars:', mainTsx.substring(0, 200));
+            })
+            .catch(error => {
+                console.error('Error in diagnostic test:', error);
+                statusDiv.innerHTML += `<br>Error: ${error.message}`;
+            });
+
+        // Check if there are any network errors
+        window.addEventListener('error', function(e) {
+            console.error('Window error:', e.error);
+        });
+        
+        // Check for unhandled promise rejections
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+        });
+    </script>
+</body>
+</html>

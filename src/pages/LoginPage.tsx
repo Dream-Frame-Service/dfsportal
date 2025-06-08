@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,13 +19,12 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [authMode, setAuthMode] = useState<AuthMode>('login');
-  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'error' | 'success'>('error');
 
-  const { login, register } = useAuth();
+  const { signIn, signUp, resetPassword, loading } = useSupabaseAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -44,15 +43,14 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    setIsLoading(true);
     try {
-      const { error } = await window.ezsite.apis.sendResetPwdEmail({ email });
+      const { error } = await resetPassword(email);
       if (error) {
-        setMessage(error);
+        setMessage(error.message);
         setMessageType('error');
         toast({
           title: "Error",
-          description: error,
+          description: error.message,
           variant: "destructive"
         });
       } else {
@@ -76,8 +74,6 @@ const LoginPage: React.FC = () => {
         description: errorMessage,
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -95,21 +91,22 @@ const LoginPage: React.FC = () => {
       return;
     }
 
-    setIsLoading(true);
-
     try {
       if (authMode === 'login') {
-        const success = await login(email, password);
-        if (success) {
+        const { error } = await signIn(email, password);
+        if (!error) {
           toast({
             title: "Welcome back!",
             description: "Successfully logged in"
           });
           navigate('/dashboard');
+        } else {
+          setMessage(error.message);
+          setMessageType('error');
         }
       } else if (authMode === 'register') {
-        const success = await register(email, password);
-        if (success) {
+        const { error } = await signUp(email, password);
+        if (!error) {
           setMessage('Account created successfully! Please check your email for verification.');
           setMessageType('success');
           toast({
@@ -120,6 +117,9 @@ const LoginPage: React.FC = () => {
             setAuthMode('login');
             clearForm();
           }, 3000);
+        } else {
+          setMessage(error.message);
+          setMessageType('error');
         }
       }
     } catch (error) {
@@ -131,8 +131,6 @@ const LoginPage: React.FC = () => {
         description: errorMessage,
         variant: "destructive"
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -155,7 +153,7 @@ const LoginPage: React.FC = () => {
   };
 
   const getSubmitButtonText = () => {
-    if (isLoading) return 'Please wait...';
+    if (loading) return 'Please wait...';
     switch (authMode) {
       case 'login':return 'Sign In';
       case 'register':return 'Create Account';
@@ -165,7 +163,7 @@ const LoginPage: React.FC = () => {
   };
 
   const getSubmitButtonIcon = () => {
-    if (isLoading) return <Loader2 className="mr-2 h-4 w-4 animate-spin" data-id="vvzw0qnje" data-path="src/pages/LoginPage.tsx" />;
+    if (loading) return <Loader2 className="mr-2 h-4 w-4 animate-spin" data-id="vvzw0qnje" data-path="src/pages/LoginPage.tsx" />;
     switch (authMode) {
       case 'login':return <LogIn className="mr-2 h-4 w-4" data-id="7z4t0t8ky" data-path="src/pages/LoginPage.tsx" />;
       case 'register':return <UserPlus className="mr-2 h-4 w-4" data-id="i8zrm8lbg" data-path="src/pages/LoginPage.tsx" />;
@@ -306,7 +304,7 @@ const LoginPage: React.FC = () => {
               <Button
                   type="submit"
                   className="w-full h-11 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium transition-all duration-200 transform hover:scale-[1.02]"
-                  disabled={isLoading} data-id="ucima2lp4" data-path="src/pages/LoginPage.tsx">
+                  disabled={loading} data-id="ucima2lp4" data-path="src/pages/LoginPage.tsx">
 
                 {getSubmitButtonIcon()}
                 {getSubmitButtonText()}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
 import {
   Menu,
@@ -47,7 +47,7 @@ interface NavigationItem {
 const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading, logout, isAdmin } = useAuth();
+  const { user, loading, signOut } = useSupabaseAuth();
   const responsive = useResponsiveLayout();
 
   // Responsive state management
@@ -109,9 +109,11 @@ const DashboardLayout: React.FC = () => {
 
 
   // Combine navigation items based on user role
+  // For now, show admin panel to all users - you can implement role-based logic later
   const navigationItems: NavigationItem[] = [
-  ...baseNavigationItems,
-  ...(isAdmin ? adminNavigationItems : [])];
+    ...baseNavigationItems,
+    ...adminNavigationItems
+  ];
 
 
 
@@ -260,13 +262,13 @@ const DashboardLayout: React.FC = () => {
           <div className="flex items-center space-x-2 sm:space-x-4" data-id="tsu161qej" data-path="src/components/Layout/DashboardLayout.tsx">
             {!responsive.isMobile &&
             <span className="text-sm text-gray-600" data-id="xpmm8zh9k" data-path="src/components/Layout/DashboardLayout.tsx">
-                Welcome, {user.Name}
+                Welcome, {user.email}
               </span>
             }
             <Button
               variant="ghost"
               size="sm"
-              onClick={logout}
+              onClick={signOut}
               className="text-gray-600 hover:text-red-600" data-id="tkx0t0bur" data-path="src/components/Layout/DashboardLayout.tsx">
               <LogOut className="w-4 h-4 sm:mr-2" data-id="epj2w8zvt" data-path="src/components/Layout/DashboardLayout.tsx" />
               {!responsive.isMobile && <span data-id="as13dy93q" data-path="src/components/Layout/DashboardLayout.tsx">Logout</span>}

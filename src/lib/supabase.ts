@@ -1,5 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Suppress known Supabase GoTrue deprecation warning during development
+if (import.meta.env.DEV) {
+  const originalWarn = console.warn;
+  console.warn = (...args) => {
+    const message = args.join(' ');
+    if (message.includes('GOTRUE_JWT_DEFAULT_GROUP_NAME')) {
+      return; // Suppress this specific deprecation warning
+    }
+    originalWarn.apply(console, args);
+  };
+}
+
 // Supabase configuration
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';

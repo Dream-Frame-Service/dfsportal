@@ -1,6 +1,9 @@
 import { supabase, type Database } from '@/lib/supabase';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
+// Re-export supabase client for files that import it from this service
+export { supabase };
+
 // Generic types for database operations
 type TableName = keyof Database['public']['Tables'];
 type TableRow<T extends TableName> = Database['public']['Tables'][T]['Row'];

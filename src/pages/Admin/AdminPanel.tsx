@@ -38,7 +38,8 @@ import {
   UserPlus,
   Upload,
   Download,
-  RotateCw } from
+  RotateCw,
+  Cloud } from
 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
@@ -147,6 +148,16 @@ const AdminPanel: React.FC = () => {
     icon: <Globe className="w-8 h-8" data-id="dtuij3064" data-path="src/pages/Admin/AdminPanel.tsx" />,
     color: 'bg-green-500',
     badge: 'Essential',
+    category: 'core',
+    status: 'active'
+  },
+  {
+    title: 'S3 Storage Manager',
+    description: 'Manage S3-compatible storage for Supabase files and documents',
+    path: '/admin/s3-storage',
+    icon: <Cloud className="w-8 h-8" />,
+    color: 'bg-sky-500',
+    badge: 'Storage',
     category: 'core',
     status: 'active'
   },

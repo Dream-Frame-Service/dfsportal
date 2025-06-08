@@ -47,6 +47,7 @@ import DevelopmentMonitoringPage from './pages/Admin/DevelopmentMonitoring';
 import RoleTestingPage from './pages/Admin/RoleTestingPage';
 import AdvancedRealTimeFeatures from './pages/Admin/AdvancedRealTimeFeatures';
 import InvalidCharacterErrorDemo from './components/InvalidCharacterErrorDemo';
+import { S3StorageManager } from './components/S3StorageManager';
 import LoginPage from './pages/LoginPage';
 import OnAuthSuccessPage from './pages/OnAuthSuccessPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
@@ -139,6 +140,7 @@ function App() {
               <Route path="admin/development-monitoring" element={<DevelopmentMonitoringPage data-id="9d5cohjl0" data-path="src/App.tsx" />} data-id="hczq096m7" data-path="src/App.tsx" />
               <Route path="admin/role-testing" element={<RoleTestingPage data-id="jjuhq2n2f" data-path="src/App.tsx" />} data-id="ql1afhmsd" data-path="src/App.tsx" />
               <Route path="admin/advanced-realtime" element={<AdvancedRealTimeFeatures data-id="xweh7nd7p" data-path="src/App.tsx" />} data-id="xiytml6mt" data-path="src/App.tsx" />
+              <Route path="admin/s3-storage" element={<S3StorageManager />} />
               <Route path="admin/invalid-character-demo" element={<InvalidCharacterErrorDemo data-id="fde5j3qek" data-path="src/App.tsx" />} data-id="is4j177lj" data-path="src/App.tsx" />
             </Route>
             

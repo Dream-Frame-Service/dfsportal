@@ -30,6 +30,21 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   }
 });
 
+// Storage configuration with S3 protocol support
+export const storageConfig = {
+  supabase: {
+    url: supabaseUrl,
+    key: supabaseAnonKey
+  },
+  s3: {
+    endpoint: import.meta.env.VITE_S3_ENDPOINT,
+    region: import.meta.env.VITE_S3_REGION || 'us-east-1',
+    accessKeyId: import.meta.env.VITE_S3_ACCESS_KEY_ID,
+    secretAccessKey: import.meta.env.VITE_S3_SECRET_ACCESS_KEY,
+    bucket: import.meta.env.VITE_DEFAULT_STORAGE_BUCKET || 'dfs-manager-files'
+  }
+};
+
 // Database types based on your existing tables
 export interface Database {
   public: {

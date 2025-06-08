@@ -2,7 +2,8 @@
   "name": "dfs-manager-portal",
   "private": true,
   "version": "0.1.0",
-  "type": "module",  "scripts": {
+  "type": "module",
+  "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "build:vercel": "node bulletproof-build.mjs",
@@ -34,8 +35,11 @@
     "docker:compose": "docker-compose up -d",
     "security:audit": "npm audit && npm run lint:check",
     "precommit": "npm run quality-check"
-  },"dependencies": {
+  },
+  "dependencies": {
     "@anthropic-ai/sdk": "^0.53.0",
+    "@aws-sdk/client-s3": "^3.826.0",
+    "@aws-sdk/s3-request-presigner": "^3.826.0",
     "@azure/openai": "^2.0.0",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.10",
@@ -91,7 +95,8 @@
     "vaul": "^1.1.2",
     "vite": "^6.3.5",
     "zod": "^3.24.4"
-  },  "devDependencies": {
+  },
+  "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",

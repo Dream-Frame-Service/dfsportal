@@ -5,10 +5,12 @@
   "type": "module",  "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:vercel": "node simple-build.mjs",
+    "build:vercel": "node bulletproof-build.mjs",
+    "build:vercel-simple": "node simple-build.mjs",
     "build:vercel-ultra": "node ultra-simple-build.mjs",
     "build:vercel-complex": "node vercel-build.mjs",
     "build:vercel-alt": "bash vercel-build.sh",
+    "build:vercel-emergency": "node emergency-build.mjs",
     "build:dev": "tsc && vite build --mode development",
     "build:prod": "tsc && vite build --mode production --minify=true",
     "build:analyze": "vite build --mode production && npx vite-bundle-analyzer dist/assets/*.js",

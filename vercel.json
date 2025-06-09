@@ -1,10 +1,10 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build:vercel",
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
-  "nodeVersion": "18.x",
   "functions": {
     "src/api/*.ts": {
       "runtime": "nodejs18.x"
@@ -47,10 +47,5 @@
         }
       ]
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "NPM_CONFIG_PROGRESS": "false",
-    "VITE_NODE_ENV": "production"
-  }
+  ]
 }

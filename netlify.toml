@@ -3,7 +3,7 @@
   command = "chmod +x netlify-build.sh && ./netlify-build.sh"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "18.19.0"
   NPM_FLAGS = ""
   CI = "true"
   NETLIFY_USE_YARN = "false"

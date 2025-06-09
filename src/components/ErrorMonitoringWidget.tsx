@@ -36,11 +36,6 @@ const ErrorMonitoringWidget: React.FC = () => {
 
   const errorLogger = EnhancedErrorLogger.getInstance();
 
-  // Return null if user doesn't have monitoring access
-  if (!hasMonitoringAccess) {
-    return null;
-  }
-
   const checkSystemHealth = () => {
     const analytics = errorLogger.getAnalytics();
     if (!analytics) return;
@@ -120,6 +115,24 @@ const ErrorMonitoringWidget: React.FC = () => {
       }
     });
   };
+
+  useEffect(() => {
+    // Only run if user has monitoring access
+    if (!hasMonitoringAccess) return;
+
+    // Initial check
+    checkSystemHealth();
+
+    // Set up periodic monitoring
+    const interval = setInterval(checkSystemHealth, 30000); // Check every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [hasMonitoringAccess]);
+
+  // Return null if user doesn't have monitoring access
+  if (!hasMonitoringAccess) {
+    return null;
+  }
 
   const acknowledgeAlert = (alertId: string) => {
     setActiveAlerts((prev) =>

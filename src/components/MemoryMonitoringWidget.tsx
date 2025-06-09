@@ -29,12 +29,12 @@ const MemoryMonitoringWidget: React.FC = () => {
   const [isAvailable, setIsAvailable] = useState(false);
   const navigate = useNavigate();
 
-  // Return null if user doesn't have monitoring access
-  if (!hasMonitoringAccess) {
-    return null;
-  }
-
   useEffect(() => {
+    // Only run if user has monitoring access
+    if (!hasMonitoringAccess) {
+      return;
+    }
+
     // Check if memory monitoring is available
     if (typeof window !== 'undefined' && window.performance?.memory) {
       setIsAvailable(true);
@@ -54,7 +54,12 @@ const MemoryMonitoringWidget: React.FC = () => {
     } else {
       setIsAvailable(false);
     }
-  }, []);
+  }, [hasMonitoringAccess]);
+
+  // Return null if user doesn't have monitoring access
+  if (!hasMonitoringAccess) {
+    return null;
+  }
 
   const formatBytes = (bytes: number): string => {
     return `${(bytes / 1024 / 1024).toFixed(1)}MB`;

@@ -287,7 +287,7 @@ const EnhancedUserPermissionManager: React.FC = () => {
   };
 
   const applyRoleTemplate = (role: string, showToast: boolean = true) => {
-    let newPermissions: DetailedPermissions = {};
+    const newPermissions: DetailedPermissions = {};
 
     // Initialize all pages with default permissions
     Object.values(pageGroups).flat().forEach((page) => {
@@ -295,7 +295,7 @@ const EnhancedUserPermissionManager: React.FC = () => {
     });
 
     switch (role) {
-      case 'Administrator':
+      case 'Administrator': {
         // Full access to everything
         Object.keys(newPermissions).forEach((pageKey) => {
           permissionTypes.forEach((type) => {
@@ -303,8 +303,9 @@ const EnhancedUserPermissionManager: React.FC = () => {
           });
         });
         break;
+      }
 
-      case 'Management':
+      case 'Management': {
         // Full access to operations, limited admin access
         const managementPages = ['dashboard', 'products', 'employees', 'sales_reports', 'vendors', 'orders', 'delivery', 'licenses', 'inventory', 'salary'];
         managementPages.forEach((pageKey) => {
@@ -323,8 +324,9 @@ const EnhancedUserPermissionManager: React.FC = () => {
           }
         });
         break;
+      }
 
-      case 'Station Manager':
+      case 'Station Manager': {
         // Full operational access for station management
         const stationManagerPages = ['dashboard', 'products', 'sales_reports', 'delivery', 'inventory'];
         stationManagerPages.forEach((pageKey) => {
@@ -344,8 +346,9 @@ const EnhancedUserPermissionManager: React.FC = () => {
           }
         });
         break;
+      }
 
-      case 'Employee':
+      case 'Employee': {
         // Basic operational access
         const employeePages = ['dashboard', 'sales_reports', 'delivery'];
         employeePages.forEach((pageKey) => {
@@ -363,8 +366,9 @@ const EnhancedUserPermissionManager: React.FC = () => {
           }
         });
         break;
+      }
 
-      case 'Cashier':
+      case 'Cashier': {
         // Sales and basic inventory access
         newPermissions['dashboard'].view = true;
         newPermissions['sales_reports'].view = true;
@@ -374,11 +378,13 @@ const EnhancedUserPermissionManager: React.FC = () => {
         newPermissions['products'].view = true;
         newPermissions['inventory'].view = true;
         break;
+      }
 
-      default:
+      default: {
         // Custom or unknown role - minimal access
         newPermissions['dashboard'].view = true;
         break;
+      }
     }
 
     setPermissions(newPermissions);

@@ -21,6 +21,20 @@ console.log('🚀 Starting Vercel build process...');
 console.log('📍 Project root:', projectRoot);
 console.log('🔧 Using Vite programmatic API to bypass permission issues');
 
+// Check Node.js version
+const nodeVersion = process.version;
+const nodeMajor = parseInt(nodeVersion.slice(1).split('.')[0]);
+console.log(`🔍 Detected Node.js version: ${nodeVersion}`);
+
+if (nodeMajor !== 18) {
+  console.error(`❌ Error: Node.js version ${nodeVersion} detected, but Node.js 18.x is required`);
+  console.error('💡 Please ensure Vercel project settings are configured for Node.js 18.x');
+  console.error('🔗 Visit your Vercel project settings and set Node.js version to 18.x');
+  process.exit(1);
+}
+
+console.log('✅ Node.js version is compatible (18.x)');
+
 async function buildApp() {
   try {
     // Verify we have a vite config

@@ -245,15 +245,15 @@ const TwilioConfigManager: React.FC<TwilioConfigManagerProps> = ({ onConfigurati
                 Configure your Twilio account for premium SMS services
               </CardDescription>
             </div>
-            <div className=\"flex items-center gap-2\">
+            <div className="flex items-center gap-2">
               {isValidated ? (
-                <Badge variant=\"secondary\" className=\"bg-green-100 text-green-800\">
-                  <CheckCircle className=\"h-3 w-3 mr-1\" />
+                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <CheckCircle className="h-3 w-3 mr-1" />
                   Validated
                 </Badge>
               ) : (
-                <Badge variant=\"outline\" className=\"border-orange-300 text-orange-600\">
-                  <AlertCircle className=\"h-3 w-3 mr-1\" />
+                <Badge variant="outline" className="border-orange-300 text-orange-600">
+                  <AlertCircle className="h-3 w-3 mr-1" />
                   Not Validated
                 </Badge>
               )}
@@ -261,125 +261,125 @@ const TwilioConfigManager: React.FC<TwilioConfigManagerProps> = ({ onConfigurati
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue=\"config\" className=\"space-y-4\">
-            <TabsList className=\"grid w-full grid-cols-4\">
-              <TabsTrigger value=\"config\">Configuration</TabsTrigger>
-              <TabsTrigger value=\"testing\">Testing</TabsTrigger>
-              <TabsTrigger value=\"usage\">Usage</TabsTrigger>
-              <TabsTrigger value=\"security\">Security</TabsTrigger>
+          <Tabs defaultValue="config" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="config">Configuration</TabsTrigger>
+              <TabsTrigger value="testing">Testing</TabsTrigger>
+              <TabsTrigger value="usage">Usage</TabsTrigger>
+              <TabsTrigger value="security">Security</TabsTrigger>
             </TabsList>
 
-            <TabsContent value=\"config\" className=\"space-y-4\">
-              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
-                <div className=\"space-y-2\">
-                  <Label htmlFor=\"account_sid\">Account SID *</Label>
+            <TabsContent value="config" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="account_sid">Account SID *</Label>
                   <Input
-                    id=\"account_sid\"
-                    placeholder=\"ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"
+                    id="account_sid"
+                    placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                     value={config.account_sid}
                     onChange={(e) => setConfig(prev => ({ ...prev, account_sid: e.target.value }))}
                   />
                 </div>
-                <div className=\"space-y-2\">
-                  <Label htmlFor=\"auth_token\">Auth Token *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="auth_token">Auth Token *</Label>
                   <Input
-                    id=\"auth_token\"
-                    type=\"password\"
-                    placeholder=\"Your Twilio auth token\"
+                    id="auth_token"
+                    type="password"
+                    placeholder="Your Twilio auth token"
                     value={config.auth_token}
                     onChange={(e) => setConfig(prev => ({ ...prev, auth_token: e.target.value }))}
                   />
                 </div>
-                <div className=\"space-y-2\">
-                  <Label htmlFor=\"from_number\">From Number *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="from_number">From Number *</Label>
                   <Input
-                    id=\"from_number\"
-                    placeholder=\"+1234567890\"
+                    id="from_number"
+                    placeholder="+1234567890"
                     value={config.from_number}
                     onChange={(e) => setConfig(prev => ({ ...prev, from_number: e.target.value }))}
                   />
                 </div>
-                <div className=\"space-y-2\">
-                  <Label htmlFor=\"monthly_limit\">Monthly SMS Limit</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="monthly_limit">Monthly SMS Limit</Label>
                   <Input
-                    id=\"monthly_limit\"
-                    type=\"number\"
+                    id="monthly_limit"
+                    type="number"
                     value={config.monthly_limit}
                     onChange={(e) => setConfig(prev => ({ ...prev, monthly_limit: parseInt(e.target.value) || 1000 }))}
                   />
                 </div>
-                <div className=\"space-y-2\">
-                  <Label htmlFor=\"webhook_url\">Webhook URL (Optional)</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="webhook_url">Webhook URL (Optional)</Label>
                   <Input
-                    id=\"webhook_url\"
-                    placeholder=\"https://your-app.com/webhook/sms\"
+                    id="webhook_url"
+                    placeholder="https://your-app.com/webhook/sms"
                     value={config.webhook_url}
                     onChange={(e) => setConfig(prev => ({ ...prev, webhook_url: e.target.value }))}
                   />
                 </div>
               </div>
 
-              <div className=\"flex items-center space-x-4\">
-                <div className=\"flex items-center space-x-2\">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
                   <Switch
-                    id=\"is_active\"
+                    id="is_active"
                     checked={config.is_active}
                     onCheckedChange={(checked) => setConfig(prev => ({ ...prev, is_active: checked }))}
                   />
-                  <Label htmlFor=\"is_active\">Active</Label>
+                  <Label htmlFor="is_active">Active</Label>
                 </div>
-                <div className=\"flex items-center space-x-2\">
+                <div className="flex items-center space-x-2">
                   <Switch
-                    id=\"test_mode\"
+                    id="test_mode"
                     checked={config.test_mode}
                     onCheckedChange={(checked) => setConfig(prev => ({ ...prev, test_mode: checked }))}
                   />
-                  <Label htmlFor=\"test_mode\">Test Mode</Label>
+                  <Label htmlFor="test_mode">Test Mode</Label>
                 </div>
               </div>
 
-              <div className=\"flex gap-2\">
+              <div className="flex gap-2">
                 <Button onClick={saveConfiguration} disabled={isLoading}>
-                  {isLoading && <Loader2 className=\"h-4 w-4 mr-2 animate-spin\" />}
+                  {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                   Save Configuration
                 </Button>
-                <Button variant=\"outline\" onClick={validateCredentials} disabled={isLoading}>
-                  {isLoading && <Loader2 className=\"h-4 w-4 mr-2 animate-spin\" />}
-                  <Shield className=\"h-4 w-4 mr-2\" />
+                <Button variant="outline" onClick={validateCredentials} disabled={isLoading}>
+                  {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  <Shield className="h-4 w-4 mr-2" />
                   Validate Credentials
                 </Button>
               </div>
             </TabsContent>
 
-            <TabsContent value=\"testing\" className=\"space-y-4\">
-              <div className=\"space-y-4\">
+            <TabsContent value="testing" className="space-y-4">
+              <div className="space-y-4">
                 <div>
-                  <Label htmlFor=\"test_number\">Test Phone Number</Label>
-                  <div className=\"flex gap-2 mt-2\">
+                  <Label htmlFor="test_number">Test Phone Number</Label>
+                  <div className="flex gap-2 mt-2">
                     <Input
-                      id=\"test_number\"
-                      placeholder=\"+1234567890\"
+                      id="test_number"
+                      placeholder="+1234567890"
                       value={testNumber}
                       onChange={(e) => setTestNumber(e.target.value)}
                     />
                     <Button onClick={testConfiguration} disabled={isTesting || !isValidated}>
-                      {isTesting && <Loader2 className=\"h-4 w-4 mr-2 animate-spin\" />}
-                      <TestTube className=\"h-4 w-4 mr-2\" />
+                      {isTesting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                      <TestTube className="h-4 w-4 mr-2" />
                       Send Test SMS
                     </Button>
                   </div>
-                  <p className=\"text-sm text-gray-600 mt-1\">
+                  <p className="text-sm text-gray-600 mt-1">
                     Phone number must be in E.164 format (e.g., +1234567890)
                   </p>
                 </div>
 
                 {config.test_mode && (
-                  <div className=\"bg-yellow-50 border border-yellow-200 rounded-lg p-4\">
-                    <div className=\"flex items-center gap-2 text-yellow-800\">
-                      <AlertCircle className=\"h-4 w-4\" />
-                      <span className=\"font-medium\">Test Mode Enabled</span>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div className="flex items-center gap-2 text-yellow-800">
+                      <AlertCircle className="h-4 w-4" />
+                      <span className="font-medium">Test Mode Enabled</span>
                     </div>
-                    <p className=\"text-sm text-yellow-700 mt-1\">
+                    <p className="text-sm text-yellow-700 mt-1">
                       SMS will only be sent to verified phone numbers. Disable test mode for production use.
                     </p>
                   </div>
@@ -387,61 +387,61 @@ const TwilioConfigManager: React.FC<TwilioConfigManagerProps> = ({ onConfigurati
               </div>
             </TabsContent>
 
-            <TabsContent value=\"usage\" className=\"space-y-4\">
-              <div className=\"space-y-4\">
+            <TabsContent value="usage" className="space-y-4">
+              <div className="space-y-4">
                 <div>
-                  <div className=\"flex items-center justify-between mb-2\">
+                  <div className="flex items-center justify-between mb-2">
                     <Label>Monthly Usage</Label>
-                    <span className=\"text-sm text-gray-600\">
+                    <span className="text-sm text-gray-600">
                       {usage.used} / {usage.limit} SMS
                     </span>
                   </div>
-                  <Progress value={usage.percentage} className=\"h-2\" />
-                  <p className=\"text-sm text-gray-600 mt-1\">
+                  <Progress value={usage.percentage} className="h-2" />
+                  <p className="text-sm text-gray-600 mt-1">
                     {usage.percentage.toFixed(1)}% of monthly limit used
                   </p>
                 </div>
 
-                <div className=\"grid grid-cols-1 md:grid-cols-3 gap-4\">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Card>
-                    <CardContent className=\"p-4\">
-                      <div className=\"flex items-center gap-2\">
-                        <BarChart3 className=\"h-4 w-4 text-blue-600\" />
-                        <span className=\"text-sm font-medium\">Messages Sent</span>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <BarChart3 className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm font-medium">Messages Sent</span>
                       </div>
-                      <p className=\"text-2xl font-bold mt-1\">{usage.used}</p>
+                      <p className="text-2xl font-bold mt-1">{usage.used}</p>
                     </CardContent>
                   </Card>
                   <Card>
-                    <CardContent className=\"p-4\">
-                      <div className=\"flex items-center gap-2\">
-                        <Phone className=\"h-4 w-4 text-green-600\" />
-                        <span className=\"text-sm font-medium\">Remaining</span>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-green-600" />
+                        <span className="text-sm font-medium">Remaining</span>
                       </div>
-                      <p className=\"text-2xl font-bold mt-1\">{usage.limit - usage.used}</p>
+                      <p className="text-2xl font-bold mt-1">{usage.limit - usage.used}</p>
                     </CardContent>
                   </Card>
                   <Card>
-                    <CardContent className=\"p-4\">
-                      <div className=\"flex items-center gap-2\">
-                        <Settings className=\"h-4 w-4 text-purple-600\" />
-                        <span className=\"text-sm font-medium\">Monthly Limit</span>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2">
+                        <Settings className="h-4 w-4 text-purple-600" />
+                        <span className="text-sm font-medium">Monthly Limit</span>
                       </div>
-                      <p className=\"text-2xl font-bold mt-1\">{usage.limit}</p>
+                      <p className="text-2xl font-bold mt-1">{usage.limit}</p>
                     </CardContent>
                   </Card>
                 </div>
               </div>
             </TabsContent>
 
-            <TabsContent value=\"security\" className=\"space-y-4\">
-              <div className=\"space-y-4\">
-                <div className=\"bg-blue-50 border border-blue-200 rounded-lg p-4\">
-                  <div className=\"flex items-center gap-2 text-blue-800\">
-                    <Shield className=\"h-4 w-4\" />
-                    <span className=\"font-medium\">Security Best Practices</span>
+            <TabsContent value="security" className="space-y-4">
+              <div className="space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-blue-800">
+                    <Shield className="h-4 w-4" />
+                    <span className="font-medium">Security Best Practices</span>
                   </div>
-                  <ul className=\"text-sm text-blue-700 mt-2 space-y-1\">
+                  <ul className="text-sm text-blue-700 mt-2 space-y-1">
                     <li>• Store Auth Token securely and never share it</li>
                     <li>• Use webhook URLs with HTTPS only</li>
                     <li>• Enable test mode for development environments</li>
@@ -450,39 +450,39 @@ const TwilioConfigManager: React.FC<TwilioConfigManagerProps> = ({ onConfigurati
                   </ul>
                 </div>
 
-                <div className=\"grid grid-cols-1 md:grid-cols-2 gap-4\">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Card>
-                    <CardContent className=\"p-4\">
-                      <div className=\"flex items-center gap-2 mb-2\">
-                        <CheckCircle className=\"h-4 w-4 text-green-600\" />
-                        <span className=\"font-medium\">Account Security</span>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="font-medium">Account Security</span>
                       </div>
-                      <div className=\"space-y-2 text-sm\">
-                        <div className=\"flex justify-between\">
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
                           <span>Two-Factor Auth</span>
-                          <Badge variant=\"secondary\">Recommended</Badge>
+                          <Badge variant="secondary">Recommended</Badge>
                         </div>
-                        <div className=\"flex justify-between\">
+                        <div className="flex justify-between">
                           <span>API Key Rotation</span>
-                          <Badge variant=\"secondary\">Quarterly</Badge>
+                          <Badge variant="secondary">Quarterly</Badge>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
                   <Card>
-                    <CardContent className=\"p-4\">
-                      <div className=\"flex items-center gap-2 mb-2\">
-                        <AlertCircle className=\"h-4 w-4 text-orange-600\" />
-                        <span className=\"font-medium\">Rate Limiting</span>
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertCircle className="h-4 w-4 text-orange-600" />
+                        <span className="font-medium">Rate Limiting</span>
                       </div>
-                      <div className=\"space-y-2 text-sm\">
-                        <div className=\"flex justify-between\">
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
                           <span>Current Status</span>
-                          <Badge variant={config.test_mode ? \"outline\" : \"secondary\"}>
+                          <Badge variant={config.test_mode ? "outline" : "secondary"}>
                             {config.test_mode ? 'Test Mode' : 'Production'}
                           </Badge>
                         </div>
-                        <div className=\"flex justify-between\">
+                        <div className="flex justify-between">
                           <span>Monthly Limit</span>
                           <span>{config.monthly_limit}</span>
                         </div>

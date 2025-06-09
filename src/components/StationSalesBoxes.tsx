@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Fuel, ShoppingCart, DollarSign, TrendingUp, Clock, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface SalesData {
   ID: number;
@@ -50,27 +51,20 @@ const StationSalesBoxes: React.FC = () => {
       const today = new Date();
       const todayStr = today.toISOString().split('T')[0];
 
-      // Fetch recent sales reports from the enhanced table
-      const { data, error: apiError } = await window.ezsite.apis.tablePage(12356, {
-        PageNo: 1,
-        PageSize: 50,
-        OrderByField: "report_date",
-        IsAsc: false,
-        Filters: [
-        {
-          name: "report_date",
-          op: "GreaterThanOrEqual",
-          value: todayStr
-        }]
+      // Fetch recent sales reports from the enhanced table using Supabase
+      const { data: reports, error: apiError } = await supabase
+        .from('daily_sales_reports_enhanced')
+        .select('*')
+        .gte('report_date', todayStr)
+        .order('report_date', { ascending: false })
+        .limit(50);
 
-      });
-
-      if (apiError) throw apiError;
+      if (apiError) throw new Error(apiError.message);
 
       // Process data by station
       const stationData: StationSalesData[] = STATIONS.map((station) => {
-        const stationReports = data?.List?.filter((report: SalesData) =>
-        report.station === station
+        const stationReports = reports?.filter((report: SalesData) =>
+          report.station === station
         ) || [];
 
         const totalSales = stationReports.reduce((sum: number, report: SalesData) =>
@@ -93,8 +87,12 @@ const StationSalesBoxes: React.FC = () => {
         sum + (report.cash_collection_on_hand || 0), 0
         );
 
-        // Calculate fuel sales (total - grocery - lottery)
-        const fuelSales = totalSales - grocerySales - lotterySales;
+        // Calculate fuel sales - for MOBIL station exclude grocery sales from calculation
+        // For MOBIL: fuel sales = total - lottery (gas sales are included in total)
+        // For AMOCO stations: fuel sales = total - grocery - lottery (current logic)
+        const fuelSales = station === 'MOBIL' 
+          ? totalSales - lotterySales 
+          : totalSales - grocerySales - lotterySales;
 
         const latestReport = stationReports[0];
 

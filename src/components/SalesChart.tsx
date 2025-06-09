@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CalendarDays, TrendingUp, Building2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+
+// ⚠️ IMPORTANT: This component implements MOBIL-specific sales calculation
+// For MOBIL station: fuel_sales = total_sales - lottery_sales (gas included in total)
+// For AMOCO stations: fuel_sales = total_sales - grocery_sales - lottery_sales (existing logic)
+// This ensures consistency with StationSalesBoxes.tsx calculation
 
 interface SalesData {
   date: string;
@@ -47,27 +53,22 @@ const SalesChart: React.FC = () => {
 
       console.log('Fetching sales data from:', startDate.toISOString(), 'to:', endDate.toISOString());
 
-      // Fetch sales reports for the last 30 days
-      const { data, error: apiError } = await window.ezsite.apis.tablePage('11728', {
-        PageNo: 1,
-        PageSize: 1000,
-        Filters: [
-        { name: 'report_date', op: 'GreaterThanOrEqual', value: startDate.toISOString() }],
+      // Fetch sales reports for the last 30 days using Supabase
+      const { data: reports, error: apiError } = await supabase
+        .from('daily_sales_reports_enhanced')
+        .select('*')
+        .gte('report_date', startDate.toISOString())
+        .order('report_date', { ascending: true })
+        .limit(1000);
 
-        OrderByField: 'report_date',
-        IsAsc: true
-      });
+      if (apiError) throw new Error(apiError.message);
 
-      if (apiError) throw new Error(apiError);
-
-      if (!data || !data.List) {
+      if (!reports || reports.length === 0) {
         console.log('No sales data found');
         setSalesData([]);
         setStationTotals([]);
         return;
       }
-
-      const reports = data.List;
       console.log('Raw sales reports:', reports);
 
       // Group data by date and station
@@ -102,9 +103,19 @@ const SalesChart: React.FC = () => {
           };
         }
 
-        const fuelSales = report.fuel_sales || 0;
-        const convenienceSales = report.convenience_sales || 0;
         const totalSales = report.total_sales || 0;
+        const grocerySales = report.grocery_sales || 0;
+        const lotterySales = report.lottery_net_sales || report.lottery_sales || 0;
+        
+        // Calculate fuel and convenience sales with MOBIL-specific logic
+        // For MOBIL: fuel sales = total - lottery (gas sales are included in total)
+        // For AMOCO stations: fuel sales = total - grocery - lottery (current logic)
+        const fuelSales = station === 'MOBIL' 
+          ? Math.max(0, totalSales - lotterySales)
+          : Math.max(0, totalSales - grocerySales - lotterySales);
+        
+        // Convenience sales = grocery sales for all stations
+        const convenienceSales = grocerySales;
 
         // Update daily data based on station
         if (station === 'MOBIL') {

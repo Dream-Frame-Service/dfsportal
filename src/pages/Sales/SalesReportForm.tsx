@@ -55,6 +55,9 @@ export default function SalesReportForm() {
     cashAmount: 0,
     grocerySales: 0,
     ebtSales: 0, // MOBIL only
+    // Separate Grocery Sales Breakdown Fields
+    groceryCashSales: 0,
+    groceryCreditDebitSales: 0,
     // Lottery
     lotteryNetSales: 0,
     scratchOffSales: 0,
@@ -113,6 +116,8 @@ export default function SalesReportForm() {
           cashAmount: report.cash_amount,
           grocerySales: report.grocery_sales,
           ebtSales: report.ebt_sales,
+          groceryCashSales: report.grocery_cash_sales || 0,
+          groceryCreditDebitSales: report.grocery_credit_debit_sales || 0,
           lotteryNetSales: report.lottery_net_sales,
           scratchOffSales: report.scratch_off_sales,
           regularGallons: report.regular_gallons,
@@ -218,6 +223,8 @@ export default function SalesReportForm() {
       cash_amount: formData.cashAmount,
       grocery_sales: formData.grocerySales,
       ebt_sales: formData.ebtSales,
+      grocery_cash_sales: formData.groceryCashSales,
+      grocery_credit_debit_sales: formData.groceryCreditDebitSales,
       lottery_net_sales: formData.lotteryNetSales,
       scratch_off_sales: formData.scratchOffSales,
       lottery_total_cash: totalLotteryCash,
@@ -409,7 +416,9 @@ export default function SalesReportForm() {
               mobileAmount: formData.mobileAmount,
               cashAmount: formData.cashAmount,
               grocerySales: formData.grocerySales,
-              ebtSales: formData.ebtSales
+              ebtSales: formData.ebtSales,
+              groceryCashSales: formData.groceryCashSales,
+              groceryCreditDebitSales: formData.groceryCreditDebitSales
             }}
             onChange={updateFormData} data-id="su4yecnsb" data-path="src/pages/Sales/SalesReportForm.tsx" />
 

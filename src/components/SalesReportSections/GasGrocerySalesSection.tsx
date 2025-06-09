@@ -14,6 +14,9 @@ interface GasGrocerySalesSectionProps {
     cashAmount: number;
     grocerySales: number;
     ebtSales?: number; // Only for MOBIL
+    // Separate grocery breakdown fields (MOBIL only) - completely independent from main section
+    groceryCashSales?: number;
+    groceryCreditDebitSales?: number;
   };
   onChange: (field: string, value: number) => void;
 }
@@ -122,8 +125,8 @@ const GasGrocerySalesSection: React.FC<GasGrocerySalesSectionProps> = ({
                 <Label htmlFor="groceryCash" data-id="cn75xmcuu" data-path="src/components/SalesReportSections/GasGrocerySalesSection.tsx">Cash Sales ($) *</Label>
                 <NumberInput
                 id="groceryCash"
-                value={values.cashAmount}
-                onChange={(value) => onChange('cashAmount', value || 0)}
+                value={values.groceryCashSales || 0}
+                onChange={(value) => onChange('groceryCashSales', value || 0)}
                 min={0}
                 step={0.01}
                 required data-id="ft2eat9ur" data-path="src/components/SalesReportSections/GasGrocerySalesSection.tsx" />
@@ -133,12 +136,8 @@ const GasGrocerySalesSection: React.FC<GasGrocerySalesSectionProps> = ({
                 <Label htmlFor="groceryCreditDebit" data-id="8i1k82e60" data-path="src/components/SalesReportSections/GasGrocerySalesSection.tsx">Credit/Debit Card ($) *</Label>
                 <NumberInput
                 id="groceryCreditDebit"
-                value={values.creditCardAmount + values.debitCardAmount}
-                onChange={(value) => {
-                  const half = (value || 0) / 2;
-                  onChange('creditCardAmount', half);
-                  onChange('debitCardAmount', half);
-                }}
+                value={values.groceryCreditDebitSales || 0}
+                onChange={(value) => onChange('groceryCreditDebitSales', value || 0)}
                 min={0}
                 step={0.01}
                 required data-id="y1ke7r6fz" data-path="src/components/SalesReportSections/GasGrocerySalesSection.tsx" />
@@ -161,8 +160,11 @@ const GasGrocerySalesSection: React.FC<GasGrocerySalesSectionProps> = ({
               <div className="flex items-center justify-between" data-id="tk4k9upj6" data-path="src/components/SalesReportSections/GasGrocerySalesSection.tsx">
                 <Label className="text-lg font-semibold" data-id="m0gi6t14t" data-path="src/components/SalesReportSections/GasGrocerySalesSection.tsx">Total Grocery Sales</Label>
                 <div className="text-2xl font-bold text-green-800" data-id="rhlvg4yh8" data-path="src/components/SalesReportSections/GasGrocerySalesSection.tsx">
-                  ${(values.cashAmount + values.creditCardAmount + values.debitCardAmount + (values.ebtSales || 0)).toFixed(2)}
+                  ${((values.groceryCashSales || 0) + (values.groceryCreditDebitSales || 0) + (values.ebtSales || 0)).toFixed(2)}
                 </div>
+              </div>
+              <div className="text-sm text-gray-600 mt-1">
+                Grocery Cash + Credit/Debit + EBT = ${((values.groceryCashSales || 0) + (values.groceryCreditDebitSales || 0) + (values.ebtSales || 0)).toFixed(2)}
               </div>
             </div>
           </CardContent>

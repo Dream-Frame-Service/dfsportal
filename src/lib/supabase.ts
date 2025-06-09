@@ -151,6 +151,8 @@ export interface Database {
           cash_amount: number;
           grocery_sales: number;
           ebt_sales: number;
+          grocery_cash_sales: number;
+          grocery_credit_debit_sales: number;
           lottery_net_sales: number;
           scratch_off_sales: number;
           lottery_total_cash: number;

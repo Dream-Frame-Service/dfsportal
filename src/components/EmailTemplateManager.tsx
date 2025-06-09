@@ -155,15 +155,15 @@ const EmailTemplateManager: React.FC = () => {
                     </tr>
                     <tr>
                       <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Total Sales</td>
-                      <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #059669;">${total_sales}</td>
+                      <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #059669;">\${total_sales}</td>
                     </tr>
                     <tr>
                       <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Fuel Sales</td>
-                      <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e2e8f0;">${fuel_sales}</td>
+                      <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e2e8f0;">\${fuel_sales}</td>
                     </tr>
                     <tr>
                       <td style="padding: 12px; border-bottom: 1px solid #e2e8f0;">Store Sales</td>
-                      <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e2e8f0;">${store_sales}</td>
+                      <td style="padding: 12px; text-align: right; border-bottom: 1px solid #e2e8f0;">\${store_sales}</td>
                     </tr>
                   </table>
                 </div>

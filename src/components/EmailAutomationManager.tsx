@@ -178,7 +178,7 @@ const EmailAutomationManager: React.FC = () => {
             <p>Sales summary for {report_date}</p>
             <table border="1" style="border-collapse: collapse; width: 100%;">
               <tr><th>Station</th><th>Total Sales</th><th>Fuel Sales</th><th>Store Sales</th></tr>
-              <tr><td>{station_name}</td><td>${total_sales}</td><td>${fuel_sales}</td><td>${store_sales}</td></tr>
+              <tr><td>{station_name}</td><td>$\{total_sales}</td><td>$\{fuel_sales}</td><td>$\{store_sales}</td></tr>
             </table>
             <p>Generated automatically by DFS Manager</p>
           `,

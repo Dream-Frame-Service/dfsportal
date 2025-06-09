@@ -502,7 +502,7 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
   };
 
   const applyRoleTemplate = (role: string, showToast: boolean = true) => {
-    let newPermissions: DetailedPermissions = {};
+    const newPermissions: DetailedPermissions = {};
 
     // Initialize all pages with default permissions
     Object.values(pageGroups).flat().forEach((page) => {
@@ -519,7 +519,7 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
         });
         break;
 
-      case 'Management':
+      case 'Management': {
         // Full access to operations, limited admin access
         const managementPages = [
         'dashboard', 'products', 'product_form', 'employees', 'employee_form',
@@ -545,8 +545,9 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
           }
         });
         break;
+      }
 
-      case 'Station Manager':
+      case 'Station Manager': {
         // Full operational access for station management
         const stationManagerPages = [
         'dashboard', 'products', 'product_form', 'sales_reports', 'sales_report_form',
@@ -569,8 +570,9 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
           }
         });
         break;
+      }
 
-      case 'Employee':
+      case 'Employee': {
         // Basic operational access
         const employeePages = ['dashboard', 'sales_reports', 'sales_report_form', 'delivery', 'delivery_form'];
         employeePages.forEach((pageKey) => {
@@ -589,8 +591,9 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
           }
         });
         break;
+      }
 
-      case 'Cashier':
+      case 'Cashier': {
         // Sales and basic inventory access
         newPermissions['dashboard'].view = true;
         newPermissions['sales_reports'].view = true;
@@ -603,11 +606,13 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
         newPermissions['inventory_alerts'].view = true;
         newPermissions['gas_delivery_inventory'].view = true;
         break;
+      }
 
-      default:
+      default: {
         // Custom or unknown role - minimal access
         newPermissions['dashboard'].view = true;
         break;
+      }
     }
 
     setPermissions(newPermissions);

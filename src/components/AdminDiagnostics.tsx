@@ -183,7 +183,7 @@ const AdminDiagnostics: React.FC = () => {
 
     try {
       switch (testId) {
-        case 'database':
+        case 'database': {
           // Test database connectivity by querying user profiles
           const { error: dbError } = await window.ezsite.apis.tablePage(11725, {
             PageNo: 1,
@@ -196,8 +196,9 @@ const AdminDiagnostics: React.FC = () => {
             duration: dbDuration,
             details: dbError ? `Database connection failed: ${dbError}` : `Database connected successfully in ${dbDuration}ms`
           };
+        }
 
-        case 'api':
+        case 'api': {
           // Test multiple API endpoints
           const apiTests = await Promise.all([
           window.ezsite.apis.tablePage(11726, { PageNo: 1, PageSize: 1, Filters: [] }),
@@ -211,8 +212,9 @@ const AdminDiagnostics: React.FC = () => {
             duration: apiDuration,
             details: failedApis === 0 ? `All API endpoints responding (${apiDuration}ms)` : `${failedApis}/3 API endpoints failed`
           };
+        }
 
-        case 'sms':
+        case 'sms': {
           // Test SMS configuration
           const { error: smsError } = await window.ezsite.apis.tablePage(12640, {
             PageNo: 1,
@@ -225,8 +227,9 @@ const AdminDiagnostics: React.FC = () => {
             duration: smsDuration,
             details: smsError ? 'SMS configuration not found or inactive' : `SMS service configured and active (${smsDuration}ms)`
           };
+        }
 
-        case 'auth':
+        case 'auth': {
           // Test authentication by checking current user
           const { error: authError } = await window.ezsite.apis.getUserInfo();
           const authDuration = Date.now() - startTime;
@@ -235,8 +238,9 @@ const AdminDiagnostics: React.FC = () => {
             duration: authDuration,
             details: authError ? `Authentication test failed: ${authError}` : `Authentication system operational (${authDuration}ms)`
           };
+        }
 
-        case 'permissions':
+        case 'permissions': {
           // Test permissions by checking user profiles
           const { data: permData, error: permError } = await window.ezsite.apis.tablePage(11725, {
             PageNo: 1,
@@ -251,8 +255,9 @@ const AdminDiagnostics: React.FC = () => {
             details: permError ? 'Permission system test failed' :
             hasRoles ? `Role-based permissions active (${permDuration}ms)` : 'No role data found in user profiles'
           };
+        }
 
-        case 'backup':
+        case 'backup': {
           // Test backup by checking audit logs exist
           const { data: auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, {
             PageNo: 1,
@@ -265,6 +270,7 @@ const AdminDiagnostics: React.FC = () => {
             duration: backupDuration,
             details: auditError ? 'Audit system not accessible' : `Audit logging system active (${backupDuration}ms)`
           };
+        }
 
         default:
           return {

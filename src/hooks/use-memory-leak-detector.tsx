@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { MemoryLeakMonitor } from '@/services/memoryLeakMonitor';
 
 export interface MemoryLeakConfig {
@@ -380,8 +380,6 @@ export function withMemoryLeakDetection<P extends object>(
       <WrappedComponent
         {...props}
         memoryTools={memoryTools}
-        data-id="mci440h85"
-        data-path="src/hooks/use-memory-leak-detector.ts"
       />
     );
   };

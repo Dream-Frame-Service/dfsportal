@@ -5,11 +5,30 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
+  "cleanUrls": true,
   "functions": {
     "src/api/*.ts": {
-      "runtime": "nodejs18.x"
+      "runtime": "@vercel/node@3.0.7"
     }
   },
+  "crons": [
+    {
+      "path": "/api/check-license-expiry",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/health-check",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/daily-report",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/weekly-cleanup",
+      "schedule": "0 2 * * 0"
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

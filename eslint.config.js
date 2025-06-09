@@ -13,7 +13,13 @@ export default tseslint.config(
       ecmaVersion: 2020,
       globals: {
         ...globals.browser,
-        ...globals.es2020
+        ...globals.node,
+        ...globals.es2020,
+        React: "readonly",
+        JSX: "readonly",
+        NodeJS: "readonly",
+        RequestInit: "readonly",
+        RequestInfo: "readonly"
       },
       parserOptions: {
         ecmaFeatures: {
@@ -46,8 +52,9 @@ export default tseslint.config(
 
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/no-non-null-assertion": "warn",
-      "@typescript-eslint/prefer-optional-chain": "warn",
-      "@typescript-eslint/prefer-nullish-coalescing": "warn",
+      // Removed type-aware rules that cause parsing issues
+      // "@typescript-eslint/prefer-optional-chain": "warn",
+      // "@typescript-eslint/prefer-nullish-coalescing": "warn",
 
       // General Code Quality
       "no-console": ["warn", { "allow": ["warn", "error"] }],

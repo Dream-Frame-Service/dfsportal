@@ -232,13 +232,13 @@ const TwilioConfigManager: React.FC<TwilioConfigManagerProps> = ({ onConfigurati
   };
 
   return (
-    <div className=\"space-y-6\">
+    <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className=\"flex items-center justify-between\">
+          <div className="flex items-center justify-between">
             <div>
-              <CardTitle className=\"flex items-center gap-2\">
-                <Settings className=\"h-5 w-5\" />
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
                 Twilio SMS Configuration
               </CardTitle>
               <CardDescription>

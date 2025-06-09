@@ -116,6 +116,101 @@ const AdminPanel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
 
+  // Fetch real-time data from database
+  const fetchRealtimeData = useCallback(async () => {
+    if (!isAdmin) return; // Early return if not admin
+    
+    try {
+      setLoading(true);
+
+      // Fetch user profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(100);
+
+      if (profilesError) throw profilesError;
+
+      // Fetch stations data
+      const { data: stations, error: stationsError } = await supabase
+        .from('site_stations')
+        .select('*')
+        .order('id', { ascending: false })
+        .limit(100);
+
+      if (stationsError) throw stationsError;
+
+      // Update user profiles state
+      setUserProfiles(profiles || []);
+
+      // Calculate real-time stats
+      const totalUsers = profiles?.length || 0;
+      const activeUsers = profiles?.filter((user: UserProfile) => user.is_active)?.length || 0;
+      const totalStations = stations?.length || 0;
+
+      // Check system health based on real data
+      const memoryUsage = (performance as any).memory ?
+      Math.round((performance as any).memory.usedJSHeapSize / (performance as any).memory.totalJSHeapSize * 100) :
+      Math.floor(Math.random() * 30) + 45; // Fallback for browsers without memory API
+
+      const systemHealth: 'healthy' | 'warning' | 'error' =
+      memoryUsage > 85 ? 'error' : memoryUsage > 70 ? 'warning' : 'healthy';
+
+      // Test database connection
+      const databaseStatus = 'connected'; // Since we successfully fetched data
+
+      // Update realtime stats
+      setRealtimeStats({
+        totalUsers,
+        activeUsers,
+        totalStations,
+        lastBackup: new Date(Date.now() - Math.random() * 3600000).toLocaleString(),
+        systemHealth,
+        memoryUsage,
+        databaseStatus,
+        smsServiceStatus: 'active'
+      });
+
+      console.log('Real-time data updated:', {
+        totalUsers,
+        activeUsers,
+        totalStations,
+        systemHealth,
+        memoryUsage
+      });
+
+    } catch (error) {
+      console.error('Error fetching real-time data:', error);
+      toast({
+        title: "Error Fetching Data",
+        description: `Failed to fetch real-time data: ${error}`,
+        variant: "destructive"
+      });
+
+      // Set error state
+      setRealtimeStats((prev) => ({
+        ...prev,
+        systemHealth: 'error',
+        databaseStatus: 'error'
+      }));
+    } finally {
+      setLoading(false);
+    }
+  }, [toast, isAdmin]);
+
+  // Initialize real-time data on component mount
+  useEffect(() => {
+    if (!isAdmin) return;
+    
+    fetchRealtimeData();
+
+    // Set up real-time updates every 30 seconds
+    const interval = setInterval(fetchRealtimeData, 30000);
+
+    return () => clearInterval(interval);
+  }, [fetchRealtimeData, isAdmin]);
+
   if (!isAdmin) {
     return <AccessDenied data-id="vf2xynp0k" data-path="src/pages/Admin/AdminPanel.tsx" />;
   }
@@ -361,88 +456,6 @@ const AdminPanel: React.FC = () => {
     color: 'bg-cyan-500'
   }];
 
-
-  // Fetch real-time data from database
-  const fetchRealtimeData = useCallback(async () => {
-    try {
-      setLoading(true);
-
-      // Fetch user profiles
-      const { data: profiles, error: profilesError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .order('id', { ascending: false })
-        .limit(100);
-
-      if (profilesError) throw profilesError;
-
-      // Fetch stations data
-      const { data: stations, error: stationsError } = await supabase
-        .from('site_stations')
-        .select('*')
-        .order('id', { ascending: false })
-        .limit(100);
-
-      if (stationsError) throw stationsError;
-
-      // Update user profiles state
-      setUserProfiles(profiles || []);
-
-      // Calculate real-time stats
-      const totalUsers = profiles?.length || 0;
-      const activeUsers = profiles?.filter((user: UserProfile) => user.is_active)?.length || 0;
-      const totalStations = stations?.length || 0;
-
-      // Check system health based on real data
-      const memoryUsage = (performance as any).memory ?
-      Math.round((performance as any).memory.usedJSHeapSize / (performance as any).memory.totalJSHeapSize * 100) :
-      Math.floor(Math.random() * 30) + 45; // Fallback for browsers without memory API
-
-      const systemHealth: 'healthy' | 'warning' | 'error' =
-      memoryUsage > 85 ? 'error' : memoryUsage > 70 ? 'warning' : 'healthy';
-
-      // Test database connection
-      const databaseStatus = 'connected'; // Since we successfully fetched data
-
-      // Update realtime stats
-      setRealtimeStats({
-        totalUsers,
-        activeUsers,
-        totalStations,
-        lastBackup: new Date(Date.now() - Math.random() * 3600000).toLocaleString(),
-        systemHealth,
-        memoryUsage,
-        databaseStatus,
-        smsServiceStatus: 'active'
-      });
-
-      console.log('Real-time data updated:', {
-        totalUsers,
-        activeUsers,
-        totalStations,
-        systemHealth,
-        memoryUsage
-      });
-
-    } catch (error) {
-      console.error('Error fetching real-time data:', error);
-      toast({
-        title: "Error Fetching Data",
-        description: `Failed to fetch real-time data: ${error}`,
-        variant: "destructive"
-      });
-
-      // Set error state
-      setRealtimeStats((prev) => ({
-        ...prev,
-        systemHealth: 'error',
-        databaseStatus: 'error'
-      }));
-    } finally {
-      setLoading(false);
-    }
-  }, [toast]);
-
   // Create new user in both Supabase Auth and database
   const createSupabaseUser = async () => {
     try {
@@ -618,16 +631,6 @@ const AdminPanel: React.FC = () => {
   const testSMSService = () => {
     navigate('/admin/sms-alert-management');
   };
-
-  // Initialize real-time data on component mount
-  useEffect(() => {
-    fetchRealtimeData();
-
-    // Set up real-time updates every 30 seconds
-    const interval = setInterval(fetchRealtimeData, 30000);
-
-    return () => clearInterval(interval);
-  }, [fetchRealtimeData]);
 
   const filteredFeatures = adminFeatures.filter((feature) => {
     const matchesSearch = feature.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

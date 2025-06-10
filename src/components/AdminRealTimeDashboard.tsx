@@ -100,7 +100,7 @@ const AdminRealTimeDashboard: React.FC = () => {
   // Comprehensive data fetching for admin dashboard
   const fetchAdminMetrics = useCallback(async () => {
     try {
-      console.log('🔄 Fetching admin dashboard metrics...');
+      console.warn('🔄 Fetching admin dashboard metrics...');
 
       const today = new Date().toISOString().split('T')[0];
       const thisMonth = new Date().toISOString().slice(0, 7);
@@ -122,8 +122,8 @@ const AdminRealTimeDashboard: React.FC = () => {
       activeLicensesData,
       smsConfigData,
       auditLogsData,
-      salaryData,
-      deliveryData] =
+      _salaryData,
+      _deliveryData] =
       await Promise.all([
       // Users
       window.ezsite.apis.tablePage(11725, { PageNo: 1, PageSize: 1 }),
@@ -200,13 +200,13 @@ const AdminRealTimeDashboard: React.FC = () => {
       let monthlyRevenue = 0;
 
       if (todaySalesData.data?.List) {
-        todayRevenue = todaySalesData.data.List.reduce((sum: number, report: any) => {
+        todayRevenue = todaySalesData.data.List.reduce((sum: number, report: { total_sales?: number }) => {
           return sum + (report.total_sales || 0);
         }, 0);
       }
 
       if (monthSalesData.data?.List) {
-        monthlyRevenue = monthSalesData.data.List.reduce((sum: number, report: any) => {
+        monthlyRevenue = monthSalesData.data.List.reduce((sum: number, report: { total_sales?: number }) => {
           return sum + (report.total_sales || 0);
         }, 0);
         totalRevenue = monthlyRevenue; // For now, use monthly as approximation
@@ -215,8 +215,8 @@ const AdminRealTimeDashboard: React.FC = () => {
       // Calculate low stock products
       let lowStockProducts = 0;
       if (productsData.data?.List) {
-        lowStockProducts = productsData.data.List.filter((product: any) =>
-        product.quantity_in_stock <= product.minimum_stock && product.minimum_stock > 0
+        lowStockProducts = productsData.data.List.filter((product: { quantity_in_stock?: number; minimum_stock?: number }) =>
+        product.quantity_in_stock && product.minimum_stock && product.quantity_in_stock <= product.minimum_stock && product.minimum_stock > 0
         ).length;
       }
 
@@ -227,7 +227,7 @@ const AdminRealTimeDashboard: React.FC = () => {
       const thirtyDaysFromNow = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000);
 
       if (licensesData.data?.List) {
-        licensesData.data.List.forEach((license: any) => {
+        licensesData.data.List.forEach((license: { expiry_date: string }) => {
           const expiryDate = new Date(license.expiry_date);
           if (expiryDate < currentDate) {
             expiredLicenses++;
@@ -239,7 +239,7 @@ const AdminRealTimeDashboard: React.FC = () => {
 
       // Calculate active users from audit logs
       const activeUsers = auditLogsData.data?.List ?
-      new Set(auditLogsData.data.List.map((log: any) => log.user_id).filter(Boolean)).size : 0;
+      new Set(auditLogsData.data.List.map((log: { user_id?: string }) => log.user_id).filter(Boolean)).size : 0;
 
       // SMS setup check
       const smsAlertsSetup = smsConfigData.data?.List?.length > 0;
@@ -338,7 +338,7 @@ const AdminRealTimeDashboard: React.FC = () => {
       }
 
       setSystemAlerts(alerts);
-      console.log('✅ Admin dashboard metrics updated successfully');
+      console.warn('✅ Admin dashboard metrics updated successfully');
 
     } catch (error) {
       console.error('❌ Error fetching admin metrics:', error);
@@ -502,7 +502,7 @@ const AdminRealTimeDashboard: React.FC = () => {
               <Button
                 variant="link"
                 className="p-0 h-auto font-semibold text-blue-600 ml-1"
-                onClick={() => navigate(alert.actionPath!)} data-id="7b4d0agpg" data-path="src/components/AdminRealTimeDashboard.tsx">
+                onClick={() => alert.actionPath && navigate(alert.actionPath)} data-id="7b4d0agpg" data-path="src/components/AdminRealTimeDashboard.tsx">
 
                       {alert.actionLabel} →
                     </Button>

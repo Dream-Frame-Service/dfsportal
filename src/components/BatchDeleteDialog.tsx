@@ -12,14 +12,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Trash2 } from 'lucide-react';
 
-interface BatchDeleteDialogProps {
+interface BatchDeleteDialogProps<T = Record<string, unknown>> {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   selectedCount: number;
   isLoading?: boolean;
   itemName?: string; // e.g., "users", "stations", "logs"
-  selectedItems?: any[]; // Optional: show preview of items to be deleted
+  selectedItems?: T[]; // Optional: show preview of items to be deleted
 }
 
 const BatchDeleteDialog: React.FC<BatchDeleteDialogProps> = ({

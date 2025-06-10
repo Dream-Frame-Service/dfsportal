@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Calendar, Clock, Plus, Edit, Trash2, Play, Pause, Loader2, AlertTriangle } from 'lucide-react';
+import { Calendar, Plus, Edit, Trash2, Play, Pause, Loader2, AlertTriangle } from 'lucide-react';
 import { smsService } from '@/services/smsService';
 
 interface AlertSchedule {

@@ -422,18 +422,17 @@ const ProductForm = () => {
       // Get the latest serial number
       const serialResponse = await supabase
         .from('products')
-        .select('serial_number')
-        .order('serial_number', { ascending: false })
-        .limit(1);
+        .select('serial_number')      .order('serial_number', { ascending: false })
+      .limit(1);
 
-      let lastSerial = serialResponse.data?.[0]?.serial_number || 0;
+    const lastSerial = serialResponse.data?.[0]?.serial_number || 0;
 
-      for (const productData of bulkUploadData) {
-        try {
-          if (!productData.product_name?.trim()) {
-            errors.push(`Row ${successCount + errorCount + 1}: Product name is required`);
-            errorCount++;
-            continue;
+    for (const productData of bulkUploadData) {
+      try {
+        if (!productData.product_name?.trim()) {
+          errors.push(`Row ${successCount + errorCount + 1}: Product name is required`);
+          errorCount++;
+          continue;
           }
 
           const productPayload: any = {

@@ -19,16 +19,16 @@ class RealtimeManager {
   callback: (payload: any) => void,
   filters?: {column: string;eq: string | number;}[])
   : () => void {
-    const channelName = `${table}_${Date.now()}`;
+  const channelName = `${table}_${Date.now()}`;
 
-    let subscription = supabase.
-    channel(channelName).
-    on(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: table as string,
+  const subscription = supabase.
+  channel(channelName).
+  on(
+    'postgres_changes',
+    {
+      event: '*',
+      schema: 'public',
+      table: table as string,
         ...(filters && { filter: filters.map((f) => `${f.column}=eq.${f.eq}`).join(',') })
       },
       callback

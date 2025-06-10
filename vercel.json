@@ -33,6 +33,14 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/reset-password",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/resetpassword",
+      "destination": "/index.html"
     }
   ],
   "headers": [

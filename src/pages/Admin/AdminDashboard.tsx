@@ -24,6 +24,7 @@ import AccessDenied from '@/components/AccessDenied';
 import AdminDiagnostics from '@/components/AdminDiagnostics';
 import AdminFeatureTester from '@/components/AdminFeatureTester';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface DashboardStat {
   label: string;
@@ -117,82 +118,44 @@ const AdminDashboard: React.FC = () => {
     try {
       console.log('Fetching real-time database statistics...');
 
-      // Fetch user profiles count (table ID: 11725)
-      const { data: userProfilesData, error: userProfilesError } = await window.ezsite.apis.tablePage(11725, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: []
-      });
-      const totalUsers = userProfilesError ? 0 : userProfilesData?.VirtualCount || 0;
+      // Fetch user profiles count
+      const { count: totalUsers } = await supabase
+        .from('user_profiles')
+        .select('*', { count: 'exact', head: true });
 
-      // Fetch employees count (table ID: 11727)
-      const { data: employeesData, error: employeesError } = await window.ezsite.apis.tablePage(11727, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: []
-      });
-      const totalEmployees = employeesError ? 0 : employeesData?.VirtualCount || 0;
+      // Fetch employees count
+      const { count: totalEmployees } = await supabase
+        .from('employees')
+        .select('*', { count: 'exact', head: true });
 
-      // Fetch products count (table ID: 11726)
-      const { data: productsData, error: productsError } = await window.ezsite.apis.tablePage(11726, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: []
-      });
-      const totalProducts = productsError ? 0 : productsData?.VirtualCount || 0;
+      // Fetch products count
+      const { count: totalProducts } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true });
 
-      // Fetch sales reports count (table ID: 12356)
-      const { data: salesData, error: salesError } = await window.ezsite.apis.tablePage(12356, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: []
-      });
-      const totalSales = salesError ? 0 : salesData?.VirtualCount || 0;
+      // Fetch sales reports count
+      const { count: totalSales } = await supabase
+        .from('sales_reports')
+        .select('*', { count: 'exact', head: true });
 
-      // Fetch licenses count (table ID: 11731)
-      const { data: licensesData, error: licensesError } = await window.ezsite.apis.tablePage(11731, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: []
-      });
-      const totalLicenses = licensesError ? 0 : licensesData?.VirtualCount || 0;
+      // Fetch licenses count
+      const { count: totalLicenses } = await supabase
+        .from('licenses_certificates')
+        .select('*', { count: 'exact', head: true });
 
-      // Fetch SMS alert history count (table ID: 12613)
-      const { data: smsData, error: smsError } = await window.ezsite.apis.tablePage(12613, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: []
-      });
-      const smsAlertsSent = smsError ? 0 : smsData?.VirtualCount || 0;
+      // Fetch SMS alert history count
+      const { count: smsAlertsSent } = await supabase
+        .from('sms_alert_history')
+        .select('*', { count: 'exact', head: true });
 
       // Active sessions count (active user profiles)
-      const { data: activeUsersData, error: activeUsersError } = await window.ezsite.apis.tablePage(11725, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: [{
-          name: "is_active",
-          op: "Equal",
-          value: true
-        }]
-      });
-      const activeSessions = activeUsersError ? 0 : activeUsersData?.VirtualCount || 0;
+      const { count: activeSessions } = await supabase
+        .from('user_profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true);
 
       console.log('Real-time database stats loaded:', {
-        totalUsers,
+        totalUsers: totalUsers || 0,
         totalEmployees,
         totalProducts,
         totalSales,

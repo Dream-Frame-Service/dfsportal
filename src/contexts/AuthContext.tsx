@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from '@/hooks/use-toast';
 import AuditLoggerService from '@/services/auditLogger';
+import { supabase } from '@/lib/supabase';
+import { AuthService } from '@/services/supabaseService';
 
 interface User {
   ID: number;
@@ -83,7 +85,7 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
 
   const checkUserSession = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.getUserInfo();
+      const { data, error } = await AuthService.getCurrentUser();
       if (error) {
         console.log('No active session');
         setLoading(false);
@@ -91,8 +93,15 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
       }
 
       if (data) {
-        setUser(data);
-        await fetchUserProfile(data.ID);
+        // Map Supabase user to legacy User interface
+        const legacyUser: User = {
+          ID: parseInt(data.id) || 0,
+          Name: data.email?.split('@')[0] || '',
+          Email: data.email || '',
+          CreateTime: data.created_at || new Date().toISOString()
+        };
+        setUser(legacyUser);
+        await fetchUserProfile(legacyUser.ID);
       }
     } catch (error) {
       console.error('Session check error:', error);
@@ -103,35 +112,41 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
 
   const fetchUserProfile = async (userId: number) => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage('11725', {
-        PageNo: 1,
-        PageSize: 1,
-        Filters: [
-        { name: 'user_id', op: 'Equal', value: userId }]
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
 
-      });
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+        throw error;
+      }
 
-      if (error) throw error;
-
-      if (data && data.List && data.List.length > 0) {
-        setUserProfile(data.List[0]);
+      if (data) {
+        setUserProfile(data);
       } else {
         // Create default profile for new users with full access
         const defaultProfile = {
           user_id: userId,
           role: 'Administrator' as const,
           station: 'ALL',
-          employee_id: `EMP${  userId.toString().padStart(4, '0')}`,
+          employee_id: `EMP${userId.toString().padStart(4, '0')}`,
           phone: '',
           hire_date: new Date().toISOString(),
           is_active: true
         };
 
-        const { error: createError } = await window.ezsite.apis.tableCreate('11725', defaultProfile);
+        const { data: newProfile, error: createError } = await supabase
+          .from('user_profiles')
+          .insert(defaultProfile)
+          .select()
+          .single();
+
         if (createError) throw createError;
 
-        // Fetch the created profile
-        await fetchUserProfile(userId);
+        if (newProfile) {
+          setUserProfile(newProfile);
+        }
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -148,22 +163,26 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
 
     try {
       setLoading(true);
-      const { error } = await window.ezsite.apis.login({ email, password });
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
       if (error) {
         // Log failed login attempt
-        await auditLogger.logLogin(email, false, undefined, error);
+        await auditLogger.logLogin(email, false, undefined, error.message);
 
         toast({
           title: "Login Failed",
-          description: error,
+          description: error.message,
           variant: "destructive"
         });
         return false;
       }
 
       // Get user info after successful login
-      const { data: userData, error: userError } = await window.ezsite.apis.getUserInfo();
+      const { data: userData, error: userError } = await AuthService.getCurrentUser();
       if (userError) {
         await auditLogger.logLogin(email, false, undefined, 'Failed to get user information');
 
@@ -175,11 +194,19 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
         return false;
       }
 
-      setUser(userData);
-      await fetchUserProfile(userData.ID);
+      // Map Supabase user to legacy User interface
+      const legacyUser: User = {
+        ID: parseInt(userData.id) || 0,
+        Name: userData.email?.split('@')[0] || '',
+        Email: userData.email || '',
+        CreateTime: userData.created_at || new Date().toISOString()
+      };
+      
+      setUser(legacyUser);
+      await fetchUserProfile(legacyUser.ID);
 
       // Log successful login
-      await auditLogger.logLogin(email, true, userData.ID);
+      await auditLogger.logLogin(email, true, legacyUser.ID);
 
       toast({
         title: "Success",
@@ -207,15 +234,19 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
 
     try {
       setLoading(true);
-      const { error } = await window.ezsite.apis.register({ email, password });
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password
+      });
 
       if (error) {
         // Log failed registration attempt
-        await auditLogger.logRegistration(email, false, error);
+        await auditLogger.logRegistration(email, false, error.message);
 
         toast({
           title: "Registration Failed",
-          description: error,
+          description: error.message,
           variant: "destructive"
         });
         return false;
@@ -254,7 +285,7 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
         await auditLogger.logLogout(user.Email, user.ID);
       }
 
-      await window.ezsite.apis.logout();
+      await supabase.auth.signOut();
       setUser(null);
       setUserProfile(null);
       toast({

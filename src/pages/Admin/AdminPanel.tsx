@@ -659,7 +659,7 @@ const AdminPanel: React.FC = () => {
 
   const testAllAdminFeatures = () => {
     console.log('Testing all admin features navigation...');
-    let testResults: {feature: string;status: string;}[] = [];
+    const testResults: {feature: string;status: string;}[] = [];
     let testedCount = 0;
 
     toast({

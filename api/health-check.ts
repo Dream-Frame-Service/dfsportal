@@ -2,8 +2,8 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.VITE_SUPABASE_ANON_KEY!
+  process.env.VITE_SUPABASE_URL || '',
+  process.env.VITE_SUPABASE_ANON_KEY || ''
 );
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -13,11 +13,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    console.log('🔍 Starting system health check...');
+    console.warn('🔍 Starting system health check...');
     
     const healthCheck = {
       timestamp: new Date().toISOString(),
-      checks: {} as Record<string, any>
+      checks: {} as Record<string, unknown>
     };
 
     // 1. Database connectivity check

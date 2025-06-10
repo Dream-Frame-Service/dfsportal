@@ -185,7 +185,7 @@ const IntelligentCacheManager: React.FC = () => {
   const applyEvictionPolicy = (entries: CacheEntry[]): CacheEntry[] => {
     if (entries.length <= config.maxSize) return entries;
 
-    let sortedEntries = [...entries];
+    const sortedEntries = [...entries];
 
     switch (config.evictionPolicy) {
       case 'lru':
@@ -197,10 +197,11 @@ const IntelligentCacheManager: React.FC = () => {
       case 'ttl':
         sortedEntries.sort((a, b) => a.timestamp.getTime() + a.ttl - (b.timestamp.getTime() + b.ttl));
         break;
-      case 'priority':
+      case 'priority': {
         const priorityOrder = { low: 0, medium: 1, high: 2, critical: 3 };
         sortedEntries.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
         break;
+      }
     }
 
     const evicted = sortedEntries.slice(0, sortedEntries.length - config.maxSize);

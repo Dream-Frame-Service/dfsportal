@@ -21,7 +21,7 @@ options: UseSafeFormOptions = {}) =>
     // Basic validation for invalid characters
     if (typeof value === 'string') {
       // Check for problematic characters that could cause InvalidCharacterError
-      const problemChars = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/;
+      const problemChars = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/;
       if (problemChars.test(value)) {
         return 'Invalid characters detected. Please remove special characters.';
       }

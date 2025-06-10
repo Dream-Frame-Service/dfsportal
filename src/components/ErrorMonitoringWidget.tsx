@@ -127,7 +127,7 @@ const ErrorMonitoringWidget: React.FC = () => {
     const interval = setInterval(checkSystemHealth, 30000); // Check every 30 seconds
 
     return () => clearInterval(interval);
-  }, [hasMonitoringAccess]);
+  }, [hasMonitoringAccess, checkSystemHealth]);
 
   // Return null if user doesn't have monitoring access
   if (!hasMonitoringAccess) {
@@ -158,16 +158,6 @@ const ErrorMonitoringWidget: React.FC = () => {
       default:return <Activity className="w-4 h-4 text-blue-500" data-id="t55nmqev4" data-path="src/components/ErrorMonitoringWidget.tsx" />;
     }
   };
-
-  useEffect(() => {
-    // Initial check
-    checkSystemHealth();
-
-    // Set up periodic monitoring
-    const interval = setInterval(checkSystemHealth, 30000); // Check every 30 seconds
-
-    return () => clearInterval(interval);
-  }, []);
 
   const unacknowledgedAlerts = activeAlerts.filter((alert) => !alert.acknowledged);
 

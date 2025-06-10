@@ -54,6 +54,12 @@ const SupabaseConnectionTestPage = () => {
     }
   }, [activeTab, toast]);
 
+  // Auto-run initial connection test
+  useEffect(() => {
+    if (!isAdmin) return;
+    runConnectionTests();
+  }, [runConnectionTests, isAdmin]);
+
   if (!isAdmin) {
     return <AccessDenied data-id="oqtn1k9vd" data-path="src/pages/Admin/SupabaseConnectionTest.tsx" />;
   }
@@ -154,11 +160,6 @@ const SupabaseConnectionTestPage = () => {
     };
     setHealthChecks((prev) => [newCheck, ...prev.slice(0, 9)]); // Keep last 10 checks
   };
-
-  // Auto-run initial connection test
-  useEffect(() => {
-    runConnectionTests();
-  }, []);
 
   const getStatusColor = (status: string) => {
     switch (status) {

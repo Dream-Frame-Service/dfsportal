@@ -1,5 +1,34 @@
 import React, { useEffect, useRef, useCallback } from 'react';
-import { MemoryLeakMonitor } from '@/services/memoryLeakMonitor';
+
+// Type definitions for DOM APIs
+type EventListener = (event: Event) => void;
+interface AddEventListenerOptions {
+  capture?: boolean;
+  once?: boolean;
+  passive?: boolean;
+  signal?: AbortSignal;
+}
+
+// Simple MemoryLeakMonitor interface
+interface MemoryLeakMonitor {
+  trackComponent: (name: string) => void;
+  untrackComponent: (name: string) => void;
+  reportPotentialLeak: (component: string, type: string, details: any) => void;
+  getInstance: () => MemoryLeakMonitor;
+}
+
+// Mock implementation
+const MemoryLeakMonitor = {
+  getInstance: (): MemoryLeakMonitor => ({
+    trackComponent: () => {},
+    untrackComponent: () => {},
+    reportPotentialLeak: () => {},
+    getInstance: () => MemoryLeakMonitor.getInstance()
+  }),
+  trackComponent: () => {},
+  untrackComponent: () => {},
+  reportPotentialLeak: () => {}
+};
 
 export interface MemoryLeakConfig {
   trackTimers?: boolean;

@@ -57,15 +57,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }    // Log the alert creation (in production, this would send emails/SMS)
     console.warn(`Created ${alerts.length} license expiry alerts`);
     
-    // TODO: Integrate with email service to send actual notifications
-    // For now, we'll log the summary
+    // TODO: Integrate with email service to send actual notifications    // For now, we'll log the summary
     const summary = {
       total_licenses_checked: expiringLicenses.length,
       alerts_created: alerts.length,
       stations_affected: Object.keys(licensesByStation).length,
-      critical_alerts: alerts.filter((a: any) => a.alert_type === 'critical').length,
-      warning_alerts: alerts.filter((a: any) => a.alert_type === 'warning').length,
-      notice_alerts: alerts.filter((a: any) => a.alert_type === 'notice').length,
+      critical_alerts: (alerts as unknown[]).filter((a: unknown) => (a as Record<string, unknown>).alert_type === 'critical').length,
+      warning_alerts: (alerts as unknown[]).filter((a: unknown) => (a as Record<string, unknown>).alert_type === 'warning').length,
+      notice_alerts: (alerts as unknown[]).filter((a: unknown) => (a as Record<string, unknown>).alert_type === 'notice').length,
       execution_time: new Date().toISOString()
     };
 

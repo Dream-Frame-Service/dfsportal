@@ -11,9 +11,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-
   try {
-    console.log('📊 Generating daily sales report...');
+    console.warn('📊 Generating daily sales report...');
     
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];
@@ -32,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const report = {
       date: todayStr,
       generated_at: new Date().toISOString(),
-      stations: [] as any[],
+      stations: [] as Array<Record<string, unknown>>,
       summary: {
         total_sales: 0,
         total_fuel_gallons: 0,
@@ -92,12 +91,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       reporting_rate: reportingRate,
       average_sales_per_station: report.summary.stations_reporting > 0 ? 
         Math.round(report.summary.total_sales / report.summary.stations_reporting) : 0
-    };
-
-    // Identify missing reports
+    };    // Identify missing reports
     const missingReports = report.stations.filter(s => !s.has_report);
     
-    console.log(`📈 Daily report summary:
+    console.warn(`📈 Daily report summary:
       - Total Sales: $${report.summary.total_sales.toLocaleString()}
       - Stations Reporting: ${report.summary.stations_reporting}/${stations?.length || 0}
       - Reporting Rate: ${reportingRate}%

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 import {
   Shield,
   Users,
@@ -155,24 +156,17 @@ const EnhancedUserPermissionManager: React.FC = () => {
       setLoading(true);
       console.log('Fetching user profiles from database...');
 
-      // Fetch from user_profiles table (ID: 11725)
-      const { data, error } = await window.ezsite.apis.tablePage(11725, {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: "id",
-        IsAsc: false,
-        Filters: [
-        {
-          name: "is_active",
-          op: "Equal",
-          value: true
-        }]
-
-      });
+      // Fetch from user_profiles table using Supabase
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('is_active', true)
+        .order('id', { ascending: false })
+        .limit(100);
 
       if (error) throw error;
 
-      const profiles = data?.List || [];
+      const profiles = data || [];
       console.log(`Loaded ${profiles.length} active user profiles`);
 
       setUserProfiles(profiles);
@@ -454,10 +448,12 @@ const EnhancedUserPermissionManager: React.FC = () => {
 
       const permissionsJson = JSON.stringify(permissions);
 
-      const { error } = await window.ezsite.apis.tableUpdate(11725, {
-        id: selectedUser.id,
-        detailed_permissions: permissionsJson
-      });
+      const { error } = await supabase
+        .from('user_profiles')
+        .update({
+          detailed_permissions: permissionsJson
+        })
+        .eq('id', selectedUser.id);
 
       if (error) throw error;
 

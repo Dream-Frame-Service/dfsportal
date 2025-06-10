@@ -249,8 +249,16 @@ const DashboardLayout: React.FC = () => {
             </Button>
           }
           
-          {/* Page title - Responsive */}
+          {/* Page title with logo - Responsive */}
           <div className={`flex items-center ${responsive.isMobile ? 'flex-1 justify-center' : 'space-x-4'}`} data-id="ai89qjsvy" data-path="src/components/Layout/DashboardLayout.tsx">
+            {/* Logo in header for desktop/tablet */}
+            {!responsive.isMobile &&
+              <Logo 
+                size="sm" 
+                showText={false} 
+                className="opacity-80 hover:opacity-100 transition-opacity"
+              />
+            }
             <h1 className={`font-semibold text-brand-900 ${
             responsive.isMobile ? 'text-lg' : 'text-xl'}`
             } data-id="h40aqmhpa" data-path="src/components/Layout/DashboardLayout.tsx">

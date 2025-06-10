@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -259,7 +259,7 @@ const AdminDiagnostics: React.FC = () => {
 
         case 'backup': {
           // Test backup by checking audit logs exist
-          const { data: auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, {
+          const { data: _auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, {
             PageNo: 1,
             PageSize: 1,
             Filters: []

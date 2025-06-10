@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -91,7 +91,7 @@ const AlertThresholdManager = () => {
   }]
   );
 
-  const [notificationChannels, setNotificationChannels] = useState<NotificationChannel[]>([
+  const [notificationChannels, _setNotificationChannels] = useState<NotificationChannel[]>([
   {
     id: '1',
     type: 'email',
@@ -109,7 +109,7 @@ const AlertThresholdManager = () => {
   );
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [editingRule, setEditingRule] = useState<AlertRule | null>(null);
+  const [_editingRule, setEditingRule] = useState<AlertRule | null>(null);
   const [newRule, setNewRule] = useState<Partial<AlertRule>>({
     name: '',
     metric: 'connection_time',
@@ -167,7 +167,7 @@ const AlertThresholdManager = () => {
     });
   };
 
-  const handleUpdateRule = (updatedRule: AlertRule) => {
+  const _handleUpdateRule = (updatedRule: AlertRule) => {
     setAlertRules((prev) =>
     prev.map((rule) => rule.id === updatedRule.id ? updatedRule : rule)
     );

@@ -92,6 +92,7 @@
 		"git.timeline.showUncommitted": true,
 		"git.verboseCommit": true,
 		"github-actions.use-enterprise": true,
-		"github-actions.workflows.pinned.refresh.enabled": true
+		"github-actions.workflows.pinned.refresh.enabled": true,
+		"CodeGPT.apiKey": "CodeGPT Plus Beta"
 	}
 }

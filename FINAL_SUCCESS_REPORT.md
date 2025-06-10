@@ -10,8 +10,8 @@
 
 ## 🌐 **LIVE PRODUCTION APPLICATIONS**
 
-### ✅ **PRIMARY: Netlify Deployment - FIXED & LIVE**
-- **URL**: https://dfsmanagerportal.netlify.app
+### ✅ **PRIMARY: Vercel Deployment - LIVE & CONFIGURED**
+- **URL**: https://dfsportal.vercel.app
 - **Status**: ✅ **LIVE** (HTTP 200 OK)
 - **Performance**: Fast loading, all features operational
 - **Fix Applied**: Custom build script with dependency verification

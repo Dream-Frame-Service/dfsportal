@@ -14,8 +14,8 @@ The DFS Manager Portal has been successfully deployed to production with multipl
 - ✅ **Performance**: Fast loading (2.5MB bundle, 563KB gzipped)
 - ✅ **Features**: All core functionality operational
 
-### 🔄 Secondary Deployment (Netlify)  
-**URL**: https://dfsmanagerportal.netlify.app
+### 🔄 Primary Deployment (Vercel)  
+**URL**: https://dfsportal.vercel.app
 - 🔄 **Status**: Build fixes applied, monitoring completion
 - ✅ **Configuration**: Enhanced with robust build scripts
 - ✅ **Fallback**: Alternative configurations ready

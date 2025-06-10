@@ -84,5 +84,5 @@ testAdminCreation().then(() => {
   console.log('- Go to https://supabase.com/dashboard')
   console.log('- Select your project → Authentication → Settings')
   console.log('- Enable "Allow new users to sign up"')
-  console.log('\n🌐 Then test at: https://dfsmanagerportal.netlify.app/login')
+  console.log('\n🌐 Then test at: https://dfsportal.vercel.app/login')
 })

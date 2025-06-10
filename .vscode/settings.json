@@ -54,5 +54,6 @@
   "supabase.projectUrl": "https://vetufvhzmawjbsumtplq.supabase.co",
   "supabase.showLocalWarnings": false,
   "supabase.useLocal": false,
-  "terminal.integrated.sendKeybindingsToShell": true
+  "terminal.integrated.sendKeybindingsToShell": true,
+  "python.analysis.userFileIndexingLimit": 20000
 }

@@ -34,7 +34,7 @@ export function initializeMemoryLeakDetection() {
     const activeTimers = new Set<number>();
     const activeIntervals = new Set<number>();
 
-    window.setTimeout = function (callback: (...args: any[]) => void, delay?: number, ...args: any[]) {
+    window.setTimeout = function (callback: Function, delay?: number, ...args: any[]) {
       const id = originalSetTimeout.call(window, (...callbackArgs) => {
         activeTimers.delete(id);
         return callback(...callbackArgs);
@@ -49,7 +49,7 @@ export function initializeMemoryLeakDetection() {
       return id;
     };
 
-    window.setInterval = function (callback: (...args: any[]) => void, delay?: number, ...args: any[]) {
+    window.setInterval = function (callback: Function, delay?: number, ...args: any[]) {
       const id = originalSetInterval.call(window, callback, delay, ...args);
       activeIntervals.add(id);
 

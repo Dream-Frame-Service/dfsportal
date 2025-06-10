@@ -3,13 +3,11 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import {
   UserPlus, Building, MessageSquare, Shield, CheckCircle,
-  ArrowRight, Loader2, AlertTriangle, Info } from
+  ArrowRight, Loader2, Info } from
 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,10 +22,10 @@ interface SetupStep {
 
 const AdminFirstTimeSetup: React.FC = () => {
   const { toast } = useToast();
-  const { userProfile } = useAuth();
+  const { userProfile: _userProfile } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [setupProgress, setSetupProgress] = useState(0);
+  const [_setupProgress, setSetupProgress] = useState(0);
 
   // Form data for admin user creation
   const [adminForm, setAdminForm] = useState({

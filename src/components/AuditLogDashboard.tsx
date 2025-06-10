@@ -42,7 +42,7 @@ const AuditLogDashboard: React.FC = () => {
   const fetchAuditData = async () => {
     setLoading(true);
     try {
-      console.log('Fetching real-time audit log data...');
+      // Fetching real-time audit log data
 
       // Fetch recent audit logs (table ID: 12706)
       const { data: auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, {
@@ -59,7 +59,7 @@ const AuditLogDashboard: React.FC = () => {
       }
 
       const logs = auditData?.List || [];
-      console.log('Audit logs loaded:', logs.length, 'entries');
+      // Audit logs loaded: ${logs.length} entries
 
       // Calculate statistics from real data
       const totalEvents = logs.length;

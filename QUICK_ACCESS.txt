@@ -1,0 +1,27 @@
+🎯 DFS PORTAL - QUICK ACCESS GUIDE
+=====================================
+
+🔐 ADMIN LOGIN
+--------------
+Email: mobil3801beach@gmail.com
+URL: https://dfsportal.vercel.app/login
+
+📧 FIRST TIME SETUP
+-------------------
+1. Check email for Supabase password reset
+2. Click reset link to set password
+3. Login at the URL above
+
+🌐 APPLICATION URLS
+-------------------
+Main Site: https://dfsportal.vercel.app
+Login: https://dfsportal.vercel.app/login
+Reset Password: https://dfsportal.vercel.app/reset-password
+
+🔧 TROUBLESHOOTING
+------------------
+Re-send reset email: node create-admin-user.mjs
+Check environment: cat .env
+Verify routes: cat vercel.json
+
+✅ STATUS: READY FOR PRODUCTION

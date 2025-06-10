@@ -3,8 +3,11 @@ import App from './App.tsx';
 import './index.css';
 
 // Simple version without memory leak detection and error monitoring
-console.log('Starting app render...');
+console.warn('Starting app render...');
 
-createRoot(document.getElementById("root")!).render(<App data-id="pjf367331" data-path="src/main.tsx" />);
+const rootElement = document.getElementById("root");
+if (rootElement) {
+  createRoot(rootElement).render(<App data-id="pjf367331" data-path="src/main.tsx" />);
+}
 
-console.log('App render completed');
+console.warn('App render completed');

@@ -1,9 +1,32 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
+interface CleanupTask {
+  task: string;
+  status: 'success' | 'error';
+  records_processed?: number;
+  records_affected?: number;
+  records_identified?: number;
+  cutoff_date?: string;
+  action?: string;
+  error?: string | null;
+}
+
+interface CleanupSummary {
+  started_at: string;
+  completed_at?: string;
+  tasks: CleanupTask[];
+  summary?: {
+    total_tasks: number;
+    successful_tasks: number;
+    failed_tasks: number;
+    total_records_affected: number;
+  };
+}
+
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL!,
-  process.env.VITE_SUPABASE_ANON_KEY!
+  process.env.VITE_SUPABASE_URL || '',
+  process.env.VITE_SUPABASE_ANON_KEY || ''
 );
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -13,12 +36,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    console.log('🧹 Starting weekly database cleanup...');
+    console.warn('🧹 Starting weekly database cleanup...');
     
-    const now = new Date();
-    const cleanupSummary = {
+    const now = new Date();    const cleanupSummary: CleanupSummary = {
       started_at: now.toISOString(),
-      tasks: [] as any[]
+      tasks: []
     };
 
     // 1. Clean up old audit logs (keep last 90 days)
@@ -123,9 +145,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       successful_tasks: successfulTasks.length,
       failed_tasks: failedTasks.length,
       total_records_affected: totalRecordsAffected
-    };
-
-    console.log(`🧹 Weekly cleanup completed:
+    };    console.warn(`🧹 Weekly cleanup completed:
       - Tasks executed: ${cleanupSummary.summary.total_tasks}
       - Successful: ${cleanupSummary.summary.successful_tasks}
       - Failed: ${cleanupSummary.summary.failed_tasks}

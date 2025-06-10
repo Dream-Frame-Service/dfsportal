@@ -124,7 +124,7 @@ class EnhancedSMSService {
 
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + btoa(`${this.config.accountSid}:${this.config.authToken}`)
+      'Authorization': `Basic ${  btoa(`${this.config.accountSid}:${this.config.authToken}`)}`
     };
 
     const options: RequestInit = {

@@ -63,7 +63,7 @@ const SupabaseConnectionTest = () => {
           test: 'Supabase Configuration',
           status: 'success',
           message: 'Configuration loaded successfully',
-          details: { url: url.substring(0, 30) + '...', hasKey: true }
+          details: { url: `${url.substring(0, 30)  }...`, hasKey: true }
         });
       }
     } catch (error) {

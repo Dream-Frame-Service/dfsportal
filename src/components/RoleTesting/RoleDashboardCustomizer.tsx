@@ -214,7 +214,7 @@ const RoleDashboardCustomizer: React.FC = () => {
 
   const exportConfiguration = () => {
     const config = {
-      widgets: widgets,
+      widgets,
       exportDate: new Date().toISOString(),
       exportedBy: userProfile?.employee_id || 'Unknown'
     };

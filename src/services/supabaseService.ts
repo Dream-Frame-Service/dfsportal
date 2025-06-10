@@ -340,7 +340,7 @@ export class EmailService {
         from: emailData.from,
         to: emailData.to,
         subject: emailData.subject,
-        preview: emailData.html.substring(0, 100) + '...'
+        preview: `${emailData.html.substring(0, 100)  }...`
       });
 
       // You can replace this with actual email service integration

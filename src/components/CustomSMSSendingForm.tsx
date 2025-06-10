@@ -221,7 +221,7 @@ const CustomSMSSendingForm: React.FC = () => {
 
         setLastSentMessage({
           phone: formattedPhone,
-          message: message,
+          message,
           timestamp: new Date(),
           messageId: result.messageId
         });

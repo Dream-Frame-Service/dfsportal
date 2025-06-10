@@ -239,7 +239,7 @@ export const SupabaseAuthProvider: React.FC<SupabaseAuthProviderProps> = ({ chil
   const updatePassword = async (password: string) => {
     try {
       const { error } = await supabase.auth.updateUser({
-        password: password
+        password
       });
 
       if (error) {

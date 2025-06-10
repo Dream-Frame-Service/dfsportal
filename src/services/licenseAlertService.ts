@@ -208,7 +208,7 @@ class LicenseAlertService {
       // Send SMS
       const smsResult = await smsService.sendSMS({
         to: contact.mobile_number,
-        message: message,
+        message,
         type: 'license_alert'
       });
 

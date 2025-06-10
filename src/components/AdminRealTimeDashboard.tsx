@@ -3,16 +3,16 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
+import { _Tabs, _TabsContent, _TabsList, _TabsTrigger } from '@/components/ui/tabs';
+import { _Progress } from '@/components/ui/progress';
+import { _Separator } from '@/components/ui/separator';
 import {
-  BarChart3, Users, Package, FileText, Truck, Settings,
-  DollarSign, AlertTriangle, CheckCircle, Clock, TrendingUp,
-  Shield, Eye, Plus, Edit, Download, Bell, Zap, Calendar,
-  Rocket, Target, Info, ChevronRight, X, RefreshCw,
-  Building2, Gas, Receipt, CreditCard, Banknote, Fuel,
-  Database, Activity, Server, Wifi, HardDrive, MemoryStick } from
+  _BarChart3, Users, Package, FileText, _Truck, Settings,
+  DollarSign, AlertTriangle, _CheckCircle, _Clock, _TrendingUp,
+  Shield, _Eye, _Plus, _Edit, _Download, Bell, _Zap, _Calendar,
+  Rocket, _Target, _Info, _ChevronRight, _X, RefreshCw,
+  Building2, _Gas, _Receipt, _CreditCard, _Banknote, _Fuel,
+  Database, Activity, Server, _Wifi, _HardDrive, _MemoryStick } from
 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEnhancedRoleAccess } from '@/hooks/use-enhanced-role-access';
@@ -59,7 +59,7 @@ interface SystemAlert {
 }
 
 const AdminRealTimeDashboard: React.FC = () => {
-  const { userProfile } = useAuth();
+  const { userProfile: _userProfile } = useAuth();
   const roleAccess = useEnhancedRoleAccess();
   const navigate = useNavigate();
   const { toast } = useToast();

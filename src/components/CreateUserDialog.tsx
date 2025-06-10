@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, User, Mail, Phone, Building2, Shield, Calendar, Eye, EyeOff } from 'lucide-react';
+import { Loader2, User, Mail, _Phone, Building2, Shield, _Calendar, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface CreateUserDialogProps {
@@ -105,10 +105,10 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
 
     setLoading(true);
     try {
-      console.log('Starting user creation process...');
+      console.warn('Starting user creation process...');
 
       // Step 1: Register user with Supabase Auth
-      console.log('Registering user with email:', formData.email);
+      console.warn('Registering user with email:', formData.email);
       const { error: authError } = await window.ezsite.apis.register({
         email: formData.email,
         password: formData.password
@@ -119,7 +119,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
         throw new Error(`Failed to create user account: ${authError}`);
       }
 
-      console.log('User authentication account created successfully');
+      console.warn('User authentication account created successfully');
 
       // Step 2: Get the newly created user info
       let userInfo;
@@ -139,7 +139,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
             await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second before retry
           }
         } catch (error) {
-          console.log(`Retry ${retryCount + 1} failed:`, error);
+          console.warn(`Retry ${retryCount + 1} failed:`, error);
           retryCount++;
           if (retryCount < maxRetries) {
             await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -152,7 +152,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
         throw new Error('User was created but profile setup failed. Please try to create the profile manually.');
       }
 
-      console.log('Retrieved user info:', userInfo);
+      console.warn('Retrieved user info:', userInfo);
 
       // Step 3: Create user profile in the database
       const profileData = {
@@ -182,7 +182,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
         })
       };
 
-      console.log('Creating user profile with data:', profileData);
+      console.warn('Creating user profile with data:', profileData);
       const { error: profileError } = await window.ezsite.apis.tableCreate(11725, profileData);
 
       if (profileError) {
@@ -190,7 +190,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
         throw new Error(`Failed to create user profile: ${profileError}`);
       }
 
-      console.log('User profile created successfully');
+      console.warn('User profile created successfully');
 
       // Step 4: Send welcome email (optional)
       try {
@@ -230,7 +230,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
           html: emailContent
         });
 
-        console.log('Welcome email sent successfully');
+        console.warn('Welcome email sent successfully');
       } catch (emailError) {
         console.warn('Failed to send welcome email:', emailError);
         // Don't fail the entire process if email fails

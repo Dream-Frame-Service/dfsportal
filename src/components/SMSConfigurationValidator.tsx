@@ -197,7 +197,7 @@ const SMSConfigurationValidator: React.FC = () => {
           issues.push({
             field: 'connection',
             valid: false,
-            message: 'Error testing connection: ' + (error instanceof Error ? error.message : 'Unknown error'),
+            message: `Error testing connection: ${  error instanceof Error ? error.message : 'Unknown error'}`,
             suggestion: 'Check your internet connection and credentials'
           });
         }
@@ -266,7 +266,7 @@ const SMSConfigurationValidator: React.FC = () => {
       const response = await fetch(baseUrl, {
         method: 'GET',
         headers: {
-          'Authorization': 'Basic ' + btoa(`${config.accountSid}:${config.authToken}`)
+          'Authorization': `Basic ${  btoa(`${config.accountSid}:${config.authToken}`)}`
         }
       });
 

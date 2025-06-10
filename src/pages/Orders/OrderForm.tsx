@@ -294,7 +294,7 @@ const OrderForm: React.FC = () => {
         station: formData.station,
         total_amount: formData.total_amount,
         status: 'Pending',
-        notes: formData.notes + `\n\nItems:\n${formData.items.map((item) =>
+        notes: `${formData.notes  }\n\nItems:\n${formData.items.map((item) =>
         `- ${item.product.product_name} (${item.product.product_code}) x${item.quantity} ${item.unitType} = $${item.subtotal.toFixed(2)}`
         ).join('\n')}`,
         created_by: 1

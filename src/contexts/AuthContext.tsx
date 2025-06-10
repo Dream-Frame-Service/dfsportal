@@ -121,7 +121,7 @@ export const AuthProvider: React.FC<{children: ReactNode;}> = ({ children }) => 
           user_id: userId,
           role: 'Administrator' as const,
           station: 'ALL',
-          employee_id: 'EMP' + userId.toString().padStart(4, '0'),
+          employee_id: `EMP${  userId.toString().padStart(4, '0')}`,
           phone: '',
           hire_date: new Date().toISOString(),
           is_active: true

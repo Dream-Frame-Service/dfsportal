@@ -407,7 +407,7 @@ class SMSService {
     try {
       const result = await this.sendSMS({
         to: phoneNumber,
-        message: message,
+        message,
         type: 'custom'
       });
       return result;

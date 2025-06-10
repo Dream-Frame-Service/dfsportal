@@ -1,6 +1,22 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 
+interface HealthCheck {
+  status: 'healthy' | 'warning' | 'error' | 'critical';
+  response_time?: number;
+  record_count?: number;
+  buckets_count?: number;
+  score?: number;
+  healthy_checks?: number;
+  total_checks?: number;
+  error?: string | null;
+}
+
+interface HealthReport {
+  timestamp: string;
+  checks: Record<string, HealthCheck>;
+}
+
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL || '',
   process.env.VITE_SUPABASE_ANON_KEY || ''
@@ -14,15 +30,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     console.warn('🔍 Starting system health check...');
-    
-    const healthCheck = {
+      const healthCheck: HealthReport = {
       timestamp: new Date().toISOString(),
-      checks: {} as Record<string, unknown>
-    };
-
-    // 1. Database connectivity check
+      checks: {}
+    };// 1. Database connectivity check
     try {
-      const { data, error } = await supabase
+      const { data: _data, error } = await supabase
         .from('employees')
         .select('id')
         .limit(1);
@@ -37,11 +50,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error'
       };
-    }
-
-    // 2. Auth service check
+    }    // 2. Auth service check
     try {
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const { data: { session: _session }, error } = await supabase.auth.getSession();
       healthCheck.checks.auth = {
         status: error ? 'error' : 'healthy',
         error: error?.message || null
@@ -87,9 +98,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         status: 'error',
         error: error instanceof Error ? error.message : 'Unknown error'
       };
-    }
-
-    // Calculate overall health score
+    }    // Calculate overall health score
     const totalChecks = Object.keys(healthCheck.checks).length;
     const healthyChecks = Object.values(healthCheck.checks).filter(check => check.status === 'healthy').length;
     const healthScore = Math.round((healthyChecks / totalChecks) * 100);
@@ -101,12 +110,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       total_checks: totalChecks
     };
 
-    console.log(`🏥 Health check completed - Score: ${healthScore}%`);
-
-    // Log critical issues
+    console.warn(`🏥 Health check completed - Score: ${healthScore}%`);    // Log critical issues
     const criticalIssues = Object.entries(healthCheck.checks)
-      .filter(([key, check]) => check.status === 'error')
-      .map(([key, check]) => ({ component: key, error: check.error }));
+      .filter(([_key, check]) => check.status === 'error')
+      .map(([_key, check]) => ({ component: _key, error: check.error }));
 
     if (criticalIssues.length > 0) {
       console.warn('⚠️ Critical issues detected:', criticalIssues);
@@ -116,7 +123,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       success: true,
       message: 'System health check completed',
       health_score: healthScore,
-      status: healthCheck.checks.overall.status,
+      status: healthCheck.checks.overall?.status as string,
       details: healthCheck,
       critical_issues: criticalIssues
     });

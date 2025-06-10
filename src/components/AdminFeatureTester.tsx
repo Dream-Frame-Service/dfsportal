@@ -164,7 +164,7 @@ const AdminFeatureTester: React.FC = () => {
         t
         ));
 
-        console.log(`✅ ${test.name} - Test: ${success ? 'PASSED' : 'FAILED'} (${responseTime}ms)`);
+        console.warn(`✅ ${test.name} - Test: ${success ? 'PASSED' : 'FAILED'} (${responseTime}ms)`);
 
       } catch (error) {
         setTests((prev) => prev.map((t) =>
@@ -204,7 +204,7 @@ const AdminFeatureTester: React.FC = () => {
   };
 
   const navigateToFeature = (path: string) => {
-    console.log(`Manual navigation to: ${path}`);
+    console.warn(`Manual navigation to: ${path}`);
     navigate(path);
   };
 

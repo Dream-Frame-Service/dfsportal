@@ -4,7 +4,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './contexts/AuthContext';
 import { SupabaseAuthProvider } from './contexts/SupabaseAuthContext';
-import RealTimeDataProvider from '@/components/RealTimeDataProvider';
+import _RealTimeDataProvider from '@/components/RealTimeDataProvider';
 import { GlobalErrorBoundary } from './components/ErrorBoundary';
 import InvalidCharacterErrorBoundary from './components/ErrorBoundary/InvalidCharacterErrorBoundary';
 
@@ -25,7 +25,7 @@ import LicenseForm from './pages/Licenses/LicenseForm';
 import SalaryList from './pages/Salary/SalaryList';
 import SalaryForm from './pages/Salary/SalaryForm';
 import InventoryAlerts from './pages/Inventory/InventoryAlerts';
-import AlertSettings from './pages/Inventory/AlertSettings';
+import _AlertSettings from './pages/Inventory/AlertSettings';
 import GasDeliveryInventory from './pages/Inventory/GasDeliveryInventory';
 import DeliveryList from './pages/Delivery/DeliveryList';
 import DeliveryForm from './pages/Delivery/DeliveryForm';

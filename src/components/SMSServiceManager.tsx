@@ -173,11 +173,11 @@ const SMSServiceManager: React.FC = () => {
       const testResult: TestResult = {
         phoneNumber: testPhone,
         message: testMessage,
-        success: success,
-        error: error,
+        success,
+        error,
         timestamp: new Date(),
         provider: 'Twilio (Simulated)',
-        messageId: messageId
+        messageId
       };
 
       const newResults = [testResult, ...testResults.slice(0, 9)]; // Keep last 10 tests

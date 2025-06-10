@@ -338,7 +338,7 @@ const SMSTestManager: React.FC = () => {
       accountSid: config.account_sid,
       fromNumber: config.from_number,
       messagingServiceSid: config.messaging_service_sid,
-      to: to,
+      to,
       messageLength: message.length,
       testMode: config.test_mode
     });

@@ -401,8 +401,8 @@ export default function SalesReportForm() {
           <CashCollectionSection
             values={{
               cashCollectionOnHand: formData.cashCollectionOnHand,
-              totalCashFromSales: totalCashFromSales,
-              totalCashFromExpenses: totalCashFromExpenses
+              totalCashFromSales,
+              totalCashFromExpenses
             }}
             onChange={updateFormData} data-id="uxwy7v32k" data-path="src/pages/Sales/SalesReportForm.tsx" />
 

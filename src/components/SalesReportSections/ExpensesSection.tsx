@@ -95,7 +95,7 @@ const ExpensesSection: React.FC<ExpensesSectionProps> = ({
     try {
       const { data: fileId, error } = await window.ezsite.apis.upload({
         filename: file.name,
-        file: file
+        file
       });
 
       if (error) throw error;

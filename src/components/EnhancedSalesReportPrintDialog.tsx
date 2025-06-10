@@ -505,7 +505,7 @@ const EnhancedSalesReportPrintDialog: React.FC<EnhancedSalesReportPrintDialogPro
             <div class="verification-item">
               <span>Payment Methods Balance:</span>
               <span class="${isPaymentBalanced ? 'check-passed' : 'check-failed'}">
-                ${isPaymentBalanced ? '✓ Balanced' : '⚠️ Discrepancy: ' + formatCurrency(Math.abs(totalPaymentMethods - report.total_sales))}
+                ${isPaymentBalanced ? '✓ Balanced' : `⚠️ Discrepancy: ${  formatCurrency(Math.abs(totalPaymentMethods - report.total_sales))}`}
               </span>
             </div>
             <div class="verification-item">

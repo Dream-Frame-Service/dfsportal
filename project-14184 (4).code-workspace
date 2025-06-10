@@ -21,6 +21,9 @@
 		"githubPullRequests.experimental.chat": true,
 		"githubPullRequests.experimental.notificationsView": true,
 		"githubPullRequests.experimental.useQuickChat": true,
-		"terminal.integrated.sendKeybindingsToShell": true
+		"terminal.integrated.sendKeybindingsToShell": true,
+		"genieai.openai.model": "o1-preview",
+		"genieai.enableConversationHistory": true,
+		"genieai.openai.maxTokens": 2048
 	}
 }

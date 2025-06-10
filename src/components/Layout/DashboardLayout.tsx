@@ -33,6 +33,7 @@ import {
 'lucide-react';
 
 import Logo from '@/components/Logo';
+import HeaderLogo from '@/components/HeaderLogo';
 import { PageErrorBoundary } from '@/components/ErrorBoundary';
 import { useResponsiveLayout } from '@/hooks/use-mobile';
 
@@ -251,9 +252,9 @@ const DashboardLayout: React.FC = () => {
           
           {/* Page title with logo - Responsive */}
           <div className={`flex items-center ${responsive.isMobile ? 'flex-1 justify-center' : 'space-x-4'}`} data-id="ai89qjsvy" data-path="src/components/Layout/DashboardLayout.tsx">
-            {/* Logo in header for desktop/tablet */}
+            {/* Your actual logo in header for desktop/tablet */}
             {!responsive.isMobile &&
-              <Logo 
+              <HeaderLogo 
                 size="sm" 
                 showText={false} 
                 className="opacity-80 hover:opacity-100 transition-opacity"

@@ -1,10 +1,13 @@
-// Create admin user: mobil3801beach@gmail.com with full access
+// Load environment variables from .env (create a .env file with APP_URL=https://your-domain.vercel.app)
+import 'dotenv/config';
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://vetufvhzmawjbsumtplq.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk'
+const supabaseUrl = process.env.SUPABASE_URL || 'https://vetufvhzmawjbsumtplq.supabase.co'
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk'
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Use your Vercel production URL
+const appUrl = 'https://dfsportal.vercel.app';
 
 const ADMIN_EMAIL = 'mobil3801beach@gmail.com'
 const ADMIN_PASSWORD = 'AdminDFS2025!'
@@ -42,7 +45,7 @@ async function createAdminUser() {
         if (signInError) {
           console.log('⚠️ Cannot sign in with existing password. Sending password reset...')
           const { error: resetError } = await supabase.auth.resetPasswordForEmail(ADMIN_EMAIL, {
-            redirectTo: 'https://dfsmanagerportal.netlify.app/reset-password'
+            redirectTo: `${appUrl}/resetpassword`
           })
           
           if (resetError) {
@@ -59,7 +62,7 @@ async function createAdminUser() {
         console.log('⚠️ Signups are disabled. Sending password reset to create/activate account...')
         
         const { error: resetError } = await supabase.auth.resetPasswordForEmail(ADMIN_EMAIL, {
-          redirectTo: 'https://dfsmanagerportal.netlify.app/reset-password'
+          redirectTo: `${appUrl}/resetpassword`
         })
         
         if (resetError) {
@@ -134,7 +137,7 @@ createAdminUser().then(success => {
     console.log('')
     console.log('📧 Admin Email: mobil3801beach@gmail.com')
     console.log('🔑 Admin Password: AdminDFS2025!')
-    console.log('🌐 Login URL: https://dfsmanagerportal.netlify.app/login')
+    console.log(`🌐 Login URL: ${appUrl}/login`)
     console.log('')
     console.log('👑 Admin Permissions: FULL ACCESS')
     console.log('   • Dashboard Management')

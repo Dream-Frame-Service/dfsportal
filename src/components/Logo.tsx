@@ -42,7 +42,7 @@ const Logo: React.FC<LogoProps> = ({
       <div className="relative flex-shrink-0" data-id="8sfjadh9g" data-path="src/components/Logo.tsx">
         {!imageError ?
         <img
-          src="https://newoaks.s3.us-west-1.amazonaws.com/AutoDev/19016/c533e5f9-97eb-43d2-8be6-bcdff5709bba.png"
+          src="/dfs-manager-logo.png"
           alt="DFS Manager Portal Logo"
           className={`${sizeClasses[size]} object-contain drop-shadow-sm`}
           onError={() => {

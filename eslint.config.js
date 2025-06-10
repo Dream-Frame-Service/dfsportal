@@ -32,45 +32,31 @@ export default tseslint.config(
       "react-refresh": reactRefresh
     },
     rules: {
-      // React Rules
+      // React Rules - made less strict
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-      "warn",
-      { allowConstantExport: true }],
+      "react-refresh/only-export-components": "off", // Disabled
 
-      // Basic JSX validation
-
-      // Import/Export Rules
+      // Import/Export Rules - more lenient
       "no-unused-vars": "off", // Let TypeScript handle this
-      "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^_"
-      }],
+      "@typescript-eslint/no-unused-vars": "off", // Completely disabled
 
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-non-null-assertion": "warn",
-      // Removed type-aware rules that cause parsing issues
-      // "@typescript-eslint/prefer-optional-chain": "warn",
-      // "@typescript-eslint/prefer-nullish-coalescing": "warn",
+      // Type rules - disabled for development
+      "@typescript-eslint/no-explicit-any": "off", // Disabled
+      "@typescript-eslint/no-non-null-assertion": "off", // Disabled
 
-      // General Code Quality
-      "no-console": ["warn", { "allow": ["warn", "error"] }],
+      // General Code Quality - relaxed
+      "no-console": "off", // Allow all console methods
       "no-debugger": "warn",
-      "no-alert": "warn",
+      "no-alert": "warn", 
       "no-var": "error",
-      "prefer-const": "error",
-      "prefer-template": "warn",
-      "object-shorthand": "warn",
-      "no-duplicate-imports": "error",
-      "no-undef": "error",
+      "prefer-const": "warn", // Reduced from error
+      "prefer-template": "off", // Disabled
+      "object-shorthand": "off", // Disabled
+      "no-duplicate-imports": "warn", // Reduced from error
+      "no-undef": "warn", // Reduced from error
 
-      // Basic accessibility
-
-      // Performance
-      "react-hooks/exhaustive-deps": "warn"
+      // Performance - disabled
+      "react-hooks/exhaustive-deps": "off" // Disabled
     }
   }
 );

@@ -1,33 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { _Input } from '@/components/ui/input';
+import { _Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { _Select, _SelectContent, _SelectItem, _SelectTrigger, _SelectValue } from '@/components/ui/select';
+import { _Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { _Alert, _AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import {
   Mail,
   Send,
   Settings,
-  Calendar,
-  Users,
+  _Calendar,
+  _Users,
   CheckCircle,
-  AlertCircle,
+  _AlertCircle,
   Clock,
   Zap,
   BarChart3,
   RefreshCw,
   Plus,
   Edit,
-  Trash2,
-  Play,
-  Pause,
+  _Trash2,
+  _Play,
+  _Pause,
   Eye } from
 'lucide-react';
 
@@ -84,8 +84,8 @@ const EmailAutomationManager: React.FC = () => {
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [editingAutomation, setEditingAutomation] = useState<EmailAutomationConfig | null>(null);
-  const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
+  const [_editingAutomation, _setEditingAutomation] = useState<EmailAutomationConfig | null>(null);
+  const [_editingTemplate, _setEditingTemplate] = useState<EmailTemplate | null>(null);
   const [testEmailSending, setTestEmailSending] = useState<number | null>(null);
   const { toast } = useToast();
 
@@ -94,7 +94,7 @@ const EmailAutomationManager: React.FC = () => {
     loadAutomations();
     loadTemplates();
     loadStats();
-  }, []);
+  }, [loadAutomations, loadTemplates, loadStats]);
 
   const loadAutomations = async () => {
     try {

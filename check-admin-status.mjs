@@ -11,19 +11,19 @@ import { createClient } from '@supabase/supabase-js';
 // Load environment variables
 dotenv.config();
 
-const ADMIN_EMAIL = 'mobil3801beach@gmail.com';
+const ADMIN_EMAIL = 'admin@dfs-portal.com';
 const RESET_URL = 'https://dfsportal.vercel.app/reset-password';
 
 // Validate environment
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
   console.error('❌ Missing Supabase environment variables');
-  console.log('Required: SUPABASE_URL, SUPABASE_ANON_KEY');
+  console.log('Required: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY');
   process.exit(1);
 }
 
 const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
+  process.env.VITE_SUPABASE_URL,
+  process.env.VITE_SUPABASE_ANON_KEY
 );
 
 async function checkAdminStatus() {

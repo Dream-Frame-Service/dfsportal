@@ -2,7 +2,7 @@
 
 /**
  * Check Admin User Status
- * Verifies the mobil3801beach@gmail.com admin account
+ * Verifies the admin@dfs-portal.com admin account
  */
 
 import dotenv from 'dotenv';
@@ -14,16 +14,14 @@ dotenv.config();
 const ADMIN_EMAIL = 'admin@dfs-portal.com';
 const RESET_URL = 'https://dfsportal.vercel.app/reset-password';
 
-// Validate environment
-if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
-  console.error('❌ Missing Supabase environment variables');
-  console.log('Required: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY');
-  process.exit(1);
-}
+// Supabase client with fallback values
+console.log('🔧 Connecting to Supabase...');
+console.log(`📍 URL: ${process.env.VITE_SUPABASE_URL || 'https://vetufvhzmawjbsumtplq.supabase.co'}`);
+console.log('');
 
 const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_ANON_KEY
+  process.env.VITE_SUPABASE_URL || 'https://vetufvhzmawjbsumtplq.supabase.co',
+  process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk'
 );
 
 async function checkAdminStatus() {
@@ -50,13 +48,13 @@ async function checkAdminStatus() {
       }
     } else {
       console.log('✅ Password reset email sent successfully!');
-      console.log('📧 Check mobil3801beach@gmail.com for the reset email');
+      console.log('📧 Check admin@dfs-portal.com for the reset email');
       console.log('');
       console.log('📋 Next Steps:');
       console.log('1. Check email inbox for Supabase password reset');
       console.log('2. Click the reset link in the email');
       console.log('3. Set a new secure password');
-      console.log(`4. Login at: ${process.env.APP_URL}/login`);
+      console.log(`4. Login at: https://dfsportal.vercel.app/login`);
     }
 
   } catch (err) {
@@ -65,8 +63,8 @@ async function checkAdminStatus() {
 
   console.log('');
   console.log('🌐 Application URLs:');
-  console.log(`- Login: ${process.env.APP_URL}/login`);
-  console.log(`- Reset: ${process.env.APP_URL}/reset-password`);
+  console.log(`- Login: https://dfsportal.vercel.app/login`);
+  console.log(`- Reset: https://dfsportal.vercel.app/reset-password`);
 }
 
 // Run the check

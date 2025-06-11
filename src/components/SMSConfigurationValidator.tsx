@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 import {
   Settings,
   CheckCircle,
@@ -61,13 +62,14 @@ const SMSConfigurationValidator: React.FC = () => {
 
   const loadExistingConfiguration = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'ID',
-        IsAsc: false,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('twilio_config')
+        .select('*')
+        .eq('is_active', true)
+        .order('id', { ascending: false })
+        .limit(1);
+
+      if (error) throw new Error(error.message);
 
       if (error) throw new Error(error);
 

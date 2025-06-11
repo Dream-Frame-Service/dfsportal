@@ -182,17 +182,15 @@ const AdminDashboard: React.FC = () => {
     try {
       console.log('Fetching real-time audit activities...');
 
-      // Fetch recent audit logs (table ID: 12706)
-      const { data: auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, {
-        PageNo: 1,
-        PageSize: 10,
-        OrderByField: "event_timestamp",
-        IsAsc: false,
-        Filters: []
-      });
+      // Fetch recent audit logs
+      const { data: auditData, error: auditError } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('event_timestamp', { ascending: false })
+        .limit(10);
 
-      if (!auditError && auditData?.List) {
-        const activities: RecentActivity[] = auditData.List.map((log: any, index: number) => {
+      if (!auditError && auditData) {
+        const activities: RecentActivity[] = auditData.map((log: any, index: number) => {
           const timeAgo = formatTimeAgo(log.event_timestamp);
           let actionType: 'success' | 'warning' | 'error' | 'info' = 'info';
 
@@ -237,20 +235,15 @@ const AdminDashboard: React.FC = () => {
       const thirtyDaysFromNow = new Date();
       thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
 
-      const { data: licensesData, error: licensesError } = await window.ezsite.apis.tablePage(11731, {
-        PageNo: 1,
-        PageSize: 100,
-        OrderByField: "expiry_date",
-        IsAsc: true,
-        Filters: [{
-          name: "status",
-          op: "Equal",
-          value: "Active"
-        }]
-      });
+      const { data: licensesData, error: licensesError } = await supabase
+        .from('licenses')
+        .select('*')
+        .eq('status', 'Active')
+        .order('expiry_date', { ascending: true })
+        .limit(100);
 
-      if (!licensesError && licensesData?.List) {
-        licensesData.List.forEach((license: any) => {
+      if (!licensesError && licensesData) {
+        licensesData.forEach((license: any) => {
           const expiryDate = new Date(license.expiry_date);
           const daysUntilExpiry = Math.ceil((expiryDate.getTime() - new Date().getTime()) / (1000 * 3600 * 24));
 
@@ -268,16 +261,14 @@ const AdminDashboard: React.FC = () => {
       }
 
       // Check for low stock products
-      const { data: productsData, error: productsError } = await window.ezsite.apis.tablePage(11726, {
-        PageNo: 1,
-        PageSize: 50,
-        OrderByField: "quantity_in_stock",
-        IsAsc: true,
-        Filters: []
-      });
+      const { data: productsData, error: productsError } = await supabase
+        .from('products')
+        .select('*')
+        .order('quantity_in_stock', { ascending: true })
+        .limit(50);
 
-      if (!productsError && productsData?.List) {
-        productsData.List.forEach((product: any) => {
+      if (!productsError && productsData) {
+        productsData.forEach((product: any) => {
           if (product.quantity_in_stock <= product.minimum_stock && product.minimum_stock > 0) {
             alerts.push({
               id: `product_${product.id}`,

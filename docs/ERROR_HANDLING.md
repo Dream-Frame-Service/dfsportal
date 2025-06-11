@@ -126,7 +126,11 @@ const MyComponent = () => {
 
   const fetchData = async () => {
     const data = await handleApiCall(
-      () => window.ezsite.apis.tablePage(tableId, params),
+      () => supabase
+        .from('table_name')
+        .select('*')
+        .order('id', { ascending: true })
+        .limit(params.PageSize),
       "Failed to fetch data",
       { action: 'fetchData', tableId }
     );

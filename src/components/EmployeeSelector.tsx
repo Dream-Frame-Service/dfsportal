@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Users, Loader2 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface Employee {
   id: number;
@@ -53,20 +54,20 @@ const EmployeeSelector: React.FC<EmployeeSelectorProps> = ({
 
 
       // Add station filter if provided
+      let query = supabase
+        .from('employees')
+        .select('*')
+        .order('first_name', { ascending: true })
+        .limit(1000);
+
       if (station) {
-        filters.push({ name: 'station', op: 'Equal', value: station });
+        query = query.eq('station', station);
       }
 
-      const { data, error } = await window.ezsite.apis.tablePage(11727, {
-        PageNo: 1,
-        PageSize: 1000,
-        OrderByField: 'first_name',
-        IsAsc: true,
-        Filters: filters
-      });
+      const { data, error } = await query;
 
       if (error) throw error;
-      setEmployees(data?.List || []);
+      setEmployees(data || []);
     } catch (error) {
       console.error('Error loading employees:', error);
       toast({

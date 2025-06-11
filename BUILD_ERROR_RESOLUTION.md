@@ -55,7 +55,7 @@ The build was failing because:
 
 ### `src/main.tsx`
 - ✅ Removed problematic import statement
-- ✅ Kept ezsite.apis initialization
+- ✅ Kept legacy API initialization
 
 ### `src/types/global.d.ts`
 - ✅ Removed circular import dependency

@@ -134,7 +134,7 @@ const UserManagement: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      // Since we're migrating away from ezsite, we'll use the user profile data instead
+      // Using direct Supabase integration for user management
       // This is a simplified approach as user management is now handled through Supabase
       console.log('User info now managed through Supabase user profiles');
       setUsers([]);

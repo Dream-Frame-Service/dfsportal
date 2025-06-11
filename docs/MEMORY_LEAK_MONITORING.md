@@ -48,7 +48,11 @@ function MyComponent() {
     
     // Safe async operation with cancellation
     safeApiCall(
-      () => window.ezsite.apis.tablePage(tableId, params),
+      () => supabase
+        .from('table_name')
+        .select('*')
+        .order('id', { ascending: true })
+        .limit(params.PageSize),
       {
         onSuccess: (data) => setData(data),
         onError: (error) => console.error(error)

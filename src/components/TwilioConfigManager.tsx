@@ -10,6 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { Settings, Shield, TestTube, BarChart3, Phone, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { smsService } from '@/services/smsService';
+import { supabase } from '@/lib/supabase';
 
 interface TwilioConfigManagerProps {
   onConfigurationSaved?: () => void;
@@ -54,15 +55,14 @@ const TwilioConfigManager: React.FC<TwilioConfigManagerProps> = ({ onConfigurati
 
   const loadConfiguration = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
-        PageNo: 1,
-        PageSize: 1,
-        OrderByField: 'ID',
-        IsAsc: false,
-        Filters: [{ name: 'is_active', op: 'Equal', value: true }]
-      });
+      const { data, error } = await supabase
+        .from('twilio_config')
+        .select('*')
+        .eq('is_active', true)
+        .order('id', { ascending: false })
+        .limit(1);
 
-      if (error) throw new Error(error);
+      if (error) throw new Error(error.message);
       
       if (data?.List && data.List.length > 0) {
         const loadedConfig = data.List[0];

@@ -78,7 +78,7 @@ const SiteManagement: React.FC = () => {
     enableNotifications: true,
     enableMaintenance: false,
     maintenanceMessage: 'System is under maintenance. Please check back later.',
-    emailFromAddress: 'support@ezsite.ai',
+    emailFromAddress: 'support@dfsmanager.com',
     emailFromName: 'DFS Manager Support',
     maxFileSize: 10,
     allowedFileTypes: 'jpg,jpeg,png,pdf,doc,docx,xls,xlsx',

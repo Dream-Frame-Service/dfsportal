@@ -13,6 +13,7 @@ import {
   Plus, Edit, Trash2, AlertTriangle, Save, Loader2 } from
 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface Station {
   id?: number;
@@ -67,12 +68,12 @@ const InitialStationSetup: React.FC = () => {
   const loadStations = async () => {
     try {
       setLoading(true);
-      const { data, error } = await window.ezsite.apis.tablePage(12599, {
-        "PageNo": 1,
-        "PageSize": 10,
-        "OrderByField": "station_name",
-        "IsAsc": true
-      });
+      // Using direct Supabase query instead of legacy API
+      const { data, error } = await supabase
+        .from('stations')
+        .select('*')
+        .order('station_name', { ascending: true })
+        .limit(10);
 
       if (error) {
         console.error('Error loading stations:', error);
@@ -98,11 +99,13 @@ const InitialStationSetup: React.FC = () => {
       setLoading(true);
 
       for (const station of defaultStations) {
-        const { error } = await window.ezsite.apis.tableCreate(12599, {
-          ...station,
-          last_updated: new Date().toISOString(),
-          created_by: 1 // Default to system user
-        });
+        const { error } = await supabase
+          .from('stations')
+          .insert({
+            ...station,
+            last_updated: new Date().toISOString(),
+            created_by: 1 // Default to system user
+          });
 
         if (error) {
           throw new Error(`Failed to create ${station.station_name}: ${error}`);
@@ -140,10 +143,15 @@ const InitialStationSetup: React.FC = () => {
       let error;
       if (station.id) {
         // Update existing station
-        ({ error } = await window.ezsite.apis.tableUpdate(12599, stationData));
+        ({ error } = await supabase
+          .from('stations')
+          .update(stationData)
+          .eq('id', station.id));
       } else {
         // Create new station
-        ({ error } = await window.ezsite.apis.tableCreate(12599, stationData));
+        ({ error } = await supabase
+          .from('stations')
+          .insert(stationData));
       }
 
       if (error) {
@@ -173,7 +181,10 @@ const InitialStationSetup: React.FC = () => {
   const deleteStation = async (stationId: number) => {
     try {
       setLoading(true);
-      const { error } = await window.ezsite.apis.tableDelete(12599, { "ID": stationId });
+      const { error } = await supabase
+        .from('stations')
+        .delete()
+        .eq('id', stationId);
 
       if (error) {
         throw new Error(error);

@@ -47,7 +47,7 @@ export default tseslint.config(
       // General Code Quality - relaxed
       "no-console": "off", // Allow all console methods
       "no-debugger": "warn",
-      "no-alert": "warn", 
+      "no-alert": "off", // Allow alert, confirm, prompt
       "no-var": "error",
       "prefer-const": "warn", // Reduced from error
       "prefer-template": "off", // Disabled

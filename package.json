@@ -22,7 +22,7 @@
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 100",
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
     "lint:strict": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:check": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 15",
+    "lint:check": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 0",
     "type-check": "tsc --noEmit",
     "check-imports": "node scripts/check-imports.js",
     "verify-node": "node scripts/verify-node-version.mjs",

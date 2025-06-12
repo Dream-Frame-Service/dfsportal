@@ -11,6 +11,27 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
+// Get the full paths to npm and node from current environment
+const npmPath = process.env.npm_execpath || '/home/codespace/nvm/current/bin/npm';
+const nodePath = process.execPath || '/home/codespace/nvm/current/bin/node';
+
+// Enhanced exec function with proper PATH
+function safeExec(command, options = {}) {
+  const fullEnv = {
+    ...process.env,
+    PATH: process.env.PATH,
+    npm_execpath: npmPath,
+    NODE_PATH: path.dirname(nodePath)
+  };
+  
+  return execSync(command, {
+    stdio: 'inherit',
+    timeout: 300000,
+    env: fullEnv,
+    ...options
+  });
+}
+
 console.log('🛡️ BULLETPROOF BUILD STARTING...');
 console.log('📍 Node.js version:', process.version);
 console.log('📍 Platform:', process.platform);
@@ -58,10 +79,7 @@ async function bulletproofBuild() {
       name: "Method 1: Direct Node.js execution",
       command: () => {
         console.log('🔧 Using direct node execution...');
-        execSync('node ./node_modules/vite/bin/vite.js build', { 
-          stdio: 'inherit',
-          timeout: 300000
-        });
+        safeExec('node ./node_modules/vite/bin/vite.js build');
       }
     },
     {
@@ -95,23 +113,16 @@ async function bulletproofBuild() {
       name: "Method 3: NPX with force install",
       command: () => {
         console.log('🔧 Using npx with force install...');
-        execSync('npx --yes vite@latest build', { 
-          stdio: 'inherit',
-          env: { ...process.env, NPM_CONFIG_YES: 'true' },
-          timeout: 300000
-        });
+        safeExec('npx --yes vite@latest build');
       }
     },
     {
       name: "Method 4: TypeScript compilation + Vite",
       command: () => {
         console.log('🔧 Running TypeScript compilation first...');
-        execSync('npx tsc --noEmit', { stdio: 'inherit' });
+        safeExec('npx tsc --noEmit');
         console.log('🔧 TypeScript check passed, running vite...');
-        execSync('node ./node_modules/vite/bin/vite.js build', { 
-          stdio: 'inherit',
-          timeout: 300000
-        });
+        safeExec('node ./node_modules/vite/bin/vite.js build');
       }
     },    {
       name: "Method 5: Simple esbuild fallback",

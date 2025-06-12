@@ -14,6 +14,7 @@ import BatchActionBar from '@/components/BatchActionBar';
 import BatchDeleteDialog from '@/components/BatchDeleteDialog';
 import AccessDenied from '@/components/AccessDenied';
 import useAdminAccess from '@/hooks/use-admin-access';
+import SecurityService, { SecuritySettings, SecurityEvent } from '@/services/securityService';
 import {
   Shield,
   Key,
@@ -36,94 +37,13 @@ import {
   RefreshCw } from
 'lucide-react';
 
-interface SecuritySettings {
-  passwordPolicy: {
-    minLength: number;
-    requireUppercase: boolean;
-    requireLowercase: boolean;
-    requireNumbers: boolean;
-    requireSpecialChars: boolean;
-    passwordExpiry: number;
-    preventReuse: number;
-  };
-  accountSecurity: {
-    maxFailedAttempts: number;
-    lockoutDuration: number;
-    requireEmailVerification: boolean;
-    requireTwoFactor: boolean;
-    sessionTimeout: number;
-    allowMultipleSessions: boolean;
-  };
-  systemSecurity: {
-    enableSSL: boolean;
-    enableFirewall: boolean;
-    enableIPWhitelist: boolean;
-    ipWhitelist: string[];
-    enableAuditLogging: boolean;
-    enableDataEncryption: boolean;
-    enableBackupEncryption: boolean;
-  };
-  accessControl: {
-    enableRoleBasedAccess: boolean;
-    requireApprovalForNewUsers: boolean;
-    defaultUserRole: string;
-    enableGuestAccess: boolean;
-    maxConcurrentUsers: number;
-  };
-}
-
-interface SecurityEvent {
-  id: string;
-  timestamp: string;
-  type: 'login_failure' | 'suspicious_activity' | 'security_breach' | 'policy_violation';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  user?: string;
-  ip_address?: string;
-  description: string;
-  action_taken?: string;
-}
-
 const SecuritySettings: React.FC = () => {
   const { isAdmin } = useAdminAccess();
-  const [settings, setSettings] = useState<SecuritySettings>({
-    passwordPolicy: {
-      minLength: 8,
-      requireUppercase: true,
-      requireLowercase: true,
-      requireNumbers: true,
-      requireSpecialChars: true,
-      passwordExpiry: 90,
-      preventReuse: 12
-    },
-    accountSecurity: {
-      maxFailedAttempts: 5,
-      lockoutDuration: 30,
-      requireEmailVerification: true,
-      requireTwoFactor: false,
-      sessionTimeout: 60,
-      allowMultipleSessions: false
-    },
-    systemSecurity: {
-      enableSSL: true,
-      enableFirewall: true,
-      enableIPWhitelist: false,
-      ipWhitelist: ['192.168.1.0/24'],
-      enableAuditLogging: true,
-      enableDataEncryption: true,
-      enableBackupEncryption: true
-    },
-    accessControl: {
-      enableRoleBasedAccess: true,
-      requireApprovalForNewUsers: true,
-      defaultUserRole: 'Employee',
-      enableGuestAccess: false,
-      maxConcurrentUsers: 50
-    }
-  });
-
+  const [settings, setSettings] = useState<SecuritySettings>(() => SecurityService.getDefaultSecuritySettings());
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
   const [newIPAddress, setNewIPAddress] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isBatchDeleteDialogOpen, setIsBatchDeleteDialogOpen] = useState(false);
   const [batchActionLoading, setBatchActionLoading] = useState(false);
   const { toast } = useToast();
@@ -132,8 +52,64 @@ const SecuritySettings: React.FC = () => {
   const batchSelection = useBatchSelection<SecurityEvent>();
 
   useEffect(() => {
-    generateSampleSecurityEvents();
+    loadSecuritySettings();
+    loadSecurityEvents();
   }, []);
+
+  const loadSecuritySettings = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await SecurityService.getSecuritySettings();
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to load security settings: ${error}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data) {
+        setSettings(data);
+      }
+    } catch (error) {
+      console.error('Error loading security settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load security settings",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadSecurityEvents = async () => {
+    try {
+      const { data, error } = await SecurityService.getSecurityEvents({ 
+        page: 1, 
+        pageSize: 50 
+      });
+      
+      if (error) {
+        console.error('Error loading security events:', error);
+        // Don't show toast for this as it might not be critical
+        return;
+      }
+
+      if (data) {
+        setSecurityEvents(data);
+      } else {
+        // Generate sample events if none exist
+        generateSampleSecurityEvents();
+      }
+    } catch (error) {
+      console.error('Error loading security events:', error);
+      // Fallback to sample events
+      generateSampleSecurityEvents();
+    }
+  };
 
   const generateSampleSecurityEvents = () => {
     const events: SecurityEvent[] = [
@@ -182,8 +158,16 @@ const SecuritySettings: React.FC = () => {
   const handleSaveSettings = async () => {
     setIsSaving(true);
     try {
-      // Simulate API call to save settings
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const { error } = await SecurityService.saveSecuritySettings(settings);
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to save security settings: ${error}`,
+          variant: "destructive"
+        });
+        return;
+      }
 
       toast({
         title: "Success",
@@ -201,35 +185,95 @@ const SecuritySettings: React.FC = () => {
     }
   };
 
-  const addIPToWhitelist = () => {
-    if (newIPAddress && !settings.systemSecurity.ipWhitelist.includes(newIPAddress)) {
-      setSettings((prev) => ({
+  const addIPToWhitelist = async () => {
+    if (!newIPAddress) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid IP address",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (settings.systemSecurity.ipWhitelist.includes(newIPAddress)) {
+      toast({
+        title: "Error",
+        description: "IP address is already in the whitelist",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { error } = await SecurityService.addIPToWhitelist(newIPAddress);
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to add IP to whitelist: ${error}`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Update local state
+      setSettings(prev => ({
         ...prev,
         systemSecurity: {
           ...prev.systemSecurity,
           ipWhitelist: [...prev.systemSecurity.ipWhitelist, newIPAddress]
         }
       }));
+      
       setNewIPAddress('');
       toast({
-        title: "IP Added",
+        title: "Success",
         description: "IP address added to whitelist"
+      });
+    } catch (error) {
+      console.error('Error adding IP to whitelist:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add IP to whitelist",
+        variant: "destructive"
       });
     }
   };
 
-  const removeIPFromWhitelist = (ip: string) => {
-    setSettings((prev) => ({
-      ...prev,
-      systemSecurity: {
-        ...prev.systemSecurity,
-        ipWhitelist: prev.systemSecurity.ipWhitelist.filter((item) => item !== ip)
+  const removeIPFromWhitelist = async (ip: string) => {
+    try {
+      const { error } = await SecurityService.removeIPFromWhitelist(ip);
+      
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to remove IP from whitelist: ${error}`,
+          variant: "destructive"
+        });
+        return;
       }
-    }));
-    toast({
-      title: "IP Removed",
-      description: "IP address removed from whitelist"
-    });
+
+      // Update local state
+      setSettings(prev => ({
+        ...prev,
+        systemSecurity: {
+          ...prev.systemSecurity,
+          ipWhitelist: prev.systemSecurity.ipWhitelist.filter(item => item !== ip)
+        }
+      }));
+
+      toast({
+        title: "Success",
+        description: "IP address removed from whitelist"
+      });
+    } catch (error) {
+      console.error('Error removing IP from whitelist:', error);
+      toast({
+        title: "Error",
+        description: "Failed to remove IP from whitelist",
+        variant: "destructive"
+      });
+    }
   };
 
   const getSeverityColor = (severity: string) => {

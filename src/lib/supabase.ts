@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Suppress known Supabase GoTrue deprecation warning during development
 if (import.meta.env.DEV) {
@@ -12,23 +12,67 @@ if (import.meta.env.DEV) {
   };
 }
 
+// --- new safe-lookup helpers ----------------------------------------------
+/** Try all common env-var names so a mis-prefixed value does not break prod */
+const getEnv = (keys: string[]): string | undefined =>
+  keys.reduce<string | undefined>(
+    (val, key) => val ?? (import.meta.env as any)[key],
+    undefined
+  );
+
+const SUPABASE_URL = getEnv([
+  'VITE_SUPABASE_URL',
+  'NEXT_PUBLIC_SUPABASE_URL',
+  'SUPABASE_URL'
+]);
+const SUPABASE_ANON_KEY = getEnv([
+  'VITE_SUPABASE_ANON_KEY',
+  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
+  'SUPABASE_ANON_KEY'
+]);
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error(
+    '[DFS-Portal] Missing Supabase environment variables. ' +
+      'Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel.'
+  );
+}
+
 // Supabase configuration
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://vetufvhzmawjbsumtplq.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk';
 
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10
+// ---------------------------------------------------------------------------
+// 1. Resolve the final values that must be used to create the client
+//    – prefer env-vars, otherwise use the defaults already defined above
+const EFFECTIVE_SUPABASE_URL = SUPABASE_URL || supabaseUrl;
+const EFFECTIVE_SUPABASE_ANON_KEY = SUPABASE_ANON_KEY || supabaseAnonKey;
+
+// 2. Warn once in production if still using the placeholder
+if (import.meta.env.PROD && EFFECTIVE_SUPABASE_URL === 'https://placeholder.supabase.co') {
+  console.error(
+    '[DFS-Portal] Supabase is initialised with the placeholder URL. ' +
+      'Check that VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set in Vercel.'
+  );
+}
+
+// 3. Create the client with the resolved values
+export const supabase: SupabaseClient = createClient(
+  SUPABASE_URL ?? supabaseUrl,          // use hard-coded project URL as safe fallback
+  SUPABASE_ANON_KEY ?? supabaseAnonKey, // use hard-coded anon key as safe fallback
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10
+      }
     }
   }
-});
+);
 
 // Storage configuration with S3 protocol support
 export const storageConfig = {

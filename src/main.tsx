@@ -1,6 +1,11 @@
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+
+// NEW: global error boundary wrapper
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import GlobalFallback from '@/components/GlobalFallback';
 
 // Enhanced error handling for production
 console.log('🚀 Starting DFS Manager Portal...');
@@ -59,7 +64,13 @@ try {
     const root = createRoot(container);
     
     // Render with error boundary
-    root.render(<App />);
+    root.render(
+      <React.StrictMode>
+        <ErrorBoundary fallback={<GlobalFallback />}>
+          <App />
+        </ErrorBoundary>
+      </React.StrictMode>
+    );
     console.log('✅ App rendered successfully');
   }
 } catch (error) {

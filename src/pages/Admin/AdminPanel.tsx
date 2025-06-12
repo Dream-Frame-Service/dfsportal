@@ -41,7 +41,7 @@ import {
   RotateCw,
   Cloud } from
 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useSmartAuth } from '@/hooks/use-smart-auth';
 import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 import AccessDenied from '@/components/AccessDenied';
 import { useToast } from '@/hooks/use-toast';
@@ -97,7 +97,8 @@ interface RealtimeStats {
 
 const AdminPanel: React.FC = () => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const authContext = useSmartAuth();
+  const { isAdmin } = authContext || {};
   const { user: supabaseUser, signUp } = useSupabaseAuth();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');

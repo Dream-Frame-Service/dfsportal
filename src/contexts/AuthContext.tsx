@@ -40,6 +40,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Export the context for use in smart auth hook
+export { AuthContext };
+
 // Access matrix with monitoring restrictions
 const ACCESS_MATRIX = {
   Employee: {

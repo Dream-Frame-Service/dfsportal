@@ -19,7 +19,7 @@ import {
   Zap,
   RefreshCw } from
 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useSmartAuth } from '@/hooks/use-smart-auth';
 import AccessDenied from '@/components/AccessDenied';
 import AdminDiagnostics from '@/components/AdminDiagnostics';
 import AdminFeatureTester from '@/components/AdminFeatureTester';
@@ -63,7 +63,8 @@ interface DatabaseStats {
 }
 
 const AdminDashboard: React.FC = () => {
-  const { isAdmin } = useAuth();
+  const authContext = useSmartAuth();
+  const { isAdmin } = authContext || {};
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('overview');
   const [dbStats, setDbStats] = useState<DatabaseStats>({

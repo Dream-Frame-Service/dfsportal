@@ -36,6 +36,9 @@ interface DemoAuthContextType {
 
 const DemoAuthContext = createContext<DemoAuthContextType | undefined>(undefined);
 
+// Export the context for use in smart auth hook
+export { DemoAuthContext };
+
 // Demo user with full admin access for development review
 const DEMO_USER: User = {
   ID: 9999,

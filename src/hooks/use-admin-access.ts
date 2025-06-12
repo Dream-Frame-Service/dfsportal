@@ -1,4 +1,4 @@
-import { useAuth } from '@/contexts/AuthContext';
+import { useSmartAuth } from '@/hooks/use-smart-auth';
 
 export interface AdminAccessResult {
   isAdmin: boolean;
@@ -9,24 +9,27 @@ export interface AdminAccessResult {
 }
 
 export const useAdminAccess = (): AdminAccessResult => {
-  const { userProfile } = useAuth();
+  const authContext = useSmartAuth();
+  const { userProfile, isAdmin } = authContext || {};
 
-  const isAdmin = userProfile?.role === 'Administrator';
-  const hasMonitoringAccess = isAdmin;
+  // In demo mode, isAdmin is directly available; otherwise derive from role
+  const adminStatus = isAdmin !== undefined ? isAdmin : (userProfile?.role === 'Administrator');
+  const hasMonitoringAccess = adminStatus;
 
   const checkAdminAccess = (): boolean => {
-    return isAdmin;
+    console.log('🔐 [Admin Access Check] Admin Status:', adminStatus, 'Context Type:', authContext ? 'Available' : 'Missing');
+    return adminStatus;
   };
 
   const requireAdminAccess = (): void => {
-    if (!isAdmin) {
+    if (!adminStatus) {
       throw new Error('Administrator access required for this feature');
     }
   };
 
   return {
-    isAdmin,
-    hasAdminAccess: isAdmin,
+    isAdmin: adminStatus,
+    hasAdminAccess: adminStatus,
     hasMonitoringAccess,
     checkAdminAccess,
     requireAdminAccess

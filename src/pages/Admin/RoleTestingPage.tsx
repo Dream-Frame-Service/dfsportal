@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Shield, TestTube, Settings, Layout, Info } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useSmartAuth } from '@/hooks/use-smart-auth';
 import { useEnhancedRoleAccess } from '@/hooks/use-enhanced-role-access';
 import RoleTestingDashboard from '@/components/RoleTesting/RoleTestingDashboard';
 import RoleDashboardCustomizer from '@/components/RoleTesting/RoleDashboardCustomizer';
@@ -13,7 +13,8 @@ import UserRoleSwitcher from '@/components/RoleTesting/UserRoleSwitcher';
 import { AccessDenied } from '@/components/AccessDenied';
 
 const RoleTestingPage: React.FC = () => {
-  const { userProfile } = useAuth();
+  const authContext = useSmartAuth();
+  const { userProfile } = authContext || {};
   const roleAccess = useEnhancedRoleAccess();
 
   // Show access denied for non-administrators trying to access testing tools

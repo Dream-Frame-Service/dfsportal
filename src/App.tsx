@@ -6,6 +6,8 @@ import { DemoAuthProvider } from './contexts/DemoAuthContext';
 import { GlobalErrorBoundary } from './components/ErrorBoundary';
 import InvalidCharacterErrorBoundary from './components/ErrorBoundary/InvalidCharacterErrorBoundary';
 import { Suspense, lazy } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 
 // Layout components (loaded immediately)
 import DemoDashboardLayout from './components/Layout/DemoDashboardLayout';
@@ -181,6 +183,8 @@ function App() {
                 </Suspense>
               </Router>
               <Toaster />
+              <SpeedInsights />
+              <Analytics />
             </TooltipProvider>
           </DemoAuthProvider>
         </QueryClientProvider>

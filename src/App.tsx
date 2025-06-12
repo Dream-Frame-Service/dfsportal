@@ -22,6 +22,7 @@ const PageLoader = () => (
 // Lazy load all page components
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+const LoginDisabledPage = lazy(() => import('./pages/LoginDisabledPage'));
 const OnAuthSuccessPage = lazy(() => import('./pages/OnAuthSuccessPage'));
 const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -103,7 +104,7 @@ function App() {
                   <Suspense fallback={<PageLoader />}>
                     <Routes data-id="2g8tmrz0u" data-path="src/App.tsx">
                       {/* Public routes */}
-                      <Route path="/login" element={<LoginPage data-id="bgd4txzpb" data-path="src/App.tsx" />} data-id="2xor7wrg6" data-path="src/App.tsx" />
+                      <Route path="/login" element={<LoginDisabledPage data-id="bgd4txzpb" data-path="src/App.tsx" />} data-id="2xor7wrg6" data-path="src/App.tsx" />
                       <Route path="/onauthsuccess" element={<OnAuthSuccessPage data-id="22wh7m3h7" data-path="src/App.tsx" />} data-id="r24pmat8m" data-path="src/App.tsx" />
                       <Route path="/resetpassword" element={<ResetPasswordPage data-id="d55pbzh5q" data-path="src/App.tsx" />} data-id="uadw2g8u9" data-path="src/App.tsx" />
                       

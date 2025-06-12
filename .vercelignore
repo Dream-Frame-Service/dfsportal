@@ -1,0 +1,52 @@
+# Vercel ignore file to prevent npm installation issues
+
+# Development files
+*.log
+.env.local
+.env.development
+
+# Cache directories
+.cache/
+.parcel-cache/
+node_modules/.cache/
+.vite/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test files
+coverage/
+.nyc_output/
+
+# Build directories (keep dist for deployment)
+# dist/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Scripts we don't need in production
+scripts/
+*.sh
+*.ps1
+
+# Development configuration
+.eslintcache
+.stylelintcache

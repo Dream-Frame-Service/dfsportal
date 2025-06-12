@@ -4,13 +4,14 @@
   "version": "0.1.0",
   "type": "module",
   "engines": {
-    "node": ">=18.19.0",
+    "node": "18.x",
     "npm": ">=9.0.0"
   },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "build:vercel": "node bulletproof-build.mjs",
+    "build:vercel": "node vercel-build-fix.mjs",
+    "build:vercel-bash": "bash vercel-build-fix.sh",
     "build:vercel-simple": "node simple-build.mjs",
     "build:vercel-ultra": "node ultra-simple-build.mjs",
     "build:vercel-complex": "node vercel-build.mjs",

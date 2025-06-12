@@ -93,6 +93,7 @@
 		"git.verboseCommit": true,
 		"github-actions.use-enterprise": true,
 		"github-actions.workflows.pinned.refresh.enabled": true,
-		"CodeGPT.apiKey": "CodeGPT Plus Beta"
+		"CodeGPT.apiKey": "CodeGPT Plus Beta",
+		"markdown.validate.enabled": true
 	}
 }

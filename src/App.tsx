@@ -133,6 +133,9 @@ const AdvancedRealTimeFeatures = lazy(() => import('./pages/Admin/AdvancedRealTi
 const S3StorageManager = lazy(() => import('./components/S3StorageManager').then(module => ({ default: module.S3StorageManager })));
 const InvalidCharacterErrorDemo = lazy(() => import('./components/InvalidCharacterErrorDemo'));
 
+// Button Testing component
+const ButtonTestingPage = lazy(() => import('./pages/Admin/ButtonTesting'));
+
 // Create a query client with better error handling
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -236,6 +239,7 @@ function App() {
                       <Route path="admin/advanced-realtime" element={<AdvancedRealTimeFeatures />} />
                       <Route path="admin/s3-storage" element={<S3StorageManager />} />
                       <Route path="admin/invalid-character-demo" element={<InvalidCharacterErrorDemo />} />
+                      <Route path="admin/button-testing" element={<ButtonTestingPage />} />
                     </Route>
                     
                     <Route path="*" element={<NotFound />} />

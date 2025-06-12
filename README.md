@@ -29,6 +29,7 @@ This application is deployed on Vercel with automatic deployments from the main 
 ### Environment Variables
 
 Required environment variables are configured in Vercel's dashboard:
+
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
 

@@ -58,7 +58,7 @@ Modified `package.json` scripts:
 ## 🎯 DEPLOYMENT CREDENTIALS
 
 Your Vercel configuration:
-- **Token**: `biknXeFHbDw91CAUawmfRXkW`
+- **Token**: `Df9VdVMiA6JDBApzLr8om3SS`
 - **Project ID**: `prj_pCpaWRWFomnGIsvBEnzZeUrsWAgb`
 
 These are embedded in the deployment scripts for immediate use.
@@ -79,7 +79,7 @@ These are embedded in the deployment scripts for immediate use.
    ```powershell
    npm run lint:fix
    npm run build
-   vercel --token biknXeFHbDw91CAUawmfRXkW --prod
+   vercel --token Df9VdVMiA6JDBApzLr8om3SS --prod
    ```
 
 ## 🔍 VERIFICATION

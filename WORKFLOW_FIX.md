@@ -56,7 +56,7 @@ npm run lint:fix
 npm run build || echo "Build completed with warnings"
 
 # Deploy to Vercel with token
-vercel --token biknXeFHbDw91CAUawmfRXkW --prod
+vercel --token Df9VdVMiA6JDBApzLr8om3SS --prod
 ```
 
 ## Environment Variables for Vercel
@@ -82,5 +82,5 @@ vercel env add VITE_APP_ENV production
 echo "Emergency deployment with relaxed linting..."
 npm run lint:fix
 npm run build || echo "Build completed"
-vercel --token biknXeFHbDw91CAUawmfRXkW --force --prod
+vercel --token Df9VdVMiA6JDBApzLr8om3SS --force --prod
 ```

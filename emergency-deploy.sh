@@ -6,7 +6,7 @@
 echo "🚀 Starting emergency deployment for DFS Portal..."
 
 # Set Vercel credentials
-export VERCEL_TOKEN="biknXeFHbDw91CAUawmfRXkW"
+export VERCEL_TOKEN="Df9VdVMiA6JDBApzLr8om3SS"
 # Note: Project and Org IDs removed to let Vercel auto-detect
 
 echo "📦 Installing dependencies..."

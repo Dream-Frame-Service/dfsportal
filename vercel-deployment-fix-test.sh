@@ -115,7 +115,7 @@ echo "# Lets Vercel automatically detect project and organization"
 echo
 
 echo "📋 Option 2: With token only"
-echo "vercel --token YOUR_TOKEN --prod"
+echo "vercel --token Df9VdVMiA6JDBApzLr8om3SS --prod"
 echo "# Uses token but lets Vercel auto-detect project"
 echo
 

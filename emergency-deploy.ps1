@@ -4,7 +4,7 @@
 Write-Host "🚀 Starting emergency deployment for DFS Portal..." -ForegroundColor Green
 
 # Set Vercel credentials
-$env:VERCEL_TOKEN = "biknXeFHbDw91CAUawmfRXkW"
+$env:VERCEL_TOKEN = "Df9VdVMiA6JDBApzLr8om3SS"
 # Note: Project and Org IDs removed to let Vercel auto-detect
 
 Write-Host "📦 Installing dependencies..." -ForegroundColor Yellow

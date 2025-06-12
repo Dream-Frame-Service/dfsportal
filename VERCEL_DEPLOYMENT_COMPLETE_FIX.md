@@ -28,7 +28,7 @@ export VERCEL_PROJECT_ID="prj_pCpaWRWFomnGIsvBEnzZeUrsWAgb"
 
 #### **After (Fixed)**
 ```bash
-export VERCEL_TOKEN="biknXeFHbDw91CAUawmfRXkW"
+export VERCEL_TOKEN="Df9VdVMiA6JDBApzLr8om3SS"
 # Note: Project and Org IDs removed to let Vercel auto-detect
 ```
 
@@ -61,7 +61,7 @@ vercel --prod
 
 ### **Option 3: With Token**
 ```bash
-vercel --token YOUR_TOKEN --prod
+vercel --token Df9VdVMiA6JDBApzLr8om3SS --prod
 ```
 **Benefits**: Uses your token, still auto-detects project
 

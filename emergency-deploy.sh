@@ -7,7 +7,7 @@ echo "🚀 Starting emergency deployment for DFS Portal..."
 
 # Set Vercel credentials
 export VERCEL_TOKEN="biknXeFHbDw91CAUawmfRXkW"
-export VERCEL_PROJECT_ID="prj_pCpaWRWFomnGIsvBEnzZeUrsWAgb"
+# Note: Project and Org IDs removed to let Vercel auto-detect
 
 echo "📦 Installing dependencies..."
 npm ci || {
@@ -44,4 +44,4 @@ fi
 
 echo "✅ Deployment process completed!"
 echo "🔗 Check your Vercel dashboard for deployment status"
-echo "📊 Project ID: $VERCEL_PROJECT_ID"
+echo "📍 Project and organization auto-detected by Vercel"

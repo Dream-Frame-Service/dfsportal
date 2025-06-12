@@ -12,6 +12,8 @@
     "build": "tsc && vite build",
     "build:vercel": "node vercel-build-fix.mjs",
     "build:vercel-bash": "bash vercel-build-fix.sh",
+    "deploy:vercel": "bash simple-vercel-deploy.sh",
+    "deploy:vercel-emergency": "bash emergency-deploy.sh",
     "build:vercel-simple": "node simple-build.mjs",
     "build:vercel-ultra": "node ultra-simple-build.mjs",
     "build:vercel-complex": "node vercel-build.mjs",

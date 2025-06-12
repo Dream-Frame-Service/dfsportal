@@ -5,7 +5,7 @@ Write-Host "🚀 Starting emergency deployment for DFS Portal..." -ForegroundCol
 
 # Set Vercel credentials
 $env:VERCEL_TOKEN = "biknXeFHbDw91CAUawmfRXkW"
-$env:VERCEL_PROJECT_ID = "prj_pCpaWRWFomnGIsvBEnzZeUrsWAgb"
+# Note: Project and Org IDs removed to let Vercel auto-detect
 
 Write-Host "📦 Installing dependencies..." -ForegroundColor Yellow
 try {
@@ -66,7 +66,7 @@ if (Get-Command vercel -ErrorAction SilentlyContinue) {
 
 Write-Host "`n✅ Deployment process completed!" -ForegroundColor Green
 Write-Host "🔗 Check your Vercel dashboard for deployment status" -ForegroundColor Cyan
-Write-Host "📊 Project ID: $env:VERCEL_PROJECT_ID" -ForegroundColor Cyan
+Write-Host "📍 Project and organization auto-detected by Vercel" -ForegroundColor Cyan
 
 # Optional: Open Vercel dashboard
 $openDashboard = Read-Host "`nOpen Vercel dashboard? (y/n)"

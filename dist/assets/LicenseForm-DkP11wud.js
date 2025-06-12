@@ -1,11 +1,11 @@
 import { r as reactExports, u as useNavigate, a as useParams, j as jsxRuntimeExports } from "./react-vendor-DX0Gaxph.js";
-import { s as supabase, K as toast, C as Card, d as CardHeader, e as CardTitle, f as CardDescription, B as Button, g as CardContent, L as Label, I as Input, S as Select, h as SelectTrigger, i as SelectValue, j as SelectContent, k as SelectItem } from "./admin-core-DFYqoWCM.js";
-import { E as EnhancedFileUpload } from "./business-pages-DR8LlJyO.js";
-import { a4 as FileText, J as ArrowLeft, bN as File, aG as Save } from "./ui-components-E8Qujiw2.js";
+import { s as supabase, K as toast, C as Card, d as CardHeader, e as CardTitle, f as CardDescription, B as Button, g as CardContent, L as Label, I as Input, S as Select, h as SelectTrigger, i as SelectValue, j as SelectContent, k as SelectItem } from "./admin-core-CknIDYcP.js";
+import { E as EnhancedFileUpload } from "./business-pages-BYlNtgd-.js";
+import { a4 as FileText, J as ArrowLeft, bO as File, aG as Save } from "./ui-components-svEX1DXz.js";
 import "./vendor-ChWeSoXy.js";
 import "./aws-sdk-DF6-bWA6.js";
 import "./supabase-DWlqU2OS.js";
-import "./admin-security-CWSw-PzD.js";
+import "./admin-security-BkHZEmpQ.js";
 import "./animations-DEJKylty.js";
 const LicenseForm = () => {
   const [formData, setFormData] = reactExports.useState({

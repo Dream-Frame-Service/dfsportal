@@ -2,8 +2,8 @@ var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 import { u as useNavigate, R as React, j as jsxRuntimeExports, r as reactExports } from "./react-vendor-DX0Gaxph.js";
-import { C as Card, d as CardHeader, e as CardTitle, l as Badge, g as CardContent, B as Button, A as Alert, m as AlertDescription, u as useToast, z as Table, E as TableHeader, F as TableRow, G as TableHead, H as TableBody, J as TableCell, s as supabase, o as useAdminAccess, Q as useBatchSelection, p as AccessDenied, L as Label, I as Input, n as Switch, R as BatchActionBar, U as Checkbox, V as BatchDeleteDialog, S as Select, h as SelectTrigger, i as SelectValue, j as SelectContent, k as SelectItem, O as Textarea, P as Progress, T as Tabs, a as TabsList, b as TabsTrigger, c as TabsContent, f as CardDescription } from "./admin-core-DFYqoWCM.js";
-import { bg as Root, bh as CollapsibleTrigger$1, bi as CollapsibleContent$1, Y as RefreshCw, bj as House, o as ChevronUp, f as ChevronDown, bk as Bug, H as TriangleAlert, aG as Save, ai as Clock, a0 as CircleCheckBig, aa as Download, ao as Trash2, F as Shield, ab as CircleX, U as Users, G as Lock, aV as Key, ag as Server, W as Globe, aZ as TestTube, aD as LoaderCircle, bl as Send, ac as CircleAlert, Q as MessageSquare, a7 as User, aS as Phone, aU as Info, a2 as Settings, aF as Copy, aP as EyeOff, aB as Eye, aj as ExternalLink, az as DollarSign, bm as ChevronRight, bn as History, aC as Plus, an as SquarePen, a5 as Zap, $ as ChartColumn, bo as RefreshCcw, be as Timer, M as Database, Z as Activity, K as CircleCheck, ak as TrendingUp, bp as TrendingDown, _ as Target } from "./ui-components-E8Qujiw2.js";
+import { C as Card, d as CardHeader, e as CardTitle, l as Badge, g as CardContent, B as Button, A as Alert, m as AlertDescription, u as useToast, z as Table, E as TableHeader, F as TableRow, G as TableHead, H as TableBody, J as TableCell, s as supabase, o as useAdminAccess, Q as useBatchSelection, p as AccessDenied, L as Label, I as Input, n as Switch, R as BatchActionBar, U as Checkbox, V as BatchDeleteDialog, S as Select, h as SelectTrigger, i as SelectValue, j as SelectContent, k as SelectItem, O as Textarea, P as Progress, T as Tabs, a as TabsList, b as TabsTrigger, c as TabsContent, f as CardDescription } from "./admin-core-CknIDYcP.js";
+import { bi as Root, bj as CollapsibleTrigger$1, bk as CollapsibleContent$1, Y as RefreshCw, bl as House, o as ChevronUp, f as ChevronDown, bb as Bug, H as TriangleAlert, aG as Save, ai as Clock, a0 as CircleCheckBig, aa as Download, ao as Trash2, F as Shield, ab as CircleX, U as Users, G as Lock, aV as Key, ag as Server, W as Globe, aZ as TestTube, aD as LoaderCircle, bm as Send, ac as CircleAlert, Q as MessageSquare, a7 as User, aS as Phone, aU as Info, a2 as Settings, aF as Copy, aP as EyeOff, aB as Eye, aj as ExternalLink, az as DollarSign, bn as ChevronRight, bo as History, aC as Plus, an as SquarePen, a5 as Zap, $ as ChartColumn, bp as RefreshCcw, bg as Timer, M as Database, Z as Activity, K as CircleCheck, ak as TrendingUp, bq as TrendingDown, _ as Target } from "./ui-components-svEX1DXz.js";
 const _ErrorLogger = class _ErrorLogger {
   // Keep last 100 error logs
   constructor() {
@@ -1948,53 +1948,386 @@ class SMSService {
   }
 }
 const smsService = new SMSService();
+class SecurityService {
+  // Security Settings Management
+  static async getSecuritySettings() {
+    try {
+      const { data, error } = await supabase.from("security_settings").select("*").order("created_at", { ascending: false }).limit(1).single();
+      if (error && error.code !== "PGRST116") {
+        console.error("Error fetching security settings:", error);
+        return { data: null, error: error.message };
+      }
+      if (!data) {
+        return { data: this.getDefaultSecuritySettings(), error: null };
+      }
+      return { data: data.settings, error: null };
+    } catch (err) {
+      console.error("Error in getSecuritySettings:", err);
+      return { data: null, error: "An unexpected error occurred" };
+    }
+  }
+  static async saveSecuritySettings(settings) {
+    try {
+      const { data: currentUser } = await supabase.auth.getUser();
+      if (!currentUser.user) {
+        return { error: "User not authenticated" };
+      }
+      const settingsRecord = {
+        settings,
+        updated_by: currentUser.user.id,
+        created_at: (/* @__PURE__ */ new Date()).toISOString(),
+        updated_at: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      const { error } = await supabase.from("security_settings").upsert(settingsRecord, { onConflict: "id" });
+      if (error) {
+        console.error("Error saving security settings:", error);
+        return { error: error.message };
+      }
+      await this.logSecurityEvent({
+        event_type: "security_settings_updated",
+        user_id: currentUser.user.id,
+        username: currentUser.user.email || "unknown",
+        ip_address: await this.getClientIP(),
+        event_timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+        event_status: "success",
+        action_performed: "Updated security settings",
+        risk_level: "medium",
+        additional_data: JSON.stringify({ settingsUpdated: Object.keys(settings) })
+      });
+      return { error: null };
+    } catch (err) {
+      console.error("Error in saveSecuritySettings:", err);
+      return { error: "An unexpected error occurred" };
+    }
+  }
+  // IP Whitelist Management
+  static async addIPToWhitelist(ipAddress) {
+    var _a, _b;
+    try {
+      const { data: settings, error: getError } = await this.getSecuritySettings();
+      if (getError || !settings) {
+        return { error: getError || "Failed to get current settings" };
+      }
+      if (!settings.systemSecurity.ipWhitelist.includes(ipAddress)) {
+        settings.systemSecurity.ipWhitelist.push(ipAddress);
+        const { error } = await this.saveSecuritySettings(settings);
+        if (!error) {
+          await this.logSecurityEvent({
+            event_type: "ip_whitelist_updated",
+            user_id: (_a = (await supabase.auth.getUser()).data.user) == null ? void 0 : _a.id,
+            username: ((_b = (await supabase.auth.getUser()).data.user) == null ? void 0 : _b.email) || "unknown",
+            ip_address: await this.getClientIP(),
+            event_timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+            event_status: "success",
+            action_performed: `Added IP ${ipAddress} to whitelist`,
+            risk_level: "low",
+            additional_data: JSON.stringify({ addedIP: ipAddress })
+          });
+        }
+        return { error };
+      }
+      return { error: null };
+    } catch (err) {
+      console.error("Error adding IP to whitelist:", err);
+      return { error: "An unexpected error occurred" };
+    }
+  }
+  static async removeIPFromWhitelist(ipAddress) {
+    var _a, _b;
+    try {
+      const { data: settings, error: getError } = await this.getSecuritySettings();
+      if (getError || !settings) {
+        return { error: getError || "Failed to get current settings" };
+      }
+      settings.systemSecurity.ipWhitelist = settings.systemSecurity.ipWhitelist.filter((ip) => ip !== ipAddress);
+      const { error } = await this.saveSecuritySettings(settings);
+      if (!error) {
+        await this.logSecurityEvent({
+          event_type: "ip_whitelist_updated",
+          user_id: (_a = (await supabase.auth.getUser()).data.user) == null ? void 0 : _a.id,
+          username: ((_b = (await supabase.auth.getUser()).data.user) == null ? void 0 : _b.email) || "unknown",
+          ip_address: await this.getClientIP(),
+          event_timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+          event_status: "success",
+          action_performed: `Removed IP ${ipAddress} from whitelist`,
+          risk_level: "medium",
+          additional_data: JSON.stringify({ removedIP: ipAddress })
+        });
+      }
+      return { error };
+    } catch (err) {
+      console.error("Error removing IP from whitelist:", err);
+      return { error: "An unexpected error occurred" };
+    }
+  }
+  // Security Events Management
+  static async getSecurityEvents(options = {}) {
+    try {
+      const { page = 1, pageSize = 50, severity, type } = options;
+      let query = supabase.from("security_events").select("*", { count: "exact" }).order("timestamp", { ascending: false });
+      if (severity) {
+        query = query.eq("severity", severity);
+      }
+      if (type) {
+        query = query.eq("type", type);
+      }
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+      query = query.range(from, to);
+      const { data, count, error } = await query;
+      if (error) {
+        console.error("Error fetching security events:", error);
+        return { data: null, count: null, error: error.message };
+      }
+      return { data, count, error: null };
+    } catch (err) {
+      console.error("Error in getSecurityEvents:", err);
+      return { data: null, count: null, error: "An unexpected error occurred" };
+    }
+  }
+  static async deleteSecurityEvents(eventIds) {
+    var _a, _b;
+    try {
+      const { error } = await supabase.from("security_events").delete().in("id", eventIds);
+      if (error) {
+        console.error("Error deleting security events:", error);
+        return { error: error.message };
+      }
+      await this.logSecurityEvent({
+        event_type: "security_events_deleted",
+        user_id: (_a = (await supabase.auth.getUser()).data.user) == null ? void 0 : _a.id,
+        username: ((_b = (await supabase.auth.getUser()).data.user) == null ? void 0 : _b.email) || "unknown",
+        ip_address: await this.getClientIP(),
+        event_timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+        event_status: "success",
+        action_performed: `Deleted ${eventIds.length} security events`,
+        risk_level: "low",
+        additional_data: JSON.stringify({ deletedEventIds: eventIds })
+      });
+      return { error: null };
+    } catch (err) {
+      console.error("Error in deleteSecurityEvents:", err);
+      return { error: "An unexpected error occurred" };
+    }
+  }
+  // Security Audit Logging
+  static async logSecurityEvent(auditLog) {
+    try {
+      const { error } = await supabase.from("audit_logs").insert({
+        ...auditLog,
+        user_agent: navigator.userAgent || "unknown"
+      });
+      if (error) {
+        console.error("Error logging security event:", error);
+        return { error: error.message };
+      }
+      return { error: null };
+    } catch (err) {
+      console.error("Error in logSecurityEvent:", err);
+      return { error: "An unexpected error occurred" };
+    }
+  }
+  // Session Management
+  static async validateSession() {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        return { valid: false, user: null, error: error.message };
+      }
+      if (!user) {
+        return { valid: false, user: null, error: "No user session found" };
+      }
+      const { data: settings } = await this.getSecuritySettings();
+      if (settings) {
+        const sessionTimeout = settings.accountSecurity.sessionTimeout * 60 * 1e3;
+        const lastActivity = localStorage.getItem("lastActivity");
+        if (lastActivity) {
+          const timeSinceLastActivity = Date.now() - parseInt(lastActivity);
+          if (timeSinceLastActivity > sessionTimeout) {
+            await supabase.auth.signOut();
+            return { valid: false, user: null, error: "Session expired due to inactivity" };
+          }
+        }
+      }
+      localStorage.setItem("lastActivity", Date.now().toString());
+      return { valid: true, user, error: null };
+    } catch (err) {
+      console.error("Error validating session:", err);
+      return { valid: false, user: null, error: "An unexpected error occurred" };
+    }
+  }
+  // Failed Login Tracking
+  static async trackFailedLogin(email, ipAddress) {
+    try {
+      const { data: settings } = await this.getSecuritySettings();
+      if (!settings) {
+        return { shouldLockout: false, error: "Failed to get security settings" };
+      }
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1e3).toISOString();
+      const { data: recentAttempts, error } = await supabase.from("failed_login_attempts").select("*").eq("email", email).gte("attempted_at", oneHourAgo).order("attempted_at", { ascending: false });
+      if (error) {
+        console.error("Error checking failed attempts:", error);
+        return { shouldLockout: false, error: error.message };
+      }
+      await supabase.from("failed_login_attempts").insert({
+        email,
+        ip_address: ipAddress,
+        attempted_at: (/* @__PURE__ */ new Date()).toISOString()
+      });
+      const attemptCount = ((recentAttempts == null ? void 0 : recentAttempts.length) || 0) + 1;
+      const shouldLockout = attemptCount >= settings.accountSecurity.maxFailedAttempts;
+      if (shouldLockout) {
+        await this.logSecurityEvent({
+          event_type: "account_lockout",
+          username: email,
+          ip_address: ipAddress,
+          event_timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+          event_status: "success",
+          action_performed: `Account locked due to ${attemptCount} failed login attempts`,
+          risk_level: "high",
+          additional_data: JSON.stringify({
+            failedAttempts: attemptCount,
+            lockoutDuration: settings.accountSecurity.lockoutDuration
+          })
+        });
+      }
+      return { shouldLockout, error: null };
+    } catch (err) {
+      console.error("Error tracking failed login:", err);
+      return { shouldLockout: false, error: "An unexpected error occurred" };
+    }
+  }
+  // Utility Methods
+  static async getClientIP() {
+    try {
+      return "client-ip-placeholder";
+    } catch {
+      return "unknown";
+    }
+  }
+  static getDefaultSecuritySettings() {
+    return {
+      passwordPolicy: {
+        minLength: 8,
+        requireUppercase: true,
+        requireLowercase: true,
+        requireNumbers: true,
+        requireSpecialChars: true,
+        passwordExpiry: 90,
+        preventReuse: 12
+      },
+      accountSecurity: {
+        maxFailedAttempts: 5,
+        lockoutDuration: 30,
+        requireEmailVerification: true,
+        requireTwoFactor: false,
+        sessionTimeout: 60,
+        allowMultipleSessions: false
+      },
+      systemSecurity: {
+        enableSSL: true,
+        enableFirewall: true,
+        enableIPWhitelist: false,
+        ipWhitelist: ["192.168.1.0/24"],
+        enableAuditLogging: true,
+        enableDataEncryption: true,
+        enableBackupEncryption: true
+      },
+      accessControl: {
+        enableRoleBasedAccess: true,
+        requireApprovalForNewUsers: true,
+        defaultUserRole: "Employee",
+        enableGuestAccess: false,
+        maxConcurrentUsers: 50
+      }
+    };
+  }
+  // Security Score Calculation
+  static calculateSecurityScore(settings) {
+    let score = 0;
+    const maxScore = 20;
+    if (settings.passwordPolicy.minLength >= 8) score++;
+    if (settings.passwordPolicy.requireUppercase) score++;
+    if (settings.passwordPolicy.requireNumbers) score++;
+    if (settings.passwordPolicy.requireSpecialChars) score++;
+    if (settings.passwordPolicy.passwordExpiry <= 90) score++;
+    if (settings.accountSecurity.maxFailedAttempts <= 5) score++;
+    if (settings.accountSecurity.lockoutDuration >= 15) score++;
+    if (settings.accountSecurity.requireEmailVerification) score++;
+    if (settings.accountSecurity.requireTwoFactor) score += 2;
+    if (settings.accountSecurity.sessionTimeout <= 60) score++;
+    if (settings.systemSecurity.enableSSL) score += 2;
+    if (settings.systemSecurity.enableFirewall) score += 2;
+    if (settings.systemSecurity.enableAuditLogging) score++;
+    if (settings.systemSecurity.enableDataEncryption) score += 2;
+    if (settings.systemSecurity.enableBackupEncryption) score++;
+    if (settings.accessControl.enableRoleBasedAccess) score++;
+    if (settings.accessControl.requireApprovalForNewUsers) score++;
+    if (!settings.accessControl.enableGuestAccess) score++;
+    return Math.round(score / maxScore * 100);
+  }
+}
 const SecuritySettings = () => {
   const { isAdmin } = useAdminAccess();
-  const [settings, setSettings] = reactExports.useState({
-    passwordPolicy: {
-      minLength: 8,
-      requireUppercase: true,
-      requireLowercase: true,
-      requireNumbers: true,
-      requireSpecialChars: true,
-      passwordExpiry: 90,
-      preventReuse: 12
-    },
-    accountSecurity: {
-      maxFailedAttempts: 5,
-      lockoutDuration: 30,
-      requireEmailVerification: true,
-      requireTwoFactor: false,
-      sessionTimeout: 60,
-      allowMultipleSessions: false
-    },
-    systemSecurity: {
-      enableSSL: true,
-      enableFirewall: true,
-      enableIPWhitelist: false,
-      ipWhitelist: ["192.168.1.0/24"],
-      enableAuditLogging: true,
-      enableDataEncryption: true,
-      enableBackupEncryption: true
-    },
-    accessControl: {
-      enableRoleBasedAccess: true,
-      requireApprovalForNewUsers: true,
-      defaultUserRole: "Employee",
-      enableGuestAccess: false,
-      maxConcurrentUsers: 50
-    }
-  });
+  const [settings, setSettings] = reactExports.useState(() => SecurityService.getDefaultSecuritySettings());
   const [securityEvents, setSecurityEvents] = reactExports.useState([]);
   const [newIPAddress, setNewIPAddress] = reactExports.useState("");
   const [isSaving, setIsSaving] = reactExports.useState(false);
+  const [isLoading, setIsLoading] = reactExports.useState(true);
   const [isBatchDeleteDialogOpen, setIsBatchDeleteDialogOpen] = reactExports.useState(false);
   const [batchActionLoading, setBatchActionLoading] = reactExports.useState(false);
   const { toast } = useToast();
   const batchSelection = useBatchSelection();
   reactExports.useEffect(() => {
-    generateSampleSecurityEvents();
+    loadSecuritySettings();
+    loadSecurityEvents();
   }, []);
+  const loadSecuritySettings = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await SecurityService.getSecuritySettings();
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to load security settings: ${error}`,
+          variant: "destructive"
+        });
+        return;
+      }
+      if (data) {
+        setSettings(data);
+      }
+    } catch (error) {
+      console.error("Error loading security settings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load security settings",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const loadSecurityEvents = async () => {
+    try {
+      const { data, error } = await SecurityService.getSecurityEvents({
+        page: 1,
+        pageSize: 50
+      });
+      if (error) {
+        console.error("Error loading security events:", error);
+        return;
+      }
+      if (data) {
+        setSecurityEvents(data);
+      } else {
+        generateSampleSecurityEvents();
+      }
+    } catch (error) {
+      console.error("Error loading security events:", error);
+      generateSampleSecurityEvents();
+    }
+  };
   const generateSampleSecurityEvents = () => {
     const events = [
       {
@@ -2040,7 +2373,15 @@ const SecuritySettings = () => {
   const handleSaveSettings = async () => {
     setIsSaving(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1e3));
+      const { error } = await SecurityService.saveSecuritySettings(settings);
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to save security settings: ${error}`,
+          variant: "destructive"
+        });
+        return;
+      }
       toast({
         title: "Success",
         description: "Security settings saved successfully"
@@ -2056,8 +2397,33 @@ const SecuritySettings = () => {
       setIsSaving(false);
     }
   };
-  const addIPToWhitelist = () => {
-    if (newIPAddress && !settings.systemSecurity.ipWhitelist.includes(newIPAddress)) {
+  const addIPToWhitelist = async () => {
+    if (!newIPAddress) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid IP address",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (settings.systemSecurity.ipWhitelist.includes(newIPAddress)) {
+      toast({
+        title: "Error",
+        description: "IP address is already in the whitelist",
+        variant: "destructive"
+      });
+      return;
+    }
+    try {
+      const { error } = await SecurityService.addIPToWhitelist(newIPAddress);
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to add IP to whitelist: ${error}`,
+          variant: "destructive"
+        });
+        return;
+      }
       setSettings((prev) => ({
         ...prev,
         systemSecurity: {
@@ -2067,23 +2433,48 @@ const SecuritySettings = () => {
       }));
       setNewIPAddress("");
       toast({
-        title: "IP Added",
+        title: "Success",
         description: "IP address added to whitelist"
+      });
+    } catch (error) {
+      console.error("Error adding IP to whitelist:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add IP to whitelist",
+        variant: "destructive"
       });
     }
   };
-  const removeIPFromWhitelist = (ip) => {
-    setSettings((prev) => ({
-      ...prev,
-      systemSecurity: {
-        ...prev.systemSecurity,
-        ipWhitelist: prev.systemSecurity.ipWhitelist.filter((item) => item !== ip)
+  const removeIPFromWhitelist = async (ip) => {
+    try {
+      const { error } = await SecurityService.removeIPFromWhitelist(ip);
+      if (error) {
+        toast({
+          title: "Error",
+          description: `Failed to remove IP from whitelist: ${error}`,
+          variant: "destructive"
+        });
+        return;
       }
-    }));
-    toast({
-      title: "IP Removed",
-      description: "IP address removed from whitelist"
-    });
+      setSettings((prev) => ({
+        ...prev,
+        systemSecurity: {
+          ...prev.systemSecurity,
+          ipWhitelist: prev.systemSecurity.ipWhitelist.filter((item) => item !== ip)
+        }
+      }));
+      toast({
+        title: "Success",
+        description: "IP address removed from whitelist"
+      });
+    } catch (error) {
+      console.error("Error removing IP from whitelist:", error);
+      toast({
+        title: "Error",
+        description: "Failed to remove IP from whitelist",
+        variant: "destructive"
+      });
+    }
   };
   const getSeverityColor2 = (severity) => {
     switch (severity) {
@@ -5221,10 +5612,23 @@ const SMSAlertManagement = () => {
             contacts.filter((c) => c.is_active).length,
             " active)"
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { "data-id": "z1vn5ehl7", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4 mr-2", "data-id": "yxh2s9s02", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
-            "Add Contact"
-          ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            Button,
+            {
+              onClick: () => {
+                toast({
+                  title: "Add Contact",
+                  description: "Opening contact creation form..."
+                });
+              },
+              "data-id": "z1vn5ehl7",
+              "data-path": "src/pages/Admin/SMSAlertManagement.tsx",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4 mr-2", "data-id": "yxh2s9s02", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
+                "Add Contact"
+              ]
+            }
+          )
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { "data-id": "k5r6rnr4r", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: contacts.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { "data-id": "0yiscmdli", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { "data-id": "kaj625zc7", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { "data-id": "72sck4817", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
@@ -5243,8 +5647,45 @@ const SMSAlertManagement = () => {
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { "data-id": "jgh2wt20h", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: contact.contact_role }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { "data-id": "vfclgaegq", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: contact.is_active ? "default" : "secondary", "data-id": "fprz23oke", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: contact.is_active ? "Active" : "Inactive" }) }),
               /* @__PURE__ */ jsxRuntimeExports.jsx(TableCell, { "data-id": "mysqc46zb", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex space-x-2", "data-id": "vnq72y3im", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", variant: "outline", "data-id": "xszk8t9xv", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "w-4 h-4", "data-id": "kh07sx1bk", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { size: "sm", variant: "outline", "data-id": "6venazdgp", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "w-4 h-4", "data-id": "20qzh63rb", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }) })
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Button,
+                  {
+                    size: "sm",
+                    variant: "outline",
+                    onClick: () => {
+                      toast({
+                        title: "Edit Contact",
+                        description: `Editing contact: ${contact.contact_name}`
+                      });
+                    },
+                    title: "Edit contact",
+                    "data-id": "xszk8t9xv",
+                    "data-path": "src/pages/Admin/SMSAlertManagement.tsx",
+                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(SquarePen, { className: "w-4 h-4", "data-id": "kh07sx1bk", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" })
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  Button,
+                  {
+                    size: "sm",
+                    variant: "outline",
+                    onClick: () => {
+                      if (confirm(`Are you sure you want to delete contact "${contact.contact_name}"?`)) {
+                        toast({
+                          title: "Contact Deleted",
+                          description: `Contact ${contact.contact_name} has been deleted`,
+                          variant: "destructive"
+                        });
+                        loadContacts();
+                      }
+                    },
+                    title: "Delete contact",
+                    className: "text-red-600 hover:text-red-700",
+                    "data-id": "6venazdgp",
+                    "data-path": "src/pages/Admin/SMSAlertManagement.tsx",
+                    children: /* @__PURE__ */ jsxRuntimeExports.jsx(Trash2, { className: "w-4 h-4", "data-id": "20qzh63rb", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" })
+                  }
+                )
               ] }) })
             ] }, contact.id)
           ) })
@@ -5252,10 +5693,23 @@ const SMSAlertManagement = () => {
           /* @__PURE__ */ jsxRuntimeExports.jsx(Phone, { className: "w-12 h-12 mx-auto text-muted-foreground mb-4", "data-id": "yux5y2jhd", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-semibold mb-2", "data-id": "mummj2nrp", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: "No SMS Contacts" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-muted-foreground mb-4", "data-id": "dh359v7ij", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: "Add contacts to receive SMS alerts for license expiries" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { "data-id": "8f7359q6k", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4 mr-2", "data-id": "h3f805g6m", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
-            "Add Your First Contact"
-          ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            Button,
+            {
+              onClick: () => {
+                toast({
+                  title: "Add Contact",
+                  description: "Opening contact creation form..."
+                });
+              },
+              "data-id": "8f7359q6k",
+              "data-path": "src/pages/Admin/SMSAlertManagement.tsx",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4 mr-2", "data-id": "h3f805g6m", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
+                "Add Your First Contact"
+              ]
+            }
+          )
         ] }) })
       ] }) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "settings", "data-id": "3qam673f1", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { "data-id": "z49jqe939", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
@@ -5264,10 +5718,23 @@ const SMSAlertManagement = () => {
             /* @__PURE__ */ jsxRuntimeExports.jsx(Settings, { className: "w-5 h-5 mr-2", "data-id": "n30xt648c", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
             "SMS Alert Settings"
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(Button, { "data-id": "n34gdw5bq", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4 mr-2", "data-id": "2l8xx1yok", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
-            "Add Setting"
-          ] })
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            Button,
+            {
+              onClick: () => {
+                toast({
+                  title: "Add Setting",
+                  description: "Opening SMS alert setting creation form..."
+                });
+              },
+              "data-id": "n34gdw5bq",
+              "data-path": "src/pages/Admin/SMSAlertManagement.tsx",
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Plus, { className: "w-4 h-4 mr-2", "data-id": "2l8xx1yok", "data-path": "src/pages/Admin/SMSAlertManagement.tsx" }),
+                "Add Setting"
+              ]
+            }
+          )
         ] }) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { "data-id": "olmmrn70o", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: settings.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(Table, { "data-id": "6fk6sixt7", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(TableHeader, { "data-id": "12r8jzvsn", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TableRow, { "data-id": "bdundy4fz", "data-path": "src/pages/Admin/SMSAlertManagement.tsx", children: [

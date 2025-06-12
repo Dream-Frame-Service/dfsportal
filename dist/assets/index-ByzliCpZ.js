@@ -1,12 +1,12 @@
-const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/Dashboard-BJb2n0nW.js","assets/react-vendor-DX0Gaxph.js","assets/vendor-ChWeSoXy.js","assets/aws-sdk-DF6-bWA6.js","assets/admin-core-DFYqoWCM.js","assets/ui-components-E8Qujiw2.js","assets/supabase-DWlqU2OS.js","assets/NotFound-FRlOHPq8.js","assets/animations-DEJKylty.js","assets/business-pages-DR8LlJyO.js","assets/admin-security-CWSw-PzD.js","assets/hr-pages-D65sLUti.js","assets/utilities-BPr3_uG_.js","assets/VendorList-DMC7x1Ad.js","assets/VendorForm-LlolkKIE.js","assets/LicenseList-DXXOk_F9.js","assets/LicenseForm-B-wiRxgR.js","assets/DeliveryList-Dwc2L1S8.js","assets/DeliveryForm-C1N5RlEX.js","assets/AppSettings-CZm6EmHI.js","assets/admin-monitoring-BbbbgHBh.js","assets/admin-development-CbHjbPee.js","assets/S3StorageManager-BJ-KOMHl.js","assets/InvalidCharacterErrorDemo-sHPGbi4w.js"])))=>i.map(i=>d[i]);
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/Dashboard-BW-p-KZr.js","assets/react-vendor-DX0Gaxph.js","assets/vendor-ChWeSoXy.js","assets/aws-sdk-DF6-bWA6.js","assets/admin-core-CknIDYcP.js","assets/ui-components-svEX1DXz.js","assets/supabase-DWlqU2OS.js","assets/NotFound-xI3fGnJN.js","assets/animations-DEJKylty.js","assets/business-pages-BYlNtgd-.js","assets/admin-security-BkHZEmpQ.js","assets/hr-pages-BwGCluKN.js","assets/utilities-BPr3_uG_.js","assets/VendorList-CDegzzlO.js","assets/VendorForm-DGOHO_oX.js","assets/LicenseList-C9DIUjCE.js","assets/LicenseForm-DkP11wud.js","assets/DeliveryList-CpEOAS8I.js","assets/DeliveryForm-lOuY_AlE.js","assets/AppSettings-CTzCSc3L.js","assets/admin-monitoring-bW6zJ57V.js","assets/admin-development-anPjbjqE.js","assets/S3StorageManager-C4TaiWTx.js","assets/InvalidCharacterErrorDemo-C1Cv60ps.js","assets/admin-misc-u7PljHnk.js"])))=>i.map(i=>d[i]);
 import { r as reactExports, j as jsxRuntimeExports, R as React, u as useNavigate, h as useLocation, O as Outlet, B as BrowserRouter, i as Routes, k as Route, N as Navigate, l as clientExports } from "./react-vendor-DX0Gaxph.js";
 import { _ as __vitePreload } from "./supabase-DWlqU2OS.js";
-import { X as cn, u as useToast, B as Button, _ as DemoAuthProvider } from "./admin-core-DFYqoWCM.js";
-import { bB as Viewport, bC as Root2, bD as Action, bE as Close, X, bF as Title, bG as Description, bH as Provider, bI as Portal, bJ as Content2, bK as Provider$1, aB as Eye, b2 as CodeXml, F as Shield, a2 as Settings, bL as ChevronLeft, bm as ChevronRight, a7 as User, bM as Menu, bj as House, aA as Package, aC as Plus, U as Users, ak as TrendingUp, ax as Building2, bx as ShoppingCart, a4 as FileText, az as DollarSign, H as TriangleAlert, bw as Fuel, ay as Truck, $ as ChartColumn, N as UserCheck, W as Globe, Q as MessageSquare, Z as Activity, M as Database } from "./ui-components-E8Qujiw2.js";
+import { X as cn, u as useToast, B as Button, _ as DemoAuthProvider } from "./admin-core-CknIDYcP.js";
+import { bC as Viewport, bD as Root2, bE as Action, bF as Close, X, bG as Title, bH as Description, bI as Provider, bJ as Portal, bK as Content2, bL as Provider$1, aB as Eye, b2 as CodeXml, F as Shield, a2 as Settings, bM as ChevronLeft, bn as ChevronRight, a7 as User, bN as Menu, bl as House, aA as Package, aC as Plus, U as Users, ak as TrendingUp, ax as Building2, by as ShoppingCart, a4 as FileText, az as DollarSign, H as TriangleAlert, bx as Fuel, ay as Truck, $ as ChartColumn, N as UserCheck, W as Globe, Q as MessageSquare, Z as Activity, M as Database } from "./ui-components-svEX1DXz.js";
 import { a as cva, b3 as QueryClient, b4 as SpeedInsights, b5 as Analytics } from "./vendor-ChWeSoXy.js";
 import { Q as QueryClientProvider } from "./query-Dgw9-EV7.js";
-import { P as PageErrorBoundary, G as GlobalErrorBoundary, I as InvalidCharacterErrorBoundary } from "./admin-security-CWSw-PzD.js";
-import { a as useResponsiveLayout } from "./business-pages-DR8LlJyO.js";
+import { P as PageErrorBoundary, G as GlobalErrorBoundary, I as InvalidCharacterErrorBoundary } from "./admin-security-BkHZEmpQ.js";
+import { a as useResponsiveLayout } from "./business-pages-BYlNtgd-.js";
 import "./aws-sdk-DF6-bWA6.js";
 import "./animations-DEJKylty.js";
 (function polyfill() {
@@ -447,7 +447,7 @@ const PageLoader = () => {
   ] }) });
 };
 const Dashboard = reactExports.lazy(
-  () => __vitePreload(() => import("./Dashboard-BJb2n0nW.js"), true ? __vite__mapDeps([0,1,2,3,4,5,6]) : void 0).catch(() => ({
+  () => __vitePreload(() => import("./Dashboard-BW-p-KZr.js"), true ? __vite__mapDeps([0,1,2,3,4,5,6]) : void 0).catch(() => ({
     default: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-8 text-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-red-600 mb-4", children: "Failed to Load Dashboard" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -462,7 +462,7 @@ const Dashboard = reactExports.lazy(
   }))
 );
 const NotFound = reactExports.lazy(
-  () => __vitePreload(() => import("./NotFound-FRlOHPq8.js"), true ? __vite__mapDeps([7,1,2,3,4,5,6,8]) : void 0).catch(() => ({
+  () => __vitePreload(() => import("./NotFound-xI3fGnJN.js"), true ? __vite__mapDeps([7,1,2,3,4,5,6,8]) : void 0).catch(() => ({
     default: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-8 text-center", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold mb-4", children: "Page Not Found" }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -476,43 +476,44 @@ const NotFound = reactExports.lazy(
     ] })
   }))
 );
-const ProductList = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.P), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const ProductForm = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.b), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const EmployeeList = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-D65sLUti.js").then((n) => n.E), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
-const EmployeeForm = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-D65sLUti.js").then((n) => n.a), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
-const SalesReportList = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.S), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const SalesReportForm = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.d), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const VendorList = reactExports.lazy(() => __vitePreload(() => import("./VendorList-DMC7x1Ad.js"), true ? __vite__mapDeps([13,1,2,3,4,5,6,9,10,8]) : void 0));
-const VendorForm = reactExports.lazy(() => __vitePreload(() => import("./VendorForm-LlolkKIE.js"), true ? __vite__mapDeps([14,1,2,3,4,5,6]) : void 0));
-const OrderList = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.O), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const OrderForm = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.e), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const LicenseList = reactExports.lazy(() => __vitePreload(() => import("./LicenseList-DXXOk_F9.js"), true ? __vite__mapDeps([15,1,2,3,4,5,6,10]) : void 0));
-const LicenseForm = reactExports.lazy(() => __vitePreload(() => import("./LicenseForm-B-wiRxgR.js"), true ? __vite__mapDeps([16,1,2,3,4,5,6,9,10,8]) : void 0));
-const SalaryList = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-D65sLUti.js").then((n) => n.S), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
-const SalaryForm = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-D65sLUti.js").then((n) => n.b), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
-const InventoryAlerts = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.I), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const GasDeliveryInventory = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.G), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
-const DeliveryList = reactExports.lazy(() => __vitePreload(() => import("./DeliveryList-Dwc2L1S8.js"), true ? __vite__mapDeps([17,1,2,3,4,5,6]) : void 0));
-const DeliveryForm = reactExports.lazy(() => __vitePreload(() => import("./DeliveryForm-C1N5RlEX.js"), true ? __vite__mapDeps([18,1,2,3,4,5,6,9,10,8]) : void 0));
-const AppSettings = reactExports.lazy(() => __vitePreload(() => import("./AppSettings-CZm6EmHI.js"), true ? __vite__mapDeps([19,1,2,3,4,5,6,9,10,8]) : void 0));
-const AdminPanel = reactExports.lazy(() => __vitePreload(() => import("./admin-core-DFYqoWCM.js").then((n) => n.$), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
-const AdminDashboard = reactExports.lazy(() => __vitePreload(() => import("./admin-core-DFYqoWCM.js").then((n) => n.a0), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
-const UserManagement = reactExports.lazy(() => __vitePreload(() => import("./admin-core-DFYqoWCM.js").then((n) => n.a1), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
-const SiteManagement = reactExports.lazy(() => __vitePreload(() => import("./admin-core-DFYqoWCM.js").then((n) => n.a2), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
-const SystemLogs = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-BbbbgHBh.js").then((n) => n.S), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
-const SecuritySettings = reactExports.lazy(() => __vitePreload(() => import("./admin-security-CWSw-PzD.js").then((n) => n.S), true ? __vite__mapDeps([10,1,2,3,4,5,6]) : void 0));
-const SMSAlertManagement = reactExports.lazy(() => __vitePreload(() => import("./admin-security-CWSw-PzD.js").then((n) => n.e), true ? __vite__mapDeps([10,1,2,3,4,5,6]) : void 0));
-const ErrorRecoveryPage = reactExports.lazy(() => __vitePreload(() => import("./admin-security-CWSw-PzD.js").then((n) => n.f), true ? __vite__mapDeps([10,1,2,3,4,5,6]) : void 0));
-const MemoryMonitoring = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-BbbbgHBh.js").then((n) => n.M), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
-const DatabaseMonitoring = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-BbbbgHBh.js").then((n) => n.D), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
-const AuditMonitoring = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-BbbbgHBh.js").then((n) => n.A), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
-const DatabaseAutoSyncPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-CbHjbPee.js").then((n) => n.D), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
-const SupabaseConnectionTestPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-CbHjbPee.js").then((n) => n.S), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
-const DevelopmentMonitoringPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-CbHjbPee.js").then((n) => n.a), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
-const RoleTestingPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-CbHjbPee.js").then((n) => n.R), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
-const AdvancedRealTimeFeatures = reactExports.lazy(() => __vitePreload(() => import("./admin-development-CbHjbPee.js").then((n) => n.A), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
-const S3StorageManager = reactExports.lazy(() => __vitePreload(() => import("./S3StorageManager-BJ-KOMHl.js"), true ? __vite__mapDeps([22,1,2,3,4,5,6]) : void 0).then((module) => ({ default: module.S3StorageManager })));
-const InvalidCharacterErrorDemo = reactExports.lazy(() => __vitePreload(() => import("./InvalidCharacterErrorDemo-sHPGbi4w.js"), true ? __vite__mapDeps([23,1,2,3,4,5,6,10]) : void 0));
+const ProductList = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.P), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const ProductForm = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.b), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const EmployeeList = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-BwGCluKN.js").then((n) => n.E), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
+const EmployeeForm = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-BwGCluKN.js").then((n) => n.a), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
+const SalesReportList = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.S), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const SalesReportForm = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.d), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const VendorList = reactExports.lazy(() => __vitePreload(() => import("./VendorList-CDegzzlO.js"), true ? __vite__mapDeps([13,1,2,3,4,5,6,9,10,8]) : void 0));
+const VendorForm = reactExports.lazy(() => __vitePreload(() => import("./VendorForm-DGOHO_oX.js"), true ? __vite__mapDeps([14,1,2,3,4,5,6]) : void 0));
+const OrderList = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.O), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const OrderForm = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.e), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const LicenseList = reactExports.lazy(() => __vitePreload(() => import("./LicenseList-C9DIUjCE.js"), true ? __vite__mapDeps([15,1,2,3,4,5,6,10]) : void 0));
+const LicenseForm = reactExports.lazy(() => __vitePreload(() => import("./LicenseForm-DkP11wud.js"), true ? __vite__mapDeps([16,1,2,3,4,5,6,9,10,8]) : void 0));
+const SalaryList = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-BwGCluKN.js").then((n) => n.S), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
+const SalaryForm = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-BwGCluKN.js").then((n) => n.b), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
+const InventoryAlerts = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.I), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const GasDeliveryInventory = reactExports.lazy(() => __vitePreload(() => import("./business-pages-BYlNtgd-.js").then((n) => n.G), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
+const DeliveryList = reactExports.lazy(() => __vitePreload(() => import("./DeliveryList-CpEOAS8I.js"), true ? __vite__mapDeps([17,1,2,3,4,5,6]) : void 0));
+const DeliveryForm = reactExports.lazy(() => __vitePreload(() => import("./DeliveryForm-lOuY_AlE.js"), true ? __vite__mapDeps([18,1,2,3,4,5,6,9,10,8]) : void 0));
+const AppSettings = reactExports.lazy(() => __vitePreload(() => import("./AppSettings-CTzCSc3L.js"), true ? __vite__mapDeps([19,1,2,3,4,5,6,9,10,8]) : void 0));
+const AdminPanel = reactExports.lazy(() => __vitePreload(() => import("./admin-core-CknIDYcP.js").then((n) => n.$), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
+const AdminDashboard = reactExports.lazy(() => __vitePreload(() => import("./admin-core-CknIDYcP.js").then((n) => n.a0), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
+const UserManagement = reactExports.lazy(() => __vitePreload(() => import("./admin-core-CknIDYcP.js").then((n) => n.a1), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
+const SiteManagement = reactExports.lazy(() => __vitePreload(() => import("./admin-core-CknIDYcP.js").then((n) => n.a2), true ? __vite__mapDeps([4,1,2,3,5,6]) : void 0));
+const SystemLogs = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-bW6zJ57V.js").then((n) => n.S), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
+const SecuritySettings = reactExports.lazy(() => __vitePreload(() => import("./admin-security-BkHZEmpQ.js").then((n) => n.S), true ? __vite__mapDeps([10,1,2,3,4,5,6]) : void 0));
+const SMSAlertManagement = reactExports.lazy(() => __vitePreload(() => import("./admin-security-BkHZEmpQ.js").then((n) => n.e), true ? __vite__mapDeps([10,1,2,3,4,5,6]) : void 0));
+const ErrorRecoveryPage = reactExports.lazy(() => __vitePreload(() => import("./admin-security-BkHZEmpQ.js").then((n) => n.f), true ? __vite__mapDeps([10,1,2,3,4,5,6]) : void 0));
+const MemoryMonitoring = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-bW6zJ57V.js").then((n) => n.M), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
+const DatabaseMonitoring = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-bW6zJ57V.js").then((n) => n.D), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
+const AuditMonitoring = reactExports.lazy(() => __vitePreload(() => import("./admin-monitoring-bW6zJ57V.js").then((n) => n.A), true ? __vite__mapDeps([20,1,2,3,4,5,6]) : void 0));
+const DatabaseAutoSyncPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-anPjbjqE.js").then((n) => n.D), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
+const SupabaseConnectionTestPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-anPjbjqE.js").then((n) => n.S), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
+const DevelopmentMonitoringPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-anPjbjqE.js").then((n) => n.a), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
+const RoleTestingPage = reactExports.lazy(() => __vitePreload(() => import("./admin-development-anPjbjqE.js").then((n) => n.R), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
+const AdvancedRealTimeFeatures = reactExports.lazy(() => __vitePreload(() => import("./admin-development-anPjbjqE.js").then((n) => n.A), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
+const S3StorageManager = reactExports.lazy(() => __vitePreload(() => import("./S3StorageManager-C4TaiWTx.js"), true ? __vite__mapDeps([22,1,2,3,4,5,6]) : void 0).then((module) => ({ default: module.S3StorageManager })));
+const InvalidCharacterErrorDemo = reactExports.lazy(() => __vitePreload(() => import("./InvalidCharacterErrorDemo-C1Cv60ps.js"), true ? __vite__mapDeps([23,1,2,3,4,5,6,10]) : void 0));
+const ButtonTestingPage = reactExports.lazy(() => __vitePreload(() => import("./admin-misc-u7PljHnk.js"), true ? __vite__mapDeps([24,1,2,3,4,5,6]) : void 0));
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -585,7 +586,8 @@ function App() {
         /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "admin/role-testing", element: /* @__PURE__ */ jsxRuntimeExports.jsx(RoleTestingPage, {}) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "admin/advanced-realtime", element: /* @__PURE__ */ jsxRuntimeExports.jsx(AdvancedRealTimeFeatures, {}) }),
         /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "admin/s3-storage", element: /* @__PURE__ */ jsxRuntimeExports.jsx(S3StorageManager, {}) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "admin/invalid-character-demo", element: /* @__PURE__ */ jsxRuntimeExports.jsx(InvalidCharacterErrorDemo, {}) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "admin/invalid-character-demo", element: /* @__PURE__ */ jsxRuntimeExports.jsx(InvalidCharacterErrorDemo, {}) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "admin/button-testing", element: /* @__PURE__ */ jsxRuntimeExports.jsx(ButtonTestingPage, {}) })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "*", element: /* @__PURE__ */ jsxRuntimeExports.jsx(NotFound, {}) })
     ] }) }) }),

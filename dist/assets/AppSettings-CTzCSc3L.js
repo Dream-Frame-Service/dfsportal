@@ -1,11 +1,11 @@
 import { r as reactExports, j as jsxRuntimeExports, u as useNavigate } from "./react-vendor-DX0Gaxph.js";
-import { X as cn, u as useToast, C as Card, d as CardHeader, e as CardTitle, l as Badge, g as CardContent, L as Label, n as Switch, B as Button } from "./admin-core-DFYqoWCM.js";
-import { bO as Root, bP as Track, bQ as Range, bR as Thumb, a5 as Zap, a2 as Settings, aG as Save, aE as RotateCcw, bs as Upload, bS as FileImage, X, l as Check, bp as TrendingDown, J as ArrowLeft, M as Database, aJ as Bell, F as Shield } from "./ui-components-E8Qujiw2.js";
-import { i as isImageFile, f as formatFileSize, c as compressImage } from "./business-pages-DR8LlJyO.js";
+import { X as cn, u as useToast, C as Card, d as CardHeader, e as CardTitle, l as Badge, g as CardContent, L as Label, n as Switch, B as Button } from "./admin-core-CknIDYcP.js";
+import { bP as Root, bQ as Track, bR as Range, bS as Thumb, a5 as Zap, a2 as Settings, aG as Save, aE as RotateCcw, bt as Upload, bT as FileImage, X, l as Check, bq as TrendingDown, J as ArrowLeft, M as Database, aJ as Bell, F as Shield } from "./ui-components-svEX1DXz.js";
+import { i as isImageFile, f as formatFileSize, c as compressImage } from "./business-pages-BYlNtgd-.js";
 import "./vendor-ChWeSoXy.js";
 import "./aws-sdk-DF6-bWA6.js";
 import "./supabase-DWlqU2OS.js";
-import "./admin-security-CWSw-PzD.js";
+import "./admin-security-BkHZEmpQ.js";
 import "./animations-DEJKylty.js";
 const Slider = reactExports.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
   Root,

@@ -1,8 +1,8 @@
 import { r as reactExports, u as useNavigate, j as jsxRuntimeExports } from "./react-vendor-DX0Gaxph.js";
-import { u as useToast, s as supabase } from "./admin-core-DFYqoWCM.js";
+import { u as useToast, s as supabase } from "./admin-core-CknIDYcP.js";
 import "./vendor-ChWeSoXy.js";
 import "./aws-sdk-DF6-bWA6.js";
-import "./ui-components-E8Qujiw2.js";
+import "./ui-components-svEX1DXz.js";
 import "./supabase-DWlqU2OS.js";
 const Dashboard = () => {
   var _a;

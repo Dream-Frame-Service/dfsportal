@@ -1,6 +1,6 @@
 import { j as jsxRuntimeExports, u as useNavigate, r as reactExports } from "./react-vendor-DX0Gaxph.js";
-import { D as Dialog, t as DialogContent, v as DialogHeader, w as DialogTitle, B as Button, C as Card, d as CardHeader, e as CardTitle, l as Badge, g as CardContent, Y as Separator, Z as DialogFooter, u as useToast, s as supabase, I as Input, S as Select, h as SelectTrigger, i as SelectValue, j as SelectContent, k as SelectItem, z as Table, E as TableHeader, F as TableRow, G as TableHead, H as TableBody, J as TableCell } from "./admin-core-DFYqoWCM.js";
-import { ay as Truck, aM as Printer, bw as Fuel, $ as ChartColumn, H as TriangleAlert, X, aC as Plus, a1 as Search, b8 as Funnel, aB as Eye } from "./ui-components-E8Qujiw2.js";
+import { D as Dialog, t as DialogContent, v as DialogHeader, w as DialogTitle, B as Button, C as Card, d as CardHeader, e as CardTitle, l as Badge, g as CardContent, Y as Separator, Z as DialogFooter, u as useToast, s as supabase, I as Input, S as Select, h as SelectTrigger, i as SelectValue, j as SelectContent, k as SelectItem, z as Table, E as TableHeader, F as TableRow, G as TableHead, H as TableBody, J as TableCell } from "./admin-core-CknIDYcP.js";
+import { ay as Truck, aM as Printer, bx as Fuel, $ as ChartColumn, H as TriangleAlert, X, aC as Plus, a1 as Search, b8 as Funnel, aB as Eye } from "./ui-components-svEX1DXz.js";
 import "./vendor-ChWeSoXy.js";
 import "./aws-sdk-DF6-bWA6.js";
 import "./supabase-DWlqU2OS.js";

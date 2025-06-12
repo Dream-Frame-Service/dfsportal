@@ -1,9 +1,9 @@
 import { h as useLocation, r as reactExports, j as jsxRuntimeExports } from "./react-vendor-DX0Gaxph.js";
-import { B as Button } from "./admin-core-DFYqoWCM.js";
+import { B as Button } from "./admin-core-CknIDYcP.js";
 import { m as motion } from "./animations-DEJKylty.js";
 import "./vendor-ChWeSoXy.js";
 import "./aws-sdk-DF6-bWA6.js";
-import "./ui-components-E8Qujiw2.js";
+import "./ui-components-svEX1DXz.js";
 import "./supabase-DWlqU2OS.js";
 const NotFound = () => {
   const location = useLocation();

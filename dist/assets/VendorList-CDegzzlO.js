@@ -1,12 +1,12 @@
 import { r as reactExports, u as useNavigate, j as jsxRuntimeExports } from "./react-vendor-DX0Gaxph.js";
-import { s as supabase, K as toast, C as Card, d as CardHeader, e as CardTitle, f as CardDescription, B as Button, g as CardContent, I as Input, z as Table, E as TableHeader, F as TableRow, G as TableHead, H as TableBody, J as TableCell, l as Badge } from "./admin-core-DFYqoWCM.js";
-import { u as useListKeyboardShortcuts, V as ViewModal } from "./business-pages-DR8LlJyO.js";
-import { ax as Building2, aC as Plus, a1 as Search, aT as MapPin, aO as Mail, aS as Phone, aB as Eye, an as SquarePen, ao as Trash2 } from "./ui-components-E8Qujiw2.js";
+import { s as supabase, K as toast, C as Card, d as CardHeader, e as CardTitle, f as CardDescription, B as Button, g as CardContent, I as Input, z as Table, E as TableHeader, F as TableRow, G as TableHead, H as TableBody, J as TableCell, l as Badge } from "./admin-core-CknIDYcP.js";
+import { u as useListKeyboardShortcuts, V as ViewModal } from "./business-pages-BYlNtgd-.js";
+import { ax as Building2, aC as Plus, a1 as Search, aT as MapPin, aO as Mail, aS as Phone, aB as Eye, an as SquarePen, ao as Trash2 } from "./ui-components-svEX1DXz.js";
 import { m as motion } from "./animations-DEJKylty.js";
 import "./vendor-ChWeSoXy.js";
 import "./aws-sdk-DF6-bWA6.js";
 import "./supabase-DWlqU2OS.js";
-import "./admin-security-CWSw-PzD.js";
+import "./admin-security-BkHZEmpQ.js";
 const VendorList = () => {
   const [vendors, setVendors] = reactExports.useState([]);
   const [loading, setLoading] = reactExports.useState(true);

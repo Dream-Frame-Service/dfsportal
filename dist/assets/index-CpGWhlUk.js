@@ -427,15 +427,55 @@ const DemoDashboardLayout = () => {
     ] })
   ] });
 };
-const PageLoader = () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center min-h-screen bg-gray-50", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center space-y-4", children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" }),
-  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-2", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-medium text-gray-900", children: "Loading DFS Portal" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-blue-600", children: "Demo Mode - Development Preview" })
-  ] })
-] }) });
-const Dashboard = reactExports.lazy(() => __vitePreload(() => import("./Dashboard-BJb2n0nW.js"), true ? __vite__mapDeps([0,1,2,3,4,5,6]) : void 0));
-const NotFound = reactExports.lazy(() => __vitePreload(() => import("./NotFound-FRlOHPq8.js"), true ? __vite__mapDeps([7,1,2,3,4,5,6,8]) : void 0));
+const PageLoader = () => {
+  console.log("🔄 PageLoader rendering...");
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-center space-y-6 p-8", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-blue-400 animate-pulse mx-auto" })
+    ] }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-2xl font-bold text-gray-800", children: "DFS Manager Portal" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg text-blue-600 font-medium", children: "Loading Application..." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600", children: "Demo Mode - Development Environment" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-center items-center space-x-2 mt-4", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-blue-500 rounded-full animate-bounce" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-blue-500 rounded-full animate-bounce", style: { animationDelay: "0.1s" } }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-2 h-2 bg-blue-500 rounded-full animate-bounce", style: { animationDelay: "0.2s" } })
+      ] })
+    ] })
+  ] }) });
+};
+const Dashboard = reactExports.lazy(
+  () => __vitePreload(() => import("./Dashboard-BJb2n0nW.js"), true ? __vite__mapDeps([0,1,2,3,4,5,6]) : void 0).catch(() => ({
+    default: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-8 text-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-red-600 mb-4", children: "Failed to Load Dashboard" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          onClick: () => window.location.reload(),
+          className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700",
+          children: "Reload Page"
+        }
+      )
+    ] })
+  }))
+);
+const NotFound = reactExports.lazy(
+  () => __vitePreload(() => import("./NotFound-FRlOHPq8.js"), true ? __vite__mapDeps([7,1,2,3,4,5,6,8]) : void 0).catch(() => ({
+    default: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "p-8 text-center", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold mb-4", children: "Page Not Found" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "button",
+        {
+          onClick: () => window.location.href = "/",
+          className: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700",
+          children: "Go Home"
+        }
+      )
+    ] })
+  }))
+);
 const ProductList = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.P), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
 const ProductForm = reactExports.lazy(() => __vitePreload(() => import("./business-pages-DR8LlJyO.js").then((n) => n.b), true ? __vite__mapDeps([9,1,2,3,4,5,6,10,8]) : void 0));
 const EmployeeList = reactExports.lazy(() => __vitePreload(() => import("./hr-pages-D65sLUti.js").then((n) => n.E), true ? __vite__mapDeps([11,1,2,3,4,5,6,9,10,8,12]) : void 0));
@@ -473,7 +513,27 @@ const RoleTestingPage = reactExports.lazy(() => __vitePreload(() => import("./ad
 const AdvancedRealTimeFeatures = reactExports.lazy(() => __vitePreload(() => import("./admin-development-CbHjbPee.js").then((n) => n.A), true ? __vite__mapDeps([21,1,2,3,4,5,6,8]) : void 0));
 const S3StorageManager = reactExports.lazy(() => __vitePreload(() => import("./S3StorageManager-BJ-KOMHl.js"), true ? __vite__mapDeps([22,1,2,3,4,5,6]) : void 0).then((module) => ({ default: module.S3StorageManager })));
 const InvalidCharacterErrorDemo = reactExports.lazy(() => __vitePreload(() => import("./InvalidCharacterErrorDemo-sHPGbi4w.js"), true ? __vite__mapDeps([23,1,2,3,4,5,6,10]) : void 0));
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        console.log(`Query failed ${failureCount} times:`, error);
+        return failureCount < 2;
+      },
+      retryDelay: (attemptIndex) => Math.min(1e3 * 2 ** attemptIndex, 3e4),
+      staleTime: 5 * 60 * 1e3,
+      // 5 minutes
+      cacheTime: 10 * 60 * 1e3
+      // 10 minutes
+    },
+    mutations: {
+      retry: false,
+      onError: (error) => {
+        console.error("Mutation error:", error);
+      }
+    }
+  }
+});
 function App() {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(GlobalErrorBoundary, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(InvalidCharacterErrorBoundary, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsxRuntimeExports.jsx(DemoAuthProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TooltipProvider, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(BrowserRouter, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(PageLoader, {}), children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Routes, { children: [
@@ -534,16 +594,92 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Analytics, {})
   ] }) }) }) }) });
 }
-console.warn("🚀 Starting DFS Manager Portal...");
+console.log("🚀 Starting DFS Manager Portal...");
+console.log("Environment:", "production");
+console.log("Supabase URL:", "Configured");
+console.log("Supabase Key:", "Configured");
+console.log("Development mode:", false);
+console.log("Production mode:", true);
+window.addEventListener("error", (event) => {
+  console.error("Global error:", event.error);
+});
+window.addEventListener("unhandledrejection", (event) => {
+  console.error("Unhandled promise rejection:", event.reason);
+});
 try {
   const container = document.getElementById("root");
-  if (container) {
-    const root = clientExports.createRoot(container);
-    root.render(/* @__PURE__ */ jsxRuntimeExports.jsx(App, { "data-id": "pjf367331", "data-path": "src/main.tsx" }));
-    console.warn("✅ App rendered successfully");
-  } else {
+  if (!container) {
     console.error("❌ Root element not found");
+    document.body.innerHTML = `
+      <div style="
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        justify-content: center; 
+        min-height: 100vh; 
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+        padding: 20px;
+      ">
+        <h1 style="font-size: 2rem; margin-bottom: 1rem;">DFS Manager Portal</h1>
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">System Initializing...</p>
+        <div style="
+          width: 40px; 
+          height: 40px; 
+          border: 4px solid rgba(255,255,255,0.3); 
+          border-top: 4px solid white; 
+          border-radius: 50%; 
+          animation: spin 1s linear infinite;
+        "></div>
+        <style>
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+        <p style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.8;">
+          If this persists, please contact support.
+        </p>
+      </div>
+    `;
+  } else {
+    const root = clientExports.createRoot(container);
+    root.render(/* @__PURE__ */ jsxRuntimeExports.jsx(App, {}));
+    console.log("✅ App rendered successfully");
   }
 } catch (error) {
   console.error("❌ App initialization failed:", error);
+  const container = document.getElementById("root") || document.body;
+  container.innerHTML = `
+    <div style="
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    ">
+      <h1 style="font-size: 2rem; margin-bottom: 1rem;">DFS Manager Portal</h1>
+      <p style="font-size: 1.1rem; margin-bottom: 1rem;">Initialization Error</p>
+      <p style="font-size: 0.9rem; margin-bottom: 2rem; opacity: 0.9;">
+        ${error.message || "Unknown error occurred"}
+      </p>
+      <button onclick="window.location.reload()" style="
+        background: rgba(255,255,255,0.2); 
+        border: 2px solid white; 
+        color: white; 
+        padding: 12px 24px; 
+        border-radius: 8px; 
+        font-size: 1rem; 
+        cursor: pointer;
+        transition: all 0.3s ease;
+      " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+         onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+        Reload Application
+      </button>
+    </div>
+  `;
 }

@@ -3,8 +3,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DemoAuthProvider } from './contexts/DemoAuthContext';
-import { GlobalErrorBoundary } from './components/ErrorBoundary';
-import InvalidCharacterErrorBoundary from './components/ErrorBoundary/InvalidCharacterErrorBoundary';
+import { GlobalErrorBoundary, InvalidCharacterErrorBoundary } from './components/ErrorBoundary';
 import { Suspense, lazy } from 'react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
@@ -12,22 +11,64 @@ import { Analytics } from '@vercel/analytics/react';
 // Layout components (loaded immediately)
 import DemoDashboardLayout from './components/Layout/DemoDashboardLayout';
 
-// Loading component
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen bg-gray-50">
-    <div className="text-center space-y-4">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-      <div className="space-y-2">
-        <p className="text-lg font-medium text-gray-900">Loading DFS Portal</p>
-        <p className="text-sm text-blue-600">Demo Mode - Development Preview</p>
+// Loading component with better error handling
+const PageLoader = () => {
+  console.log('🔄 PageLoader rendering...');
+  
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="text-center space-y-6 p-8">
+        <div className="relative">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-600 mx-auto"></div>
+          <div className="absolute inset-0 rounded-full h-16 w-16 border-4 border-transparent border-t-blue-400 animate-pulse mx-auto"></div>
+        </div>
+        <div className="space-y-3">
+          <h2 className="text-2xl font-bold text-gray-800">DFS Manager Portal</h2>
+          <p className="text-lg text-blue-600 font-medium">Loading Application...</p>
+          <p className="text-sm text-gray-600">Demo Mode - Development Environment</p>
+          <div className="flex justify-center items-center space-x-2 mt-4">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  );
+};
+
+// Lazy load all page components with error handling
+const Dashboard = lazy(() => 
+  import('./pages/Dashboard').catch(() => ({
+    default: () => (
+      <div className="p-8 text-center">
+        <h2 className="text-xl font-semibold text-red-600 mb-4">Failed to Load Dashboard</h2>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Reload Page
+        </button>
+      </div>
+    )
+  }))
 );
 
-// Lazy load all page components
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+const NotFound = lazy(() => 
+  import('./pages/NotFound').catch(() => ({
+    default: () => (
+      <div className="p-8 text-center">
+        <h2 className="text-xl font-semibold mb-4">Page Not Found</h2>
+        <button 
+          onClick={() => window.location.href = '/'} 
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Go Home
+        </button>
+      </div>
+    )
+  }))
+);
 
 // Product pages
 const ProductList = lazy(() => import('./pages/Products/ProductList'));
@@ -92,7 +133,26 @@ const AdvancedRealTimeFeatures = lazy(() => import('./pages/Admin/AdvancedRealTi
 const S3StorageManager = lazy(() => import('./components/S3StorageManager').then(module => ({ default: module.S3StorageManager })));
 const InvalidCharacterErrorDemo = lazy(() => import('./components/InvalidCharacterErrorDemo'));
 
-const queryClient = new QueryClient();
+// Create a query client with better error handling
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        console.log(`Query failed ${failureCount} times:`, error);
+        return failureCount < 2; // Retry up to 2 times
+      },
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 10 * 60 * 1000, // 10 minutes
+    },
+    mutations: {
+      retry: false,
+      onError: (error) => {
+        console.error('Mutation error:', error);
+      },
+    },
+  },
+});
 
 function App() {
   return (

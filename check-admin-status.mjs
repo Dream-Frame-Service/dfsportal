@@ -12,7 +12,7 @@ import { createClient } from '@supabase/supabase-js';
 dotenv.config();
 
 const ADMIN_EMAIL = 'admin@dfs-portal.com';
-const RESET_URL = 'https://dfsportal.vercel.app/reset-password';
+const RESET_URL = 'https://dfsportal.vercel.app/resetpassword';
 
 // Supabase client with fallback values
 console.log('🔧 Connecting to Supabase...');
@@ -64,7 +64,7 @@ async function checkAdminStatus() {
   console.log('');
   console.log('🌐 Application URLs:');
   console.log(`- Login: https://dfsportal.vercel.app/login`);
-  console.log(`- Reset: https://dfsportal.vercel.app/reset-password`);
+  console.log(`- Reset: https://dfsportal.vercel.app/resetpassword`);
 }
 
 // Run the check

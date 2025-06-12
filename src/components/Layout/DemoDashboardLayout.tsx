@@ -26,7 +26,9 @@ import {
   Activity,
   User,
   Eye,
-  Code2
+  Code2,
+  Plus,
+  BarChart3
 } from 'lucide-react';
 
 import Logo from '@/components/Logo';
@@ -55,6 +57,7 @@ const DemoDashboardLayout: React.FC = () => {
     }
   };
 
+  // Complete navigation for development review - ALL features visible
   const navigationItems: NavigationItem[] = [
     {
       name: 'Dashboard',
@@ -64,32 +67,56 @@ const DemoDashboardLayout: React.FC = () => {
     {
       name: 'Products',
       path: '/products',
-      icon: <Package className="w-5 h-5" />
+      icon: <Package className="w-5 h-5" />,
+      children: [
+        { name: 'All Products', path: '/products', icon: <Package className="w-4 h-4" /> },
+        { name: 'Add Product', path: '/products/new', icon: <Plus className="w-4 h-4" /> }
+      ]
     },
     {
       name: 'Employees',
       path: '/employees',
-      icon: <Users className="w-5 h-5" />
+      icon: <Users className="w-5 h-5" />,
+      children: [
+        { name: 'All Employees', path: '/employees', icon: <Users className="w-4 h-4" /> },
+        { name: 'Add Employee', path: '/employees/new', icon: <Plus className="w-4 h-4" /> }
+      ]
     },
     {
       name: 'Sales Reports',
       path: '/sales',
-      icon: <TrendingUp className="w-5 h-5" />
+      icon: <TrendingUp className="w-5 h-5" />,
+      children: [
+        { name: 'All Reports', path: '/sales', icon: <TrendingUp className="w-4 h-4" /> },
+        { name: 'Add Report', path: '/sales/new', icon: <Plus className="w-4 h-4" /> }
+      ]
     },
     {
       name: 'Vendors',
       path: '/vendors',
-      icon: <Building2 className="w-5 h-5" />
+      icon: <Building2 className="w-5 h-5" />,
+      children: [
+        { name: 'All Vendors', path: '/vendors', icon: <Building2 className="w-4 h-4" /> },
+        { name: 'Add Vendor', path: '/vendors/new', icon: <Plus className="w-4 h-4" /> }
+      ]
     },
     {
       name: 'Orders',
       path: '/orders',
-      icon: <ShoppingCart className="w-5 h-5" />
+      icon: <ShoppingCart className="w-5 h-5" />,
+      children: [
+        { name: 'All Orders', path: '/orders', icon: <ShoppingCart className="w-4 h-4" /> },
+        { name: 'Create Order', path: '/orders/new', icon: <Plus className="w-4 h-4" /> }
+      ]
     },
     {
       name: 'Licenses',
       path: '/licenses',
-      icon: <FileText className="w-5 h-5" />
+      icon: <FileText className="w-5 h-5" />,
+      children: [
+        { name: 'All Licenses', path: '/licenses', icon: <FileText className="w-4 h-4" /> },
+        { name: 'Add License', path: '/licenses/new', icon: <Plus className="w-4 h-4" /> }
+      ]
     },
     {
       name: 'Salary',
@@ -109,12 +136,35 @@ const DemoDashboardLayout: React.FC = () => {
     {
       name: 'Delivery',
       path: '/delivery',
-      icon: <Truck className="w-5 h-5" />
+      icon: <Truck className="w-5 h-5" />,
+      children: [
+        { name: 'All Deliveries', path: '/delivery', icon: <Truck className="w-4 h-4" /> },
+        { name: 'New Delivery', path: '/delivery/new', icon: <Plus className="w-4 h-4" /> }
+      ]
     },
     {
       name: 'Admin Panel',
       path: '/admin',
-      icon: <Shield className="w-5 h-5" />
+      icon: <Shield className="w-5 h-5" />,
+      children: [
+        { name: 'Admin Dashboard', path: '/admin/dashboard', icon: <BarChart3 className="w-4 h-4" /> },
+        { name: 'User Management', path: '/admin/user-management', icon: <UserCheck className="w-4 h-4" /> },
+        { name: 'Site Management', path: '/admin/site-management', icon: <Globe className="w-4 h-4" /> },
+        { name: 'System Logs', path: '/admin/system-logs', icon: <FileText className="w-4 h-4" /> },
+        { name: 'Security Settings', path: '/admin/security-settings', icon: <Shield className="w-4 h-4" /> },
+        { name: 'SMS Alerts', path: '/admin/sms-alert-management', icon: <MessageSquare className="w-4 h-4" /> },
+        { name: 'Error Recovery', path: '/admin/error-recovery', icon: <Activity className="w-4 h-4" /> },
+        { name: 'Memory Monitoring', path: '/admin/memory-monitoring', icon: <Database className="w-4 h-4" /> },
+        { name: 'Database Monitoring', path: '/admin/database-monitoring', icon: <Database className="w-4 h-4" /> },
+        { name: 'Audit Monitoring', path: '/admin/audit-monitoring', icon: <Eye className="w-4 h-4" /> },
+        { name: 'Database Auto-sync', path: '/admin/database-autosync', icon: <Database className="w-4 h-4" /> },
+        { name: 'Supabase Test', path: '/admin/supabase-test', icon: <Database className="w-4 h-4" /> },
+        { name: 'Development Monitoring', path: '/admin/development-monitoring', icon: <Code2 className="w-4 h-4" /> },
+        { name: 'Role Testing', path: '/admin/role-testing', icon: <User className="w-4 h-4" /> },
+        { name: 'Advanced Real-time', path: '/admin/advanced-realtime', icon: <Activity className="w-4 h-4" /> },
+        { name: 'S3 Storage', path: '/admin/s3-storage', icon: <Database className="w-4 h-4" /> },
+        { name: 'Error Demo', path: '/admin/invalid-character-demo', icon: <AlertTriangle className="w-4 h-4" /> }
+      ]
     }
   ];
 
@@ -129,18 +179,36 @@ const DemoDashboardLayout: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Demo Mode Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 shadow-lg">
-        <div className="flex items-center justify-center space-x-2 text-sm font-medium">
-          <Eye className="w-4 h-4" />
-          <span>DEMO MODE - Development Preview</span>
-          <Code2 className="w-4 h-4" />
-          <span className="ml-4 text-blue-200">All features enabled • No authentication required</span>
+      {/* Development Demo Mode Banner */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white px-4 py-3 shadow-lg border-b-2 border-yellow-400">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-3">
+            <Eye className="w-5 h-5 text-yellow-300" />
+            <span className="text-lg font-bold">🚀 DEVELOPMENT DEMO MODE</span>
+            <Code2 className="w-5 h-5 text-yellow-300" />
+          </div>
+          <div className="flex items-center space-x-6 text-sm">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span>All Features Visible</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Shield className="w-4 h-4" />
+              <span>No Auth Required</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Settings className="w-4 h-4" />
+              <span>Full Admin Access</span>
+            </div>
+          </div>
+        </div>
+        <div className="text-center mt-1 text-xs text-blue-100">
+          Review all functionality • Define role-based access later • Complete system preview
         </div>
       </div>
 
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} transition-all duration-300 bg-white shadow-lg flex flex-col mt-12`}>
+      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} transition-all duration-300 bg-white shadow-lg flex flex-col mt-20`}>
         {/* Logo Section */}
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
@@ -198,7 +266,7 @@ const DemoDashboardLayout: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col mt-12">
+      <div className="flex-1 flex flex-col mt-20">{/* Increased margin for larger banner */}
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">

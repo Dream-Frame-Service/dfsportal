@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+<<<<<<< Updated upstream
 import { supabase } from '@/lib/supabase';
+=======
+import { supabase } from '@/integrations/supabase/client';
+>>>>>>> Stashed changes
 import { useToast } from '@/hooks/use-toast';
 
 const Dashboard = () => {

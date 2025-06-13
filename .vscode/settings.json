@@ -1,16 +1,16 @@
 {
+  "deno.enable": false,
+  "deno.path": "/usr/local/bin/deno",
+  "deno.unstable": true,
+  "deno.lint": false,
+  "deno.importMap": "./import_map.json",
   "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
-  "deno.enablePaths": [
-    "supabase/functions"
-  ],
-  "deno.path": "C:\\Users\\MOBIN (Work)\\AppData\\Local\\Microsoft\\WinGet\\Packages\\DenoLand.Deno_Microsoft.Winget.Source_8wekyb3d8bbwe\\deno.exe",
-  "deno.lint": true,
-  "deno.unstable": [
-    "bare-node-builtins",
-    "byonm",
-    "sloppy-imports",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
+}
     "unsafe-proto",
     "webgpu",
     "broadcast-channel",

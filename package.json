@@ -20,7 +20,9 @@
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
     "supabase:status": "npx supabase status",
-    "dev:local": "npm run supabase:start && cross-env VITE_SUPABASE_URL=http://localhost:54321 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk vite"
+    "dev:local": "npm run supabase:start && cross-env VITE_SUPABASE_URL=http://localhost:54321 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk vite",
+    "deno:install": "curl -fsSL https://deno.land/x/install/install.sh | sh",
+    "deno:check": "which deno || echo 'Deno not found. Run: npm run deno:install'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.53.0",

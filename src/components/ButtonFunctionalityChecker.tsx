@@ -279,21 +279,24 @@ const ButtonFunctionalityChecker: React.FC = () => {
           updatedTest.error = crudResult.error;
           break;
 
-        case 'nav-dashboard':
+        case 'nav-dashboard': {
           // Test if dashboard route exists
-          updatedTest.status = window.location.pathname.includes('dashboard') ? 'passing' : 'warning';
-          updatedTest.error = updatedTest.status === 'warning' ? 'Not currently on dashboard' : undefined;
+          const status = window.location.pathname.includes('dashboard') ? 'passing' : 'warning';
+          updatedTest.status = status;
+          updatedTest.error = status === 'warning' ? 'Not currently on dashboard' : undefined;
           break;
+        }
 
         case 'product-create':
         case 'product-edit':
         case 'product-delete':
-        case 'product-save':
+        case 'product-save': {
           // For UI tests, we'll simulate checking if elements exist
           const hasProductButtons = document.querySelector('[data-path*="ProductList"]') !== null;
           updatedTest.status = hasProductButtons ? 'passing' : 'warning';
           updatedTest.error = hasProductButtons ? undefined : 'Product page not currently loaded';
           break;
+        }
 
         default:
           updatedTest.status = 'warning';

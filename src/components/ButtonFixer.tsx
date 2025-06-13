@@ -230,27 +230,31 @@ const ButtonFixer: React.FC = () => {
 
       try {
         switch (fix.id) {
-          case 'missing-database-integration':
+          case 'missing-database-integration': {
             const dbWorks = await checkDatabaseConnection();
             const crudWorks = await testCRUDOperations();
             updatedFix.status = dbWorks && crudWorks ? 'fixed' : 'needs-fix';
             break;
+          }
 
-          case 'missing-confirmation':
+          case 'missing-confirmation': {
             const hasConfirmation = checkConfirmationDialogs();
             updatedFix.status = hasConfirmation ? 'fixed' : 'needs-fix';
             break;
+          }
 
-          case 'improper-validation':
+          case 'improper-validation': {
             const hasValidation = checkFormValidation();
             updatedFix.status = hasValidation ? 'fixed' : 'needs-fix';
             break;
+          }
 
-          case 'missing-loading-states':
+          case 'missing-loading-states': {
             // Check if buttons have loading states
             const hasLoadingStates = document.querySelectorAll('[disabled]').length > 0;
             updatedFix.status = hasLoadingStates ? 'fixed' : 'needs-fix';
             break;
+          }
 
           default:
             // For other issues, mark as fixed for demo purposes

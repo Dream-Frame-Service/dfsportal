@@ -58,8 +58,8 @@ if (import.meta.env.PROD && EFFECTIVE_SUPABASE_URL === 'https://placeholder.supa
 
 // 3. Create the client with the resolved values
 export const supabase: SupabaseClient = createClient(
-  SUPABASE_URL ?? supabaseUrl,          // use hard-coded project URL as safe fallback
-  SUPABASE_ANON_KEY ?? supabaseAnonKey, // use hard-coded anon key as safe fallback
+  EFFECTIVE_SUPABASE_URL,
+  EFFECTIVE_SUPABASE_ANON_KEY,
   {
     auth: {
       autoRefreshToken: true,
@@ -255,3 +255,29 @@ export const isAuthenticated = async () => {
   const user = await getCurrentUser();
   return !!user;
 };
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Development fallback (supabase start => http://localhost:54321)
+const LOCAL_SUPABASE_URL = 'http://localhost:54321';
+const LOCAL_SUPABASE_ANON_KEY = 'public-anon-key'; // Supabase CLI default
+
+// Select the best available credentials in order of preference
+const EFFECTIVE_URL =
+  SUPABASE_URL ??
+  supabaseUrl /* hard-coded prod value */ ??
+  (import.meta.env.DEV ? LOCAL_SUPABASE_URL : undefined);
+
+const EFFECTIVE_ANON_KEY =
+  SUPABASE_ANON_KEY ??
+  supabaseAnonKey ??
+  (import.meta.env.DEV ? LOCAL_SUPABASE_ANON_KEY : undefined);
+
+// Warn (once) if still undefined – app will show fallback UI but developer is informed
+if (!EFFECTIVE_URL || !EFFECTIVE_ANON_KEY) {
+  console.error(
+    '[DFS-Portal] Supabase credentials missing. ' +
+      "Set VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY or run 'supabase start'."
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────

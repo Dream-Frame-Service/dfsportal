@@ -4,7 +4,7 @@ import App from './App.tsx';
 import './index.css';
 
 // NEW: global error boundary wrapper
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { GlobalErrorBoundary } from '@/components/ErrorBoundary';
 import GlobalFallback from '@/components/GlobalFallback';
 
 // Enhanced error handling for production
@@ -66,9 +66,9 @@ try {
     // Render with error boundary
     root.render(
       <React.StrictMode>
-        <ErrorBoundary fallback={<GlobalFallback />}>
+        <GlobalErrorBoundary fallback={<GlobalFallback />}>
           <App />
-        </ErrorBoundary>
+        </GlobalErrorBoundary>
       </React.StrictMode>
     );
     console.log('✅ App rendered successfully');

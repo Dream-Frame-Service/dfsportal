@@ -39,6 +39,11 @@ if (!SUPA_URL || !SUPA_KEY) {
 }
 // ──────────────────────────────────────────────────────────────────────────────
 
+// expose the resolved values for reuse -------------------------------------------------
+export const supabaseUrl = SUPA_URL;
+export const supabaseAnonKey = SUPA_KEY;
+
+// 3. Create the client
 export const supabase: SupabaseClient = createClient(SUPA_URL, SUPA_KEY, {
   auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true },
   realtime: { params: { eventsPerSecond: 10 } }

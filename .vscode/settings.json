@@ -1,7 +1,7 @@
-{
+﻿{
   "deno.enable": false,
   "deno.path": "/usr/local/bin/deno",
-  "deno.unstable": true,
+  "deno.unstable": ["unsafe-proto", "webgpu", "broadcast-channel", "worker-options", "cron", "kv", "ffi", "fs", "http", "net"],
   "deno.lint": false,
   "deno.importMap": "./import_map.json",
   "[typescript]": {
@@ -9,19 +9,7 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
-}
-    "unsafe-proto",
-    "webgpu",
-    "broadcast-channel",
-    "worker-options",
-    "cron",
-    "kv",
-    "ffi",
-    "fs",
-    "http",
-    "net"
-  ],
+  },
   "github.copilot.chat.agent.thinkingTool": true,
   "github.copilot.chat.codesearch.enabled": true,
   "github.copilot.chat.editor.temporalContext.enabled": true,
@@ -42,18 +30,18 @@
   "githubPullRequests.experimental.chat": true,
   "githubPullRequests.experimental.notificationsView": true,
   "githubPullRequests.experimental.useQuickChat": true,
-  "supabase.anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk",
-  "supabase.connectionMethod": "cloud",
-  "supabase.defaultConnection": "cloud",
-  "supabase.disableLocalStart": true,
-  "supabase.forceCloudConnection": true,
-  "supabase.localDockerEnabled": false,
-  "supabase.localEnabled": false,
-  "supabase.localStart": false,
-  "supabase.projectRef": "vetufvhzmawjbsumtplq",
-  "supabase.projectUrl": "https://vetufvhzmawjbsumtplq.supabase.co",
-  "supabase.showLocalWarnings": false,
-  "supabase.useLocal": false,
+  "supabase.anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
+  "supabase.connectionMethod": "local",
+  "supabase.defaultConnection": "local",
+  "supabase.disableLocalStart": false,
+  "supabase.forceCloudConnection": false,
+  "supabase.localDockerEnabled": true,
+  "supabase.localEnabled": true,
+  "supabase.localStart": true,
+  "supabase.projectRef": "dfsportal",
+  "supabase.projectUrl": "http://127.0.0.1:54321",
+  "supabase.showLocalWarnings": true,
+  "supabase.useLocal": true,
   "terminal.integrated.sendKeybindingsToShell": true,
   "python.analysis.userFileIndexingLimit": 20000
 }

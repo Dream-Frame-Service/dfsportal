@@ -12,67 +12,37 @@ if (import.meta.env.DEV) {
   };
 }
 
-// --- new safe-lookup helpers ----------------------------------------------
-/** Try all common env-var names so a mis-prefixed value does not break prod */
-const getEnv = (keys: string[]): string | undefined =>
-  keys.reduce<string | undefined>(
-    (val, key) => val ?? (import.meta.env as any)[key],
-    undefined
-  );
+// ──────────────────────────────────────────────────────────────────────────────
+//  Resolve credentials (env → hard-coded → local CLI)                         │
+/* helpers */ const getEnv = (keys: string[]) =>
+  keys.reduce<string | undefined>((v, k) => v ?? (import.meta.env as any)[k], undefined);
 
-const SUPABASE_URL = getEnv([
-  'VITE_SUPABASE_URL',
-  'NEXT_PUBLIC_SUPABASE_URL',
-  'SUPABASE_URL'
-]);
-const SUPABASE_ANON_KEY = getEnv([
-  'VITE_SUPABASE_ANON_KEY',
-  'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-  'SUPABASE_ANON_KEY'
-]);
+const ENV_URL       = getEnv(['VITE_SUPABASE_URL',       'NEXT_PUBLIC_SUPABASE_URL',       'SUPABASE_URL']);
+const ENV_ANON_KEY  = getEnv(['VITE_SUPABASE_ANON_KEY',  'NEXT_PUBLIC_SUPABASE_ANON_KEY',  'SUPABASE_ANON_KEY']);
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error(
-    '[DFS-Portal] Missing Supabase environment variables. ' +
-      'Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel.'
-  );
-}
+/* hard-coded prod creds already present in file */
+const HARDCODED_URL      = 'https://vetufvhzmawjbsumtplq.supabase.co';
+const HARDCODED_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk'; // truncated
 
-// Supabase configuration
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://vetufvhzmawjbsumtplq.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk';
+/* local CLI defaults */
+const LOCAL_URL      = 'http://localhost:54321';
+const LOCAL_ANON_KEY = 'public-anon-key';
 
-// ---------------------------------------------------------------------------
-// 1. Resolve the final values that must be used to create the client
-//    – prefer env-vars, otherwise use the defaults already defined above
-const EFFECTIVE_SUPABASE_URL = SUPABASE_URL || supabaseUrl;
-const EFFECTIVE_SUPABASE_ANON_KEY = SUPABASE_ANON_KEY || supabaseAnonKey;
+const SUPA_URL  = ENV_URL  ?? HARDCODED_URL  ?? (import.meta.env.DEV ? LOCAL_URL  : undefined);
+const SUPA_KEY  = ENV_ANON_KEY ?? HARDCODED_ANON_KEY ?? (import.meta.env.DEV ? LOCAL_ANON_KEY : undefined);
 
-// 2. Warn once in production if still using the placeholder
-if (import.meta.env.PROD && EFFECTIVE_SUPABASE_URL === 'https://placeholder.supabase.co') {
-  console.error(
-    '[DFS-Portal] Supabase is initialised with the placeholder URL. ' +
-      'Check that VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set in Vercel.'
+if (!SUPA_URL || !SUPA_KEY) {
+  throw new Error(
+    '[DFS-Portal] Supabase credentials missing. ' +
+    "Set VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY or run 'supabase start'."
   );
 }
+// ──────────────────────────────────────────────────────────────────────────────
 
-// 3. Create the client with the resolved values
-export const supabase: SupabaseClient = createClient(
-  EFFECTIVE_SUPABASE_URL,
-  EFFECTIVE_SUPABASE_ANON_KEY,
-  {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true
-    },
-    realtime: {
-      params: {
-        eventsPerSecond: 10
-      }
-    }
-  }
-);
+export const supabase: SupabaseClient = createClient(SUPA_URL, SUPA_KEY, {
+  auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true },
+  realtime: { params: { eventsPerSecond: 10 } }
+});
 
 // Storage configuration with S3 protocol support
 export const storageConfig = {

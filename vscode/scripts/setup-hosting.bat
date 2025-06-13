@@ -78,6 +78,12 @@ if "%choice%"=="1" (
     echo ✅ GitHub Actions workflow is already configured!
 ) else if "%choice%"=="4" (
     echo 🐳 Setting up Docker deployment...
+    if defined DOCKER_USERNAME if defined DOCKER_PASSWORD (
+        echo 🔐 Logging in to Docker Hub as %DOCKER_USERNAME%
+        echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin
+    ) else (
+        echo ℹ️  Set DOCKER_USERNAME / DOCKER_PASSWORD environment variables to avoid rate-limit errors.
+    )
     docker --version >nul 2>&1
     if errorlevel 1 (
         echo ❌ Docker is not installed. Please install Docker first.
@@ -85,7 +91,13 @@ if "%choice%"=="1" (
     ) else (
         echo ✅ Docker is installed
         echo 🏗️ Building Docker image...
-        call docker build -t dfs-manager-portal .
+        call docker build -t dfs-manager-portal . || (
+            echo ⚠️  Initial build failed, retrying with --progress=plain ...
+            call docker build --progress=plain -t dfs-manager-portal . || (
+                echo ❌ Docker build failed due to rate limit. Try again later or login to Docker Hub.
+                goto :eof
+            )
+        )
         echo 🚀 Running Docker container...
         call docker run -d -p 80:80 --name dfs-manager-portal dfs-manager-portal
         echo ✅ Application is running at http://localhost

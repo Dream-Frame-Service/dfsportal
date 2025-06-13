@@ -16,8 +16,8 @@
     "type-check": "tsc --noEmit",
     "preview": "vite preview",
     "serve": "vite preview --host",
-    "supabase:start": "supabase start",
-    "dev:local": "npm run supabase:start & cross-env VITE_SUPABASE_URL=http://localhost:54321 VITE_SUPABASE_ANON_KEY=public-anon-key vite"
+    "supabase:start": "npx supabase start",
+    "dev:local": "npx supabase start & cross-env VITE_SUPABASE_URL=http://localhost:54321 VITE_SUPABASE_ANON_KEY=public-anon-key vite"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.53.0",

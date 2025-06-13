@@ -51,6 +51,11 @@ echo -e "${GREEN}✅ Quality check passed${NC}"
 
 # Step 2: Production Build Test
 echo -e "\n${BLUE}🔨 Step 2: Production Build Test${NC}"
+# Optional Docker Hub login to reduce rate-limit issues
+if [[ -n "$DOCKER_USERNAME" && -n "$DOCKER_PASSWORD" ]]; then
+  echo -e "${BLUE}🔐 Logging in to Docker Hub as $DOCKER_USERNAME${NC}"
+  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+fi
 echo "Testing production build..."
 
 npm run build:prod

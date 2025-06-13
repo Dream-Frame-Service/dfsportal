@@ -77,10 +77,25 @@ case $choice in
         ;;
     4)
         echo "🐳 Setting up Docker deployment..."
+        # --- new: optional Docker-Hub login to avoid rate-limit -------------
+        if [[ -n "$DOCKER_USERNAME" && -n "$DOCKER_PASSWORD" ]]; then
+            echo "🔐 Logging in to Docker Hub as $DOCKER_USERNAME (to avoid rate limits)"
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        else
+            echo "ℹ️  Set DOCKER_USERNAME / DOCKER_PASSWORD env-vars to perform an authenticated pull and prevent rate-limit errors."
+        fi
+
         if command -v docker &> /dev/null; then
             echo "✅ Docker is installed"
             echo "🏗️ Building Docker image..."
-            docker build -t dfs-manager-portal .
+            # retry once if 'toomanyrequests' occurs
+            if ! docker build -t dfs-manager-portal .; then
+                echo "⚠️  Initial pull failed, retrying with --debug ..."
+                docker build --progress=plain -t dfs-manager-portal . || {
+                    echo "❌ Docker build failed due to rate limit. Try again later or login to Docker Hub."
+                    exit 1
+                }
+            fi
             echo "🚀 Running Docker container..."
             docker run -d -p 80:80 --name dfs-manager-portal dfs-manager-portal
             echo "✅ Application is running at http://localhost"

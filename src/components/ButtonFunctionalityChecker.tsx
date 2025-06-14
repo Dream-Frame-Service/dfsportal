@@ -267,17 +267,19 @@ const ButtonFunctionalityChecker: React.FC = () => {
 
     try {
       switch (testId) {
-        case 'db-connection':
+        case 'db-connection': {
           const dbConnected = await testDatabaseConnection();
           updatedTest.status = dbConnected ? 'passing' : 'failing';
           updatedTest.error = dbConnected ? undefined : 'Cannot connect to database';
           break;
+        }
 
-        case 'db-crud-operations':
+        case 'db-crud-operations': {
           const crudResult = await testProductCRUD();
           updatedTest.status = crudResult.success ? 'passing' : 'failing';
           updatedTest.error = crudResult.error;
           break;
+        }
 
         case 'nav-dashboard': {
           // Test if dashboard route exists
@@ -298,9 +300,10 @@ const ButtonFunctionalityChecker: React.FC = () => {
           break;
         }
 
-        default:
+        default: {
           updatedTest.status = 'warning';
           updatedTest.error = 'Test implementation pending';
+        }
       }
     } catch (error) {
       updatedTest.status = 'failing';

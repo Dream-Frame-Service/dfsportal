@@ -231,19 +231,19 @@ export const isAuthenticated = async () => {
   return !!user;
 };
 
-// ──────────────────────────────────────────────────────────────────────────────
+// BEGIN EDIT: remove duplicate variable declarations that cause linting errors
 // Development fallback (supabase start => http://localhost:54321)
 const LOCAL_SUPABASE_URL = 'http://localhost:54321';
 const LOCAL_SUPABASE_ANON_KEY = 'public-anon-key'; // Supabase CLI default
 
 // Select the best available credentials in order of preference
 const EFFECTIVE_URL =
-  SUPABASE_URL ??
+  ENV_URL ??
   supabaseUrl /* hard-coded prod value */ ??
   (import.meta.env.DEV ? LOCAL_SUPABASE_URL : undefined);
 
 const EFFECTIVE_ANON_KEY =
-  SUPABASE_ANON_KEY ??
+  ENV_ANON_KEY ??
   supabaseAnonKey ??
   (import.meta.env.DEV ? LOCAL_SUPABASE_ANON_KEY : undefined);
 
@@ -254,5 +254,4 @@ if (!EFFECTIVE_URL || !EFFECTIVE_ANON_KEY) {
       "Set VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY or run 'supabase start'."
   );
 }
-
-// ──────────────────────────────────────────────────────────────────────────────
+// END EDIT

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, createContext, useContext, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { SecurityService } from '@/services/securityService';
@@ -181,7 +181,7 @@ export const useSessionTimeout = (options: SessionTimeoutOptions = {}) => {
 };
 
 // Session timeout provider component
-import React, { createContext, useContext, ReactNode } from 'react';
+import React from 'react';
 
 interface SessionTimeoutContextType {
   extendSession: () => void;

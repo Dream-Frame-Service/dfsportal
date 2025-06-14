@@ -5,27 +5,13 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "node_modules", "*.config.js", "*.config.ts"] },
+  { ignores: ["dist"] },
   {
+    files: ["**/*.{ts,tsx,js,jsx}"],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        ...globals.es2020,
-        React: "readonly",
-        JSX: "readonly",
-        NodeJS: "readonly",
-        RequestInit: "readonly",
-        RequestInfo: "readonly"
-      },
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true
-        }
-      }
+      globals: globals.browser
     },
     plugins: {
       "react-hooks": reactHooks,
@@ -34,7 +20,10 @@ export default tseslint.config(
     rules: {
       // React Rules - made less strict
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": "off", // Disabled
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true }
+      ],
 
       // Import/Export Rules - more lenient
       "no-unused-vars": "off", // Let TypeScript handle this

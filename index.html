@@ -1,14 +1,22 @@
+<!--
+  index.html for DFS Portal
+  NOTE: Do NOT add a <script type="module" src="/src/main.tsx"></script> here.
+  Vite will automatically inject the correct script tag during development and production builds.
+-->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/public/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DFS Manager Portal</title>
-    <link rel="icon" type="image/png" href="/public/dfs-manager-logo.png" />
-    <link rel="stylesheet" href="/src/index.css" />
+    <!-- Vite injects the main JS bundle automatically. -->
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- BEGIN EDIT: Remove direct reference to /src/main.tsx and add Vite comment -->
+    <!-- Vite will inject the correct script during dev and build. -->
+    <!-- END EDIT -->
   </body>
 </html>

@@ -18,7 +18,7 @@
     "http",
     "net"
   ],
-  "deno.enable": true,
+  "deno.enable": false,
   "deno.path": "/usr/local/bin/deno",
   "[typescript]": {
     "editor.defaultFormatter": "denoland.vscode-deno"

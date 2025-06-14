@@ -2,14 +2,14 @@
   "deno.enablePaths": [
     "supabase/functions"
   ],
-  "deno.lint": true,
-  "deno.unstable": [
-    "bare-node-builtins",
-    "byonm",
-    "sloppy-imports",
-    "unsafe-proto",
-    "webgpu",
-    "broadcast-channel",
+  "deno.lint": false,
+  "deno.unstable": true,
+  "deno.enable": true,
+  "deno.path": "/usr/local/bin/deno",
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
+}
     "worker-options",
     "cron",
     "kv",

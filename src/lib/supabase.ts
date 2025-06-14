@@ -1,53 +1,55 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
-// Suppress known Supabase GoTrue deprecation warning during development
-if (import.meta.env.DEV) {
-  const originalWarn = console.warn;
-  console.warn = (...args) => {
-    const message = args.join(' ');
-    if (message.includes('GOTRUE_JWT_DEFAULT_GROUP_NAME')) {
-      return; // Suppress this specific deprecation warning
+// Environment variables with fallbacks for development
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+
+// Validate environment variables
+if (!supabaseUrl) {
+  console.error('Missing VITE_SUPABASE_URL environment variable');
+}
+
+if (!supabaseAnonKey) {
+  console.error('Missing VITE_SUPABASE_ANON_KEY environment variable');
+}
+
+// Create Supabase client with error handling
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseAnonKey || 'placeholder-key',
+  {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    },
+    realtime: {
+      params: {
+        eventsPerSecond: 10
+      }
     }
-    originalWarn.apply(console, args);
-  };
-}
+  }
+);
 
-// ──────────────────────────────────────────────────────────────────────────────
-//  Resolve credentials (env → hard-coded → local CLI)                         │
-/* helpers */ const getEnv = (keys: string[]) =>
-  keys.reduce<string | undefined>((v, k) => v ?? (import.meta.env as any)[k], undefined);
+// Export environment variables for use in other parts of the app
+export const SUPABASE_URL = supabaseUrl;
+export const SUPABASE_ANON_KEY = supabaseAnonKey;
 
-const ENV_URL       = getEnv(['VITE_SUPABASE_URL',       'NEXT_PUBLIC_SUPABASE_URL',       'SUPABASE_URL']);
-const ENV_ANON_KEY  = getEnv(['VITE_SUPABASE_ANON_KEY',  'NEXT_PUBLIC_SUPABASE_ANON_KEY',  'SUPABASE_ANON_KEY']);
-
-/* hard-coded prod creds already present in file */
-const HARDCODED_URL      = 'https://vetufvhzmawjbsumtplq.supabase.co';
-const HARDCODED_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZldHVmdmh6bWF3amJzdW10cGxxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg4NjU2NDgsImV4cCI6MjA2NDQ0MTY0OH0.QZGDjZYO4P9e7ogbORlWCVHhQ92j6enBUEo_KIHb4Wk'; // truncated
-
-/* local CLI defaults */
-const LOCAL_URL      = 'http://localhost:54321';
-const LOCAL_ANON_KEY = 'public-anon-key';
-
-const SUPA_URL  = ENV_URL  ?? HARDCODED_URL  ?? (import.meta.env.DEV ? LOCAL_URL  : undefined);
-const SUPA_KEY  = ENV_ANON_KEY ?? HARDCODED_ANON_KEY ?? (import.meta.env.DEV ? LOCAL_ANON_KEY : undefined);
-
-if (!SUPA_URL || !SUPA_KEY) {
-  throw new Error(
-    '[DFS-Portal] Supabase credentials missing. ' +
-    "Set VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY or run 'supabase start'."
-  );
-}
-// ──────────────────────────────────────────────────────────────────────────────
-
-// expose the resolved values for reuse -------------------------------------------------
-export const supabaseUrl = SUPA_URL;
-export const supabaseAnonKey = SUPA_KEY;
-
-// 3. Create the client
-export const supabase: SupabaseClient = createClient(SUPA_URL, SUPA_KEY, {
-  auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true },
-  realtime: { params: { eventsPerSecond: 10 } }
-});
+// Connection test function
+export const testSupabaseConnection = async () => {
+  try {
+    const { data, error } = await supabase.from('profiles').select('count').limit(1);
+    if (error) {
+      console.error('Supabase connection test failed:', error);
+      return false;
+    }
+    console.log('Supabase connection test successful');
+    return true;
+  } catch (error) {
+    console.error('Supabase connection test error:', error);
+    return false;
+  }
+};
 
 // Storage configuration with S3 protocol support
 export const storageConfig = {

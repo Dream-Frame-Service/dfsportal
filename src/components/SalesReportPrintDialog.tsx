@@ -66,8 +66,10 @@ const SalesReportPrintDialog: React.FC<SalesReportPrintDialogProps> = ({
 
   if (!report) return null;
 
-  const cashAndCardTotal = (parseFloat(report.cash_sales) || 0) + (parseFloat(report.credit_card_sales) || 0);
-  const fuelAndConvenienceTotal = (parseFloat(report.fuel_sales) || 0) + (parseFloat(report.convenience_sales) || 0);
+  const cashAndCardTotal =
+    (Number(report.cash_sales) || 0) + (Number(report.credit_card_sales) || 0);
+  const fuelAndConvenienceTotal =
+    (Number(report.fuel_sales) || 0) + (Number(report.convenience_sales) || 0);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange} data-id="sk79pwjt9" data-path="src/components/SalesReportPrintDialog.tsx">

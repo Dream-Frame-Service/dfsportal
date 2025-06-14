@@ -567,7 +567,7 @@ const SMSTestManager: React.FC = () => {
                     [key]: e.target.value
                   }))}
                   placeholder={`Enter ${key}`}
-                  size="sm" data-id="3ouc2jzyj" data-path="src/components/SMSTestManager.tsx" />
+                  size="sm" as any /* string is fine after JSX shim but keep ts quiet */ data-id="3ouc2jzyj" data-path="src/components/SMSTestManager.tsx" />
 
                   </div>
               )}

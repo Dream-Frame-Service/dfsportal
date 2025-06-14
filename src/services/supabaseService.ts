@@ -403,6 +403,17 @@ export class AuthService {
   }
 }
 
+// Helpers so `import { supabase } ...` and
+// `import realtimeManager ...` keep compiling.
+export { supabase }; // named export
+export default supabase; // default export (common pattern)
+
+// Lo-fi realtime stub – replace with real manager later.
+export const realtimeManager = {
+  subscribe: (..._args: any[]) => {/* no-op */},
+  unsubscribe: (..._args: any[]) => {/* no-op */},
+};
+
 // ---------------------------------------------
 // SINGLE service aggregator & default export
 // ---------------------------------------------

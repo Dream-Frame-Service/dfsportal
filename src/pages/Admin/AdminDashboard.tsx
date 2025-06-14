@@ -155,25 +155,20 @@ const AdminDashboard: React.FC = () => {
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
 
-      console.log('Real-time database stats loaded:', {
-        totalUsers: totalUsers || 0,
-        totalEmployees,
-        totalProducts,
-        totalSales,
-        totalLicenses,
-        activeSessions,
-        smsAlertsSent
-      });
+      // Update the stats to handle nulls
+      const stats = {
+        totalUsers: totalUsers ?? 0,
+        totalEmployees: totalEmployees ?? 0,
+        totalProducts: totalProducts ?? 0,
+        totalSales: totalSales ?? 0,
+        totalLicenses: totalLicenses ?? 0,
+        activeSessions: activeSessions ?? 0,
+        smsAlertsSent: smsAlertsSent ?? 0
+      };
 
-      setDbStats({
-        totalUsers,
-        totalEmployees,
-        totalProducts,
-        totalSales,
-        totalLicenses,
-        activeSessions,
-        smsAlertsSent
-      });
+      console.log('Real-time database stats loaded:', stats);
+
+      setDbStats(stats);
     } catch (error) {
       console.error('Error fetching database stats:', error);
     }

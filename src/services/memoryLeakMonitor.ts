@@ -7,10 +7,10 @@ interface MemoryStats {
 }
 
 interface LeakReport {
-  timestamp: Date;
+  timestamp: number; // Changed from Date to number
   leakType: string;
   details: any;
-  memoryStats?: MemoryStats | null; // Changed to allow null
+  memoryStats?: MemoryStats | null;
   stackTrace?: string;
 }
 
@@ -323,10 +323,9 @@ export class MemoryLeakMonitor {
     }
 
     const leakReport: LeakReport = {
-      componentName,
-      leakType,
-      metadata,
       timestamp: Date.now(),
+      leakType,
+      details: metadata,
       memoryStats: this.getCurrentMemoryStats(),
     };
 
@@ -501,4 +500,5 @@ ${
   }
 }
 
+export default MemoryLeakMonitor;
 export default MemoryLeakMonitor;

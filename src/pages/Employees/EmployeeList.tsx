@@ -10,7 +10,7 @@ import { Search, Edit, Trash2, Users, Mail, Phone, Plus, Eye, Download, User } f
 import { useNavigate } from 'react-router-dom';
 import ViewModal from '@/components/ViewModal';
 import { useListKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 
 interface Employee {

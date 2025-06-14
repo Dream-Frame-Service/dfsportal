@@ -1,22 +1,42 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { supabase } from '@/config/supabase';
+import { supabase } from '@/lib/supabase';
 import { DollarSign, Package, ShoppingCart, Users, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+
+// Add formatCurrency function
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(amount);
+}
+
+interface DebugInfo {
+  supabaseUrl: string;
+  hasAnonKey: boolean;
+  authStatus: string;
+  networkRequests: Array<{
+    type: string;
+    success: boolean;
+    timestamp: string;
+    error?: any;
+  }>;
+  rlsError: string | null;
+}
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [debugInfo, setDebugInfo] = useState({
+  const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<DebugInfo>({
     supabaseUrl: '',
     hasAnonKey: false,
     authStatus: 'checking',
@@ -202,7 +222,7 @@ const Dashboard = () => {
 
       } catch (err) {
         console.error('❌ Dashboard data fetch error:', err);
-        setError(err.message);
+        setError(err instanceof Error ? err.message : 'An error occurred');
         toast({
           title: "Error",
           description: "Failed to load dashboard data. Check console for details.",

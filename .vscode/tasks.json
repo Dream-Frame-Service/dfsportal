@@ -8,6 +8,13 @@
 			"problemMatcher": [],
 			"label": "npm: build",
 			"detail": "tsc -b && vite build"
+		},
+		{
+			"label": "deno: bundle",
+			"type": "shell",
+			"command": "deno bundle src/main.ts dist/bundle.js",
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

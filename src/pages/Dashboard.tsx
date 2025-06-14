@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< Updated upstream
-import { supabase } from '@/lib/supabase';
-=======
-import { supabase } from '@/integrations/supabase/client';
->>>>>>> Stashed changes
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { supabase } from '@/config/supabase';
+import { DollarSign, Package, ShoppingCart, Users, TrendingUp, TrendingDown, AlertTriangle, CheckCircle } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);

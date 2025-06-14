@@ -4,19 +4,23 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
 
+// Export environment variables for use in other parts of the app
+export const SUPABASE_URL = supabaseUrl;
+export const SUPABASE_ANON_KEY = supabaseAnonKey;
+
 // Validate environment variables
-if (!supabaseUrl) {
+if (!SUPABASE_URL) {
   console.error('Missing VITE_SUPABASE_URL environment variable');
 }
 
-if (!supabaseAnonKey) {
+if (!SUPABASE_ANON_KEY) {
   console.error('Missing VITE_SUPABASE_ANON_KEY environment variable');
 }
 
 // Create Supabase client with error handling
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key',
+  SUPABASE_URL || 'https://placeholder.supabase.co',
+  SUPABASE_ANON_KEY || 'placeholder-key',
   {
     auth: {
       autoRefreshToken: true,
@@ -30,10 +34,6 @@ export const supabase = createClient(
     }
   }
 );
-
-// Export environment variables for use in other parts of the app
-export const SUPABASE_URL = supabaseUrl;
-export const SUPABASE_ANON_KEY = supabaseAnonKey;
 
 // Connection test function
 export const testSupabaseConnection = async () => {

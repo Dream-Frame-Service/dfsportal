@@ -257,14 +257,18 @@ export const ButtonFunctionalityChecker: React.FC = () => {
 
   const getStatusIcon = (status: ButtonTest['status']) => {
     switch (status) {
-      case 'passed':
+      case 'passed': {
         return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'failed':
+      }
+      case 'failed': {
         return <XCircle className="h-4 w-4 text-red-500" />;
-      case 'running':
+      }
+      case 'running': {
         return <div className="h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />;
-      default:
+      }
+      default: {
         return <AlertTriangle className="h-4 w-4 text-gray-400" />;
+      }
     }
   };
 

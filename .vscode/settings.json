@@ -1,49 +1,24 @@
-﻿{
-  "deno.enable": false,
-  "deno.path": "/usr/local/bin/deno",
-  "deno.unstable": ["unsafe-proto", "webgpu", "broadcast-channel", "worker-options", "cron", "kv", "ffi", "fs", "http", "net"],
-  "deno.lint": false,
-  "deno.importMap": "./import_map.json",
+{
+  "deno.enablePaths": [
+    "supabase/functions"
+  ],
+  "deno.lint": true,
+  "deno.unstable": [
+    "bare-node-builtins",
+    "byonm",
+    "sloppy-imports",
+    "unsafe-proto",
+    "webgpu",
+    "broadcast-channel",
+    "worker-options",
+    "cron",
+    "kv",
+    "ffi",
+    "fs",
+    "http",
+    "net"
+  ],
   "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "github.copilot.chat.agent.thinkingTool": true,
-  "github.copilot.chat.codesearch.enabled": true,
-  "github.copilot.chat.editor.temporalContext.enabled": true,
-  "github.copilot.chat.followUps": "firstOnly",
-  "github.copilot.chat.generateTests.codeLens": true,
-  "github.copilot.chat.languageContext.fix.typescript.enabled": true,
-  "github.copilot.chat.languageContext.inline.typescript.enabled": true,
-  "github.copilot.chat.languageContext.typescript.enabled": true,
-  "github.copilot.chat.scopeSelection": true,
-  "github.copilot.chat.search.keywordSuggestions": true,
-  "github.copilot.enable": {
-    "markdown": true,
-    "plaintext": true,
-    "scminput": true
-  },
-  "github.copilot.nextEditSuggestions.enabled": true,
-  "github.copilot.nextEditSuggestions.fixes": true,
-  "githubPullRequests.experimental.chat": true,
-  "githubPullRequests.experimental.notificationsView": true,
-  "githubPullRequests.experimental.useQuickChat": true,  "supabase.anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0",
-  "supabase.serviceKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU",
-  "supabase.connectionMethod": "local",
-  "supabase.defaultConnection": "local",
-  "supabase.disableLocalStart": false,
-  "supabase.forceCloudConnection": false,
-  "supabase.localDockerEnabled": true,
-  "supabase.localEnabled": true,
-  "supabase.localStart": true,
-  "supabase.localApiUrl": "http://127.0.0.1:54321",
-  "supabase.localDbUrl": "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
-  "supabase.projectRef": "dfsportal",
-  "supabase.projectUrl": "http://127.0.0.1:54321",
-  "supabase.showLocalWarnings": true,
-  "supabase.useLocal": true,
-  "terminal.integrated.sendKeybindingsToShell": true,
-  "python.analysis.userFileIndexingLimit": 20000
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
 }

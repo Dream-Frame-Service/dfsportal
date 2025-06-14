@@ -1,4 +1,4 @@
-import { supabase, type Database } from '@/lib/supabase';
+import { supabase, type Database } from '@/config/supabase';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
 // Re-export supabase client for files that import it from this service
@@ -435,6 +435,38 @@ export class AuthService {
       console.error('Error in register:', error);
       return { data: null, error: error instanceof Error ? error.message : 'Unknown error' };
     }
+  }
+}
+
+// Export the main SupabaseService as default for easy importing
+export default SupabaseService;bleName | symbol): string {
+  return typeof table === 'symbol' ? table.description || 'unknown' : table;
+}
+
+// Generic CRUD Service for Supabase
+export async function createRecord<T extends TableName>(
+  table: T,
+  data: Partial<Database['public']['Tables'][T]['Insert']>
+): Promise<Database['public']['Tables'][T]['Row'] | null> {
+  const tableName = getTableName(table);
+  const channelName = `${tableName}_${Date.now()}`;
+  
+  try {
+    const { data: result, error } = await supabase.
+    from(tableName).
+    insert(data as any).
+    select().
+    single();
+
+    if (error) {
+      console.error(`Error creating ${tableName}:`, error);
+      return null;
+    }
+
+    return result;
+  } catch (err) {
+    console.error(`Error creating ${tableName}:`, err);
+    return null;
   }
 }
 

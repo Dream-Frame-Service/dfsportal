@@ -82,21 +82,22 @@ export function initializeMemoryLeakDetection() {
     };
 
     // ---- patched clearTimeout -------------------------------------------------
-    window.clearTimeout = (function (original) {
-      // must accept the wider union (number | string | Timeout | undefined)
-      return function (id?: number | string | Timeout) {
+    window.clearTimeout = ((original) => {
+      const patched = (id?: number | string | NodeJS.Timeout) => {
         if (id !== undefined) activeTimers.delete(id as any)
-        return original(id as any)
+        return (original as any)(id as any)
       }
-    })(window.clearTimeout) as unknown as typeof window.clearTimeout
+      return patched as unknown as typeof window.clearTimeout
+    })(window.clearTimeout)
 
     // ---- patched clearInterval ------------------------------------------------
-    window.clearInterval = (function (original) {
-      return function (id?: number | string | Timeout) {
+    window.clearInterval = ((original) => {
+      const patched = (id?: number | string | NodeJS.Timeout) => {
         if (id !== undefined) activeIntervals.delete(id as any)
-        return original(id as any)
+        return (original as any)(id as any)
       }
-    })(window.clearInterval) as unknown as typeof window.clearInterval
+      return patched as unknown as typeof window.clearInterval
+    })(window.clearInterval)
 
     // Track fetch requests
     const originalFetch = window.fetch;
@@ -168,12 +169,13 @@ export function initializeMemoryLeakDetection() {
         }
       } catch (error) {
         // Silently handle performance API errors to prevent crashes
+        const err = error as Error
         console.warn(
           "Performance monitoring error (non-critical):",
-          error.message,
-        );
+          err.message,
+        )
       }
-    }, 30000); // Check every 30 seconds
+    }, 30000) // Check every 30 seconds
 
     console.log("✅ Memory leak detection patches applied");
   } catch (error) {

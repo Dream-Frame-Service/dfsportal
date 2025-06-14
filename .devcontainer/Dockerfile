@@ -4,3 +4,7 @@ RUN curl -fsSL https://deno.land/install.sh | bash \
 
 ENV PATH="$HOME/.deno/bin:${PATH}"
 # ---------- end Deno ----------
+
+# ---------- Vercel CLI ----------
+RUN npm install -g vercel
+# ---------- end Vercel ----------

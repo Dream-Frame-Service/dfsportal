@@ -1,39 +1,17 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "devCommand": "npm run dev",
-  "installCommand": "npm ci",
-  "framework": "vite",
-  "cleanUrls": true,
-  "functions": {
-    "api/*.ts": {
-      "runtime": "@vercel/node@2.15.10"
-    }
-  },
-  "crons": [
+  "version": 2,
+  "builds": [
     {
-      "path": "/api/check-license-expiry",
-      "schedule": "0 9 * * *"
-    },
-    {
-      "path": "/api/health-check",
-      "schedule": "*/30 * * * *"
-    },
-    {
-      "path": "/api/daily-report",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/weekly-cleanup",
-      "schedule": "0 2 * * 0"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+  "routes": [
+    /* SPA fallback – every non-file request returns index.html */
+    { "src": "/(.*)", "dest": "/index.html" }
   ],
   "env": {
     "VITE_SUPABASE_URL": "@supabase_url",

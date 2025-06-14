@@ -6,22 +6,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --ext ts,tsx --fix",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist node_modules/.vite src/**/*.d.ts",
-    "clean:all": "rm -rf dist node_modules/.vite src/**/*.d.ts node_modules package-lock.json",
+    "clean": "rm -rf dist node_modules/.vite",
     "prebuild": "npm run type-check && npm run lint",
     "postbuild": "echo 'Build completed successfully'",
     "start": "npm run preview",
     "test": "echo 'No tests specified' && exit 0",
-    "deploy": "vercel --prod",
-    "deploy:preview": "vercel"
+    "deploy": "vercel --prod"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.828.0",
-    "@aws-sdk/s3-request-presigner": "^3.828.0",
     "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
@@ -55,7 +51,6 @@
     "cmdk": "^0.2.0",
     "date-fns": "^3.3.1",
     "embla-carousel-react": "^8.0.0",
-    "framer-motion": "^11.18.2",
     "input-otp": "^1.2.4",
     "lucide-react": "^0.344.0",
     "react": "^18.2.0",
@@ -78,7 +73,6 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitejs/plugin-react-swc": "^3.10.2",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -87,8 +81,8 @@
     "supabase": "^2.24.3",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3",
-    "typescript-eslint": "^8.34.0",
-    "vite": "^5.1.0"
+    "vite": "^5.1.0",
+    "vercel": "^31.0.0"
   },
   "engines": {
     "node": ">=18.0.0",

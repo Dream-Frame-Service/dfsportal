@@ -83,14 +83,16 @@ export function initializeMemoryLeakDetection() {
 
     // ---- patched clearTimeout -------------------------------------------------
     window.clearTimeout = (function (original) {
-      return function (id?: number) {
+      // must accept the wider union (number | string | Timeout | undefined)
+      return function (id?: number | string | Timeout) {
         if (id !== undefined) activeTimers.delete(id as any)
         return original(id as any)
       }
     })(window.clearTimeout) as unknown as typeof window.clearTimeout
 
+    // ---- patched clearInterval ------------------------------------------------
     window.clearInterval = (function (original) {
-      return function (id?: number) {
+      return function (id?: number | string | Timeout) {
         if (id !== undefined) activeIntervals.delete(id as any)
         return original(id as any)
       }
@@ -175,8 +177,9 @@ export function initializeMemoryLeakDetection() {
 
     console.log("✅ Memory leak detection patches applied");
   } catch (error) {
+    // error is unknown -> cast to Error for `.message`
     const err = error as Error
-    console.error('[MemoryLeakMonitor] fatal:', err.message)
+    console.error("[MemoryLeakMonitor] fatal:", err.message)
     // Continue without memory leak detection
   }
 }

@@ -82,18 +82,18 @@ export function initializeMemoryLeakDetection() {
     };
 
     // ---- patched clearTimeout -------------------------------------------------
-    // @ts-expect-error – runtime compatible, signature widening is intentional
-    window.clearTimeout = (id?: any) => {
+    // force-cast so TS doesn’t try to match the DOM-overloaded signature
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment
+    ;(window as any).clearTimeout = ((id?: any): void => {
       if (id !== undefined) activeTimers.delete(id as any)
-      return (originalClearTimeout as any)(id)
-    }
+      ;(originalClearTimeout as any)(id)
+    }) as any
 
     // ---- patched clearInterval ------------------------------------------------
-    // @ts-expect-error – runtime compatible, signature widening is intentional
-    window.clearInterval = (id?: any) => {
+    ;(window as any).clearInterval = ((id?: any): void => {
       if (id !== undefined) activeIntervals.delete(id as any)
-      return (originalClearInterval as any)(id)
-    }
+      ;(originalClearInterval as any)(id)
+    }) as any
 
     // Track fetch requests
     const originalFetch = window.fetch;
@@ -164,7 +164,7 @@ export function initializeMemoryLeakDetection() {
           }
         }
       } catch (error) {
-        const err = error as Error // cast to access .message
+        const err = error as Error
         console.warn(
           "Performance monitoring error (non-critical):",
           err.message,
@@ -259,27 +259,25 @@ export function forceGarbageCollection(): boolean {
  * Get current memory usage information
  */
 export function getMemoryUsage(): {
-  used: number;
-  total: number;
-  limit: number;
-  pressure: number;
+  used: number
+  total: number
+  limit: number
+  pressure: number
 } | null {
   try {
-    // Use the safe performance API wrapper
-    const memory = performanceAPI.getMemoryUsage();
-    if (!memory) {
-      return null;
-    }
+    const memory = performanceAPI.getMemoryUsage()
+    if (!memory) return null
 
     return {
       used: memory.usedJSHeapSize,
       total: memory.totalJSHeapSize,
       limit: memory.jsHeapSizeLimit,
       pressure: memory.usedJSHeapSize / memory.jsHeapSizeLimit,
-    };
+    }
   } catch (error) {
-    console.warn("Error accessing performance.memory:", error);
-    return null;
+    const err = error as Error
+    console.warn("Error accessing performance.memory:", err.message)
+    return null
   }
 }
 
@@ -313,6 +311,8 @@ export default {
   forceGarbageCollection,
   getMemoryUsage,
   MEMORY_LEAK_DETECTION_ENABLED,
+  DEFAULT_CONFIG,
+};
   DEFAULT_CONFIG,
 };
   useComponentMemoryTracking,

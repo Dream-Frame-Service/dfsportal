@@ -39,6 +39,20 @@ export default tseslint.config(
         HTMLVideoElement: "readonly",
         HTMLInputElement: "readonly",
         HTMLDivElement: "readonly",
+        HTMLButtonElement: "readonly",
+        HTMLAnchorElement: "readonly",
+        HTMLSpanElement: "readonly",
+        HTMLParagraphElement: "readonly",
+        HTMLHeadingElement: "readonly",
+        HTMLTableElement: "readonly",
+        HTMLTableSectionElement: "readonly",
+        HTMLTableRowElement: "readonly",
+        HTMLTableCellElement: "readonly",
+        HTMLTableCaptionElement: "readonly",
+        HTMLTextAreaElement: "readonly",
+        HTMLOListElement: "readonly",
+        HTMLUListElement: "readonly",
+        HTMLLIElement: "readonly",
         Element: "readonly",
         Node: "readonly",
         MediaStream: "readonly",
@@ -55,6 +69,16 @@ export default tseslint.config(
         PerformanceMark: "readonly",
         PerformanceMeasure: "readonly",
         performance: "readonly",
+        Notification: "readonly",
+        Event: "readonly",
+        EventTarget: "readonly",
+        MouseEvent: "readonly",
+        KeyboardEvent: "readonly",
+        AbortController: "readonly",
+        AbortSignal: "readonly",
+
+        // TypeScript/React globals
+        JSX: "readonly",
 
         // Node.js globals
         process: "readonly",
@@ -68,7 +92,12 @@ export default tseslint.config(
         NodeJS: "readonly",
 
         // React global
-        React: "readonly"
+        React: "readonly",
+
+        // Custom project globals
+        ENV_URL: "readonly",
+        ENV_ANON_KEY: "readonly",
+        config: "readonly"
       }
     },
     plugins: {
@@ -86,6 +115,7 @@ export default tseslint.config(
       // Import/Export Rules - more lenient
       "no-unused-vars": "off", // Let TypeScript handle this
       "@typescript-eslint/no-unused-vars": "off", // Completely disabled
+      "@typescript-eslint/no-require-imports": "off", // Allow require imports
 
       // Type rules - disabled for development
       "@typescript-eslint/no-explicit-any": "off", // Disabled
@@ -99,7 +129,7 @@ export default tseslint.config(
       "prefer-const": "warn", // Reduced from error
       "prefer-template": "off", // Disabled
       "object-shorthand": "off", // Disabled
-      "no-duplicate-imports": "warn", // Reduced from error
+      "no-duplicate-imports": "off", // Disabled to avoid conflicts
       "no-undef": "warn", // Reduced from error
 
       // Performance - disabled

@@ -82,16 +82,18 @@ export function initializeMemoryLeakDetection() {
     };
 
     // ---- patched clearTimeout -------------------------------------------------
-    (window as any).clearTimeout = (id?: any) => {
-      if (id !== undefined) activeTimers.delete(id as any);
-      return (originalClearTimeout as any)(id);
-    };
+    // @ts-expect-error – runtime compatible, signature widening is intentional
+    window.clearTimeout = (id?: any) => {
+      if (id !== undefined) activeTimers.delete(id as any)
+      return (originalClearTimeout as any)(id)
+    }
 
     // ---- patched clearInterval ------------------------------------------------
-    (window as any).clearInterval = (id?: any) => {
-      if (id !== undefined) activeIntervals.delete(id as any);
-      return (originalClearInterval as any)(id);
-    };
+    // @ts-expect-error – runtime compatible, signature widening is intentional
+    window.clearInterval = (id?: any) => {
+      if (id !== undefined) activeIntervals.delete(id as any)
+      return (originalClearInterval as any)(id)
+    }
 
     // Track fetch requests
     const originalFetch = window.fetch;
@@ -162,17 +164,16 @@ export function initializeMemoryLeakDetection() {
           }
         }
       } catch (error) {
-        const err = error as Error; // cast to access .message safely
+        const err = error as Error // cast to access .message
         console.warn(
           "Performance monitoring error (non-critical):",
           err.message,
-        );
+        )
       }
-    }, 30000); // Check every 30 seconds
+    }, 30000) // Check every 30 seconds
 
-    console.log("✅ Memory leak detection patches applied");
+    console.log("✅ Memory leak detection patches applied")
   } catch (error) {
-    // error is unknown -> cast to Error for `.message`
     const err = error as Error
     console.error("[MemoryLeakMonitor] fatal:", err.message)
     // Continue without memory leak detection
@@ -314,7 +315,6 @@ export default {
   MEMORY_LEAK_DETECTION_ENABLED,
   DEFAULT_CONFIG,
 };
-  withMemoryTracking,
   useComponentMemoryTracking,
   forceGarbageCollection,
   getMemoryUsage,

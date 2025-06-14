@@ -1,4 +1,4 @@
-import { supabase, type Database } from '@/config/supabase';
+import { type Database, supabase } from "@/config/supabase";
 
 // Generic types for database operations
 type TableName = keyof Database["public"]["Tables"];
@@ -10,14 +10,14 @@ type TableUpdate<T extends TableName> =
 
 // Helper function to convert table names
 function getTableName(table: TableName | symbol): string {
-  return typeof table === 'symbol' ? String(table) : table;
+  return typeof table === "symbol" ? String(table) : table;
 }
 
 // Create (Insert)
 export async function createRecord<T extends TableName>(
   table: T,
-  data: Partial<Database['public']['Tables'][T]['Insert']>
-): Promise<Database['public']['Tables'][T]['Row'] | null> {
+  data: Partial<Database["public"]["Tables"][T]["Insert"]>,
+): Promise<Database["public"]["Tables"][T]["Row"] | null> {
   const tableName = getTableName(table);
   const channelName = `${tableName}_${Date.now()}`;
 
@@ -335,7 +335,8 @@ export class EmailService {
 export class AuthService {
   static async getCurrentUser() {
     try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      const { data: { user }, error: authError } = await supabase.auth
+        .getUser();
 
       if (authError || !user) {
         return {
@@ -402,61 +403,10 @@ export class AuthService {
   }
 }
 
-// Export the main SupabaseService as default for easy importing
+// ---------------------------------------------
+// SINGLE service aggregator & default export
+// ---------------------------------------------
 export const SupabaseService = {
-  createRecord,
-  readRecords,
-  updateRecord,
-  deleteRecord,
-  batchCreate,
-  batchUpdate,
-  batchDelete,
-  uploadFile,
-  getFileUrl,
-  deleteFile,
-  subscribeToChanges,
-  unsubscribeFromChanges,
-  executeRpc,
-  searchRecords,
-};
-
-export default SupabaseService;
-  searchRecords,
-};
-
-export default SupabaseService;
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-
-  static async register(credentials: { email: string; password: string }) {
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: credentials.email,
-        password: credentials.password,
-      });
-
-      if (error) {
-        console.error("Supabase registration error:", error);
-        return { data: null, error: error.message };
-      }
-
-      return { data, error: null };
-    } catch (error) {
-      console.error("Error in register:", error);
-      return {
-        data: null,
-        error: error instanceof Error ? error.message : "Unknown error",
-      };
-    }
-  }
-}
-
-// Export the main SupabaseService as default for easy importing
-export default SupabaseService;
-
-const SupabaseService = {
   createRecord,
   readRecords,
   updateRecord,

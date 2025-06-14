@@ -405,26 +405,26 @@ export class AuthService {
     }
   }
 }
-            role: "Employee", // Default role
-            created_at: user.created_at,
-          },
-          error: null,
-        };
-      }
 
-      // Return user info with profile data
-      return {
-        data: {
-          id: user.id,
-          email: user.email,
-          ...profile,
-        },
-        error: null,
-      };
-    } catch (error) {
-      console.error("Error in getCurrentUser:", error);
-      return {
-        data: null,
+// Export the main SupabaseService
+export const SupabaseService = {
+  createRecord,
+  readRecords,
+  updateRecord,
+  deleteRecord,
+  batchCreate,
+  batchUpdate,
+  batchDelete,
+  uploadFile,
+  getFileUrl,
+  deleteFile,
+  subscribeToChanges,
+  unsubscribeFromChanges,
+  executeRpc,
+  searchRecords,
+};
+
+export default SupabaseService;
         error: error instanceof Error ? error.message : "Unknown error",
       };
     }

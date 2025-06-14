@@ -11,7 +11,7 @@ export default tseslint.config(
     languageOptions: {
       ecmaVersion: 2020,
       globals: {
-        // Define only the globals we need instead of using the globals package
+        // Browser globals
         console: "readonly",
         window: "readonly",
         document: "readonly",
@@ -29,9 +29,46 @@ export default tseslint.config(
         alert: "readonly",
         confirm: "readonly",
         prompt: "readonly",
+        File: "readonly",
+        Blob: "readonly",
+        FileReader: "readonly",
+        Image: "readonly",
+        HTMLElement: "readonly",
+        HTMLCanvasElement: "readonly",
+        HTMLImageElement: "readonly",
+        HTMLVideoElement: "readonly",
+        HTMLInputElement: "readonly",
+        HTMLDivElement: "readonly",
+        Element: "readonly",
+        Node: "readonly",
+        MediaStream: "readonly",
+        Response: "readonly",
+        Request: "readonly",
+        RequestInit: "readonly",
+        RequestInfo: "readonly",
+        btoa: "readonly",
+        atob: "readonly",
+        IntersectionObserver: "readonly",
+        MutationObserver: "readonly",
+        PerformanceNavigationTiming: "readonly",
+        PerformanceResourceTiming: "readonly",
+        PerformanceMark: "readonly",
+        PerformanceMeasure: "readonly",
+        performance: "readonly",
+
+        // Node.js globals
         process: "readonly",
         Buffer: "readonly",
-        global: "readonly"
+        global: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+        require: "readonly",
+        module: "readonly",
+        exports: "readonly",
+        NodeJS: "readonly",
+
+        // React global
+        React: "readonly"
       }
     },
     plugins: {

@@ -1,38 +1,41 @@
-import { supabase, type Database } from '@/config/supabase';
-import { RealtimeChannel } from '@supabase/supabase-js';
+import { type Database, supabase } from "@/config/supabase";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 // Re-export supabase client for files that import it from this service
 export { supabase };
 
 // Generic types for database operations
-type TableName = keyof Database['public']['Tables'];
-type TableRow<T extends TableName> = Database['public']['Tables'][T]['Row'];
-type TableInsert<T extends TableName> = Database['public']['Tables'][T]['Insert'];
-type TableUpdate<T extends TableName> = Database['public']['Tables'][T]['Update'];
+type TableName = keyof Database["public"]["Tables"];
+type TableRow<T extends TableName> = Database["public"]["Tables"][T]["Row"];
+type TableInsert<T extends TableName> =
+  Database["public"]["Tables"][T]["Insert"];
+type TableUpdate<T extends TableName> =
+  Database["public"]["Tables"][T]["Update"];
 
 // Real-time subscription manager
 class RealtimeManager {
   private channels: Map<string, RealtimeChannel> = new Map();
 
   subscribe<T extends TableName>(
-  table: T,
-  callback: (payload: any) => void,
-  filters?: {column: string;eq: string | number;}[])
-  : () => void {
-  const channelName = `${table}_${Date.now()}`;
+    table: T,
+    callback: (payload: any) => void,
+    filters?: { column: string; eq: string | number }[],
+  ): () => void {
+    const channelName = `${table}_${Date.now()}`;
 
-  const subscription = supabase.
-  channel(channelName).
-  on(
-    'postgres_changes',
-    {
-      event: '*',
-      schema: 'public',
-      table: table as string,
-        ...(filters && { filter: filters.map((f) => `${f.column}=eq.${f.eq}`).join(',') })
-      },
-      callback
-    );
+    const subscription = supabase
+      .channel(channelName)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: table as string,
+          ...(filters &&
+            { filter: filters.map((f) => `${f.column}=eq.${f.eq}`).join(",") }),
+        },
+        callback,
+      );
 
     subscription.subscribe();
     this.channels.set(channelName, subscription);
@@ -61,15 +64,15 @@ export const realtimeManager = new RealtimeManager();
 export class SupabaseService {
   // Create (Insert)
   static async create<T extends TableName>(
-  table: T,
-  data: TableInsert<T>)
-  : Promise<{data: TableRow<T> | null;error: string | null;}> {
+    table: T,
+    data: TableInsert<T>,
+  ): Promise<{ data: TableRow<T> | null; error: string | null }> {
     try {
-      const { data: result, error } = await supabase.
-      from(table).
-      insert(data as any).
-      select().
-      single();
+      const { data: result, error } = await supabase
+        .from(table)
+        .insert(data as any)
+        .select()
+        .single();
 
       if (error) {
         console.error(`Error creating ${table}:`, error);
@@ -79,22 +82,22 @@ export class SupabaseService {
       return { data: result, error: null };
     } catch (err) {
       console.error(`Error creating ${table}:`, err);
-      return { data: null, error: 'An unexpected error occurred' };
+      return { data: null, error: "An unexpected error occurred" };
     }
   }
 
   // Read (Select with pagination)
   static async read<T extends TableName>(
-  table: T,
-  options: {
-    page?: number;
-    pageSize?: number;
-    orderBy?: keyof TableRow<T>;
-    ascending?: boolean;
-    filters?: {column: keyof TableRow<T>;operator: string;value: any;}[];
-    select?: string;
-  } = {})
-  : Promise<{
+    table: T,
+    options: {
+      page?: number;
+      pageSize?: number;
+      orderBy?: keyof TableRow<T>;
+      ascending?: boolean;
+      filters?: { column: keyof TableRow<T>; operator: string; value: any }[];
+      select?: string;
+    } = {},
+  ): Promise<{
     data: TableRow<T>[] | null;
     count: number | null;
     error: string | null;
@@ -103,42 +106,42 @@ export class SupabaseService {
       const {
         page = 1,
         pageSize = 10,
-        orderBy = 'id' as keyof TableRow<T>,
+        orderBy = "id" as keyof TableRow<T>,
         ascending = false,
         filters = [],
-        select = '*'
+        select = "*",
       } = options;
 
-      let query = supabase.
-      from(table).
-      select(select, { count: 'exact' });
+      let query = supabase
+        .from(table)
+        .select(select, { count: "exact" });
 
       // Apply filters
       filters.forEach((filter) => {
         const { column, operator, value } = filter;
         switch (operator.toLowerCase()) {
-          case 'eq':
+          case "eq":
             query = query.eq(column as string, value);
             break;
-          case 'neq':
+          case "neq":
             query = query.neq(column as string, value);
             break;
-          case 'gt':
+          case "gt":
             query = query.gt(column as string, value);
             break;
-          case 'gte':
+          case "gte":
             query = query.gte(column as string, value);
             break;
-          case 'lt':
+          case "lt":
             query = query.lt(column as string, value);
             break;
-          case 'lte':
+          case "lte":
             query = query.lte(column as string, value);
             break;
-          case 'like':
+          case "like":
             query = query.like(column as string, `%${value}%`);
             break;
-          case 'ilike':
+          case "ilike":
             query = query.ilike(column as string, `%${value}%`);
             break;
           default:
@@ -164,23 +167,23 @@ export class SupabaseService {
       return { data: (data as unknown) as TableRow<T>[], count, error: null };
     } catch (err) {
       console.error(`Error reading ${table}:`, err);
-      return { data: null, count: null, error: 'An unexpected error occurred' };
+      return { data: null, count: null, error: "An unexpected error occurred" };
     }
   }
 
   // Update
   static async update<T extends TableName>(
-  table: T,
-  id: number,
-  data: TableUpdate<T>)
-  : Promise<{data: TableRow<T> | null;error: string | null;}> {
+    table: T,
+    id: number,
+    data: TableUpdate<T>,
+  ): Promise<{ data: TableRow<T> | null; error: string | null }> {
     try {
-      const { data: result, error } = await supabase.
-      from(table).
-      update(data as any).
-      eq('id', id).
-      select().
-      single();
+      const { data: result, error } = await supabase
+        .from(table)
+        .update(data as any)
+        .eq("id", id)
+        .select()
+        .single();
 
       if (error) {
         console.error(`Error updating ${table}:`, error);
@@ -190,20 +193,20 @@ export class SupabaseService {
       return { data: result, error: null };
     } catch (err) {
       console.error(`Error updating ${table}:`, err);
-      return { data: null, error: 'An unexpected error occurred' };
+      return { data: null, error: "An unexpected error occurred" };
     }
   }
 
   // Delete
   static async delete<T extends TableName>(
-  table: T,
-  id: number)
-  : Promise<{error: string | null;}> {
+    table: T,
+    id: number,
+  ): Promise<{ error: string | null }> {
     try {
-      const { error } = await supabase.
-      from(table).
-      delete().
-      eq('id', id);
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .eq("id", id);
 
       if (error) {
         console.error(`Error deleting from ${table}:`, error);
@@ -213,20 +216,20 @@ export class SupabaseService {
       return { error: null };
     } catch (err) {
       console.error(`Error deleting from ${table}:`, err);
-      return { error: 'An unexpected error occurred' };
+      return { error: "An unexpected error occurred" };
     }
   }
 
   // Batch operations
   static async batchCreate<T extends TableName>(
-  table: T,
-  data: TableInsert<T>[])
-  : Promise<{data: TableRow<T>[] | null;error: string | null;}> {
+    table: T,
+    data: TableInsert<T>[],
+  ): Promise<{ data: TableRow<T>[] | null; error: string | null }> {
     try {
-      const { data: result, error } = await supabase.
-      from(table).
-      insert(data as any).
-      select();
+      const { data: result, error } = await supabase
+        .from(table)
+        .insert(data as any)
+        .select();
 
       if (error) {
         console.error(`Error batch creating ${table}:`, error);
@@ -236,41 +239,41 @@ export class SupabaseService {
       return { data: result, error: null };
     } catch (err) {
       console.error(`Error batch creating ${table}:`, err);
-      return { data: null, error: 'An unexpected error occurred' };
+      return { data: null, error: "An unexpected error occurred" };
     }
   }
 
   static async batchUpdate<T extends TableName>(
-  table: T,
-  updates: {id: number;data: TableUpdate<T>;}[])
-  : Promise<{data: TableRow<T>[] | null;error: string | null;}> {
+    table: T,
+    updates: { id: number; data: TableUpdate<T> }[],
+  ): Promise<{ data: TableRow<T>[] | null; error: string | null }> {
     try {
       const results = await Promise.all(
-        updates.map(({ id, data }) => this.update(table, id, data))
+        updates.map(({ id, data }) => this.update(table, id, data)),
       );
 
       const errors = results.filter((r) => r.error).map((r) => r.error);
       if (errors.length > 0) {
-        return { data: null, error: errors.join(', ') };
+        return { data: null, error: errors.join(", ") };
       }
 
       const data = results.map((r) => r.data).filter(Boolean) as TableRow<T>[];
       return { data, error: null };
     } catch (err) {
       console.error(`Error batch updating ${table}:`, err);
-      return { data: null, error: 'An unexpected error occurred' };
+      return { data: null, error: "An unexpected error occurred" };
     }
   }
 
   static async batchDelete<T extends TableName>(
-  table: T,
-  ids: number[])
-  : Promise<{error: string | null;}> {
+    table: T,
+    ids: number[],
+  ): Promise<{ error: string | null }> {
     try {
-      const { error } = await supabase.
-      from(table).
-      delete().
-      in('id', ids);
+      const { error } = await supabase
+        .from(table)
+        .delete()
+        .in("id", ids);
 
       if (error) {
         console.error(`Error batch deleting from ${table}:`, error);
@@ -280,41 +283,41 @@ export class SupabaseService {
       return { error: null };
     } catch (err) {
       console.error(`Error batch deleting from ${table}:`, err);
-      return { error: 'An unexpected error occurred' };
+      return { error: "An unexpected error occurred" };
     }
   }
 
   // File upload
   static async uploadFile(
-  bucket: string,
-  path: string,
-  file: File)
-  : Promise<{data: {path: string;} | null;error: string | null;}> {
+    bucket: string,
+    path: string,
+    file: File,
+  ): Promise<{ data: { path: string } | null; error: string | null }> {
     try {
-      const { data, error } = await supabase.storage.
-      from(bucket).
-      upload(path, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
+      const { data, error } = await supabase.storage
+        .from(bucket)
+        .upload(path, file, {
+          cacheControl: "3600",
+          upsert: false,
+        });
 
       if (error) {
-        console.error('Error uploading file:', error);
+        console.error("Error uploading file:", error);
         return { data: null, error: error.message };
       }
 
       return { data, error: null };
     } catch (err) {
-      console.error('Error uploading file:', err);
-      return { data: null, error: 'An unexpected error occurred' };
+      console.error("Error uploading file:", err);
+      return { data: null, error: "An unexpected error occurred" };
     }
   }
 
   // Get file URL
   static getFileUrl(bucket: string, path: string): string {
-    const { data } = supabase.storage.
-    from(bucket).
-    getPublicUrl(path);
+    const { data } = supabase.storage
+      .from(bucket)
+      .getPublicUrl(path);
 
     return data.publicUrl;
   }
@@ -332,15 +335,15 @@ export class EmailService {
     subject: string;
     html: string;
     text?: string;
-  }): Promise<{data?: any; error: string | null}> {
+  }): Promise<{ data?: any; error: string | null }> {
     try {
       // For now, we'll simulate email sending for development
       // In production, this would integrate with an email service like Resend, SendGrid, etc.
-      console.log('📧 Email would be sent:', {
+      console.log("📧 Email would be sent:", {
         from: emailData.from,
         to: emailData.to,
         subject: emailData.subject,
-        preview: `${emailData.html.substring(0, 100)  }...`
+        preview: `${emailData.html.substring(0, 100)}...`,
       });
 
       // You can replace this with actual email service integration
@@ -349,26 +352,28 @@ export class EmailService {
       const { data, error } = await supabase.functions.invoke('send-email', {
         body: emailData
       });
-      
+
       if (error) {
         console.error('Email sending error:', error);
         return { error: error.message };
       }
-      
+
       return { data, error: null };
       */
 
       // For development, simulate successful email
-      return { 
-        data: { 
-          message: 'Email logged successfully (development mode)',
-          emailData 
-        }, 
-        error: null 
+      return {
+        data: {
+          message: "Email logged successfully (development mode)",
+          emailData,
+        },
+        error: null,
       };
     } catch (error) {
-      console.error('Error in sendEmail:', error);
-      return { error: error instanceof Error ? error.message : 'Unknown error' };
+      console.error("Error in sendEmail:", error);
+      return {
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
     }
   }
 }
@@ -377,17 +382,21 @@ export class EmailService {
 export class AuthService {
   static async getCurrentUser() {
     try {
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      
+      const { data: { user }, error: authError } = await supabase.auth
+        .getUser();
+
       if (authError || !user) {
-        return { data: null, error: authError?.message || 'User not authenticated' };
+        return {
+          data: null,
+          error: authError?.message || "User not authenticated",
+        };
       }
 
       // Try to get user profile from user_profiles table
       const { data: profile, error: profileError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('user_id', user.id)
+        .from("user_profiles")
+        .select("*")
+        .eq("user_id", user.id)
         .single();
 
       if (profileError) {
@@ -396,10 +405,10 @@ export class AuthService {
           data: {
             id: user.id,
             email: user.email,
-            role: 'Employee', // Default role
-            created_at: user.created_at
+            role: "Employee", // Default role
+            created_at: user.created_at,
           },
-          error: null
+          error: null,
         };
       }
 
@@ -408,13 +417,16 @@ export class AuthService {
         data: {
           id: user.id,
           email: user.email,
-          ...profile
+          ...profile,
         },
-        error: null
+        error: null,
       };
     } catch (error) {
-      console.error('Error in getCurrentUser:', error);
-      return { data: null, error: error instanceof Error ? error.message : 'Unknown error' };
+      console.error("Error in getCurrentUser:", error);
+      return {
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
     }
   }
 
@@ -422,53 +434,43 @@ export class AuthService {
     try {
       const { data, error } = await supabase.auth.signUp({
         email: credentials.email,
-        password: credentials.password
+        password: credentials.password,
       });
 
       if (error) {
-        console.error('Supabase registration error:', error);
+        console.error("Supabase registration error:", error);
         return { data: null, error: error.message };
       }
 
       return { data, error: null };
     } catch (error) {
-      console.error('Error in register:', error);
-      return { data: null, error: error instanceof Error ? error.message : 'Unknown error' };
+      console.error("Error in register:", error);
+      return {
+        data: null,
+        error: error instanceof Error ? error.message : "Unknown error",
+      };
     }
   }
 }
 
 // Export the main SupabaseService as default for easy importing
-export default SupabaseService;bleName | symbol): string {
-  return typeof table === 'symbol' ? table.description || 'unknown' : table;
-}
+export default SupabaseService;
 
-// Generic CRUD Service for Supabase
-export async function createRecord<T extends TableName>(
-  table: T,
-  data: Partial<Database['public']['Tables'][T]['Insert']>
-): Promise<Database['public']['Tables'][T]['Row'] | null> {
-  const tableName = getTableName(table);
-  const channelName = `${tableName}_${Date.now()}`;
-  
-  try {
-    const { data: result, error } = await supabase.
-    from(tableName).
-    insert(data as any).
-    select().
-    single();
+const SupabaseService = {
+  createRecord,
+  readRecords,
+  updateRecord,
+  deleteRecord,
+  batchCreate,
+  batchUpdate,
+  batchDelete,
+  uploadFile,
+  getFileUrl,
+  deleteFile,
+  subscribeToChanges,
+  unsubscribeFromChanges,
+  executeRpc,
+  searchRecords,
+};
 
-    if (error) {
-      console.error(`Error creating ${tableName}:`, error);
-      return null;
-    }
-
-    return result;
-  } catch (err) {
-    console.error(`Error creating ${tableName}:`, err);
-    return null;
-  }
-}
-
-// Export the main SupabaseService as default for easy importing
 export default SupabaseService;

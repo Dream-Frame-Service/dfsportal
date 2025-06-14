@@ -1,5 +1,4 @@
 import js from "@eslint/js";
-import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
@@ -11,7 +10,29 @@ export default tseslint.config(
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser
+      globals: {
+        // Define only the globals we need instead of using the globals package
+        console: "readonly",
+        window: "readonly",
+        document: "readonly",
+        navigator: "readonly",
+        fetch: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        URL: "readonly",
+        URLSearchParams: "readonly",
+        FormData: "readonly",
+        localStorage: "readonly",
+        sessionStorage: "readonly",
+        alert: "readonly",
+        confirm: "readonly",
+        prompt: "readonly",
+        process: "readonly",
+        Buffer: "readonly",
+        global: "readonly"
+      }
     },
     plugins: {
       "react-hooks": reactHooks,

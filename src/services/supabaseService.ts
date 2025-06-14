@@ -335,8 +335,7 @@ export class EmailService {
 export class AuthService {
   static async getCurrentUser() {
     try {
-      const { data: { user }, error: authError } = await supabase.auth
-        .getUser();
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
 
       if (authError || !user) {
         return {
@@ -345,7 +344,6 @@ export class AuthService {
         };
       }
 
-      // Try to get user profile from user_profiles table
       const { data: profile, error: profileError } = await supabase
         .from("user_profiles")
         .select("*")
@@ -353,19 +351,17 @@ export class AuthService {
         .single();
 
       if (profileError) {
-        // If no profile exists, return basic user info
         return {
           data: {
             id: user.id,
             email: user.email,
-            role: "Employee", // Default role
+            role: "Employee",
             created_at: user.created_at,
           },
           error: null,
         };
       }
 
-      // Return user info with profile data
       return {
         data: {
           id: user.id,
@@ -406,7 +402,6 @@ export class AuthService {
   }
 }
 
-// Export the main SupabaseService
 export const SupabaseService = {
   createRecord,
   readRecords,
@@ -420,6 +415,11 @@ export const SupabaseService = {
   deleteFile,
   subscribeToChanges,
   unsubscribeFromChanges,
+  executeRpc,
+  searchRecords,
+};
+
+export default SupabaseService;
   executeRpc,
   searchRecords,
 };

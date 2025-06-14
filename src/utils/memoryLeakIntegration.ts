@@ -81,19 +81,20 @@ export function initializeMemoryLeakDetection() {
       return id;
     };
 
-    window.clearTimeout = function (id?: number) {
-      if (id) {
-        activeTimers.delete(id);
+    // ---- patched clearTimeout -------------------------------------------------
+    window.clearTimeout = (function (original) {
+      return function (id?: number) {
+        if (id !== undefined) activeTimers.delete(id as any)
+        return original(id as any)
       }
-      return originalClearTimeout.call(window, id);
-    };
+    })(window.clearTimeout) as unknown as typeof window.clearTimeout
 
-    window.clearInterval = function (id?: number) {
-      if (id) {
-        activeIntervals.delete(id);
+    window.clearInterval = (function (original) {
+      return function (id?: number) {
+        if (id !== undefined) activeIntervals.delete(id as any)
+        return original(id as any)
       }
-      return originalClearInterval.call(window, id);
-    };
+    })(window.clearInterval) as unknown as typeof window.clearInterval
 
     // Track fetch requests
     const originalFetch = window.fetch;
@@ -174,7 +175,8 @@ export function initializeMemoryLeakDetection() {
 
     console.log("✅ Memory leak detection patches applied");
   } catch (error) {
-    console.warn("⚠️ Memory leak detection initialization failed:", error);
+    const err = error as Error
+    console.error('[MemoryLeakMonitor] fatal:', err.message)
     // Continue without memory leak detection
   }
 }

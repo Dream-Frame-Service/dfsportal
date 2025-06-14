@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+import "@/lib/ezsitePolyfill"; // ← add this line early
 
 // Enhanced error handling for production
 console.log('🚀 Starting DFS Manager Portal...');

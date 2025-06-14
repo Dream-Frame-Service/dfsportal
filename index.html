@@ -10,7 +10,6 @@
     
     <!-- Preload critical resources -->
     <link rel="preload" href="/src/index.css" as="style" />
-    <link rel="preload" href="/src/main.tsx" as="script" />
     
     <!-- Performance optimizations -->
     <link rel="dns-prefetch" href="https://vetufvhzmawjbsumtplq.supabase.co" />
@@ -106,7 +105,10 @@
       </div>
     </noscript>
     
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Vite injects the correct script in dev and build. 
+         Do NOT reference /src/main.tsx directly. -->
+    <!-- Removed: <script type="module" src="/src/main.tsx"></script> -->
+    <!-- Vite will inject the correct script during dev and build. -->
     
     <!-- Error handling script -->
     <script>

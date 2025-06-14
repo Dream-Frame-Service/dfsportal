@@ -1,16 +1,159 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>cloud-burst-saas-flare</title>
-  <link rel="icon" href="https://newoaks.s3.us-west-1.amazonaws.com/AutoDev/19016/c533e5f9-97eb-43d2-8be6-bcdff5709bba.png">
-</head>
-
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DFS Manager Portal</title>
+    <meta name="description" content="Dream Frame Service Manager Portal - Comprehensive business management solution" />
+    <meta name="theme-color" content="#3B82F6" />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/src/index.css" as="style" />
+    <link rel="preload" href="/src/main.tsx" as="script" />
+    
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="https://vetufvhzmawjbsumtplq.supabase.co" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Critical CSS for loading state -->
+    <style>
+      /* Critical loading styles */
+      .loading-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        z-index: 9999;
+      }
+      
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      
+      .loading-subtext {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        text-align: center;
+      }
+      
+      /* Hide loading when app loads */
+      .app-loaded .loading-container {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading screen -->
+    <div id="loading-screen" class="loading-container">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">DFS Manager Portal</div>
+      <div class="loading-subtext">Initializing application...</div>
+    </div>
+    
+    <!-- Main app container -->
+    <div id="root"></div>
+    
+    <!-- Fallback content if JavaScript fails -->
+    <noscript>
+      <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        text-align: center;
+        padding: 20px;
+      ">
+        <h1 style="font-size: 2rem; margin-bottom: 1rem;">DFS Manager Portal</h1>
+        <p style="font-size: 1.1rem; margin-bottom: 1rem;">JavaScript Required</p>
+        <p style="font-size: 0.9rem; opacity: 0.9;">
+          Please enable JavaScript in your browser to use this application.
+        </p>
+      </div>
+    </noscript>
+    
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Error handling script -->
+    <script>
+      // Global error handler
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+        showErrorFallback('Application Error: ' + (e.error?.message || 'Unknown error'));
+      });
+      
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+        showErrorFallback('Promise Error: ' + (e.reason?.message || 'Unknown error'));
+      });
+      
+      function showErrorFallback(message) {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+          loadingScreen.innerHTML = `
+            <div style="text-align: center;">
+              <h1 style="font-size: 2rem; margin-bottom: 1rem; color: #ff6b6b;">DFS Manager Portal</h1>
+              <p style="font-size: 1.1rem; margin-bottom: 1rem;">Application Error</p>
+              <p style="font-size: 0.9rem; margin-bottom: 2rem; opacity: 0.9;">${message}</p>
+              <button onclick="window.location.reload()" style="
+                background: rgba(255,255,255,0.2);
+                border: 2px solid white;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+              " onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+                 onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                Reload Application
+              </button>
+            </div>
+          `;
+        }
+      }
+      
+      // Hide loading screen after 10 seconds as fallback
+      setTimeout(function() {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen && loadingScreen.style.display !== 'none') {
+          showErrorFallback('Application failed to load. Please check your connection and try again.');
+        }
+      }, 10000);
+    </script>
+  </body>
 </html>

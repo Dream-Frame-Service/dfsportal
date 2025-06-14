@@ -82,22 +82,16 @@ export function initializeMemoryLeakDetection() {
     };
 
     // ---- patched clearTimeout -------------------------------------------------
-    window.clearTimeout = ((original) => {
-      const patched = (id?: number | string | NodeJS.Timeout) => {
-        if (id !== undefined) activeTimers.delete(id as any)
-        return (original as any)(id as any)
-      }
-      return patched as unknown as typeof window.clearTimeout
-    })(window.clearTimeout)
+    (window as any).clearTimeout = (id?: any) => {
+      if (id !== undefined) activeTimers.delete(id as any);
+      return (originalClearTimeout as any)(id);
+    };
 
     // ---- patched clearInterval ------------------------------------------------
-    window.clearInterval = ((original) => {
-      const patched = (id?: number | string | NodeJS.Timeout) => {
-        if (id !== undefined) activeIntervals.delete(id as any)
-        return (original as any)(id as any)
-      }
-      return patched as unknown as typeof window.clearInterval
-    })(window.clearInterval)
+    (window as any).clearInterval = (id?: any) => {
+      if (id !== undefined) activeIntervals.delete(id as any);
+      return (originalClearInterval as any)(id);
+    };
 
     // Track fetch requests
     const originalFetch = window.fetch;
@@ -168,14 +162,13 @@ export function initializeMemoryLeakDetection() {
           }
         }
       } catch (error) {
-        // Silently handle performance API errors to prevent crashes
-        const err = error as Error
+        const err = error as Error; // cast to access .message safely
         console.warn(
           "Performance monitoring error (non-critical):",
           err.message,
-        )
+        );
       }
-    }, 30000) // Check every 30 seconds
+    }, 30000); // Check every 30 seconds
 
     console.log("✅ Memory leak detection patches applied");
   } catch (error) {
@@ -314,6 +307,13 @@ export const DEFAULT_CONFIG: MemoryLeakDetectionConfig = {
 export default {
   initializeMemoryLeakDetection,
   reportMemoryLeak,
+  withMemoryTracking,
+  useComponentMemoryTracking,
+  forceGarbageCollection,
+  getMemoryUsage,
+  MEMORY_LEAK_DETECTION_ENABLED,
+  DEFAULT_CONFIG,
+};
   withMemoryTracking,
   useComponentMemoryTracking,
   forceGarbageCollection,

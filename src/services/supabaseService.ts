@@ -402,6 +402,7 @@ export class AuthService {
   }
 }
 
+// Export the main SupabaseService as default for easy importing
 export const SupabaseService = {
   createRecord,
   readRecords,
@@ -420,7 +421,6 @@ export const SupabaseService = {
 };
 
 export default SupabaseService;
-  executeRpc,
   searchRecords,
 };
 

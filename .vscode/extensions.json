@@ -1,6 +1,11 @@
 {
   "recommendations": [
-    "denoland.vscode-deno"
+    "denoland.vscode-deno",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss"
   ],
-  "unwantedRecommendations": []
+  "unwantedRecommendations": [
+    "ms-vscode.vscode-typescript-next",
+    "DavidAnson.vscode-markdownlint"
+  ]
 }

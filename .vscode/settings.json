@@ -3,13 +3,7 @@
     "supabase/functions"
   ],
   "deno.lint": false,
-  "deno.unstable": true,
-  "deno.enable": false,
-  "deno.path": "/usr/local/bin/deno",
-  "[typescript]": {
-    "editor.defaultFormatter": "denoland.vscode-deno"
-  }
-}
+  "deno.unstable": [
     "worker-options",
     "cron",
     "kv",
@@ -22,5 +16,16 @@
   "deno.path": "/usr/local/bin/deno",
   "[typescript]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "markdownlint.config": {
+    "MD022": false,
+    "MD032": false,
+    "MD036": false,
+    "MD009": false
   }
 }

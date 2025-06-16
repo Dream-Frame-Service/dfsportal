@@ -1,0 +1,56 @@
+{
+  "name": "DFS Portal Development",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+  
+  // Configure container settings
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "typescript.preferences.includePackageJsonAutoImports": "on"
+      },
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+
+  // Configure storage - request larger disk space
+  "hostRequirements": {
+    "storage": "64gb"
+  },
+
+  // Mount additional volumes for better performance
+  "mounts": [
+    "source=dfs-portal-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ],
+
+  // Configure features
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  // Forward ports for development
+  "forwardPorts": [3000, 5173, 8080],
+  "portsAttributes": {
+    "3000": {
+      "label": "React Dev Server",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Vite Dev Server", 
+      "onAutoForward": "notify"
+    }
+  },
+
+  // Run commands after container creation
+  "postCreateCommand": "npm install && npm run build",
+
+  // Configure container lifecycle
+  "shutdownAction": "stopContainer",
+  "remoteUser": "node"
+}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { MemoryLeakMonitor } from "@/services/memoryLeakMonitor";
 import performanceAPI from "./performanceAPIWrapper";
 

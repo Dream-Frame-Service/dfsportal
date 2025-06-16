@@ -1,11 +1,43 @@
 {
   "recommendations": [
-    "denoland.vscode-deno",
+    // Core development
     "esbenp.prettier-vscode",
-    "bradlc.vscode-tailwindcss"
+    "dbaeumer.vscode-eslint",
+    
+    // TypeScript/JavaScript
+    "ms-vscode.vscode-typescript-next",
+    
+    // React
+    "ms-vscode.vscode-react-next",
+    "bradlc.vscode-tailwindcss",
+    
+    // Supabase/Database
+    "denoland.vscode-deno",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg",
+    
+    // Git/Version Control
+    "eamodio.gitlens",
+    
+    // Productivity
+    "ms-vsliveshare.vsliveshare",
+    "formulahendry.auto-rename-tag",
+    "christian-kohler.path-intellisense",
+    "ms-vscode.vscode-json",
+    
+    // Testing
+    "ms-vscode.test-adapter-converter",
+    
+    // Documentation
+    "yzhang.markdown-all-in-one",
+    
+    // Utilities
+    "streetsidesoftware.code-spell-checker",
+    "ms-vscode.theme-tomorrowkit"
   ],
   "unwantedRecommendations": [
-    "ms-vscode.vscode-typescript-next",
-    "DavidAnson.vscode-markdownlint"
+    "DavidAnson.vscode-markdownlint",
+    "ms-python.python",
+    "ms-dotnettools.csharp"
   ]
 }

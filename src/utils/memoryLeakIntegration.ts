@@ -85,7 +85,7 @@ export function initializeMemoryLeakDetection() {
     // ---- patched clearTimeout -------------------------------------------------
     // force-cast so TS doesn’t try to match the DOM-overloaded signature
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment
-    ;(window as any).clearTimeout = ((id?: any): void => {
+    (window as any).clearTimeout = ((id?: any): void => {
       if (id !== undefined) activeTimers.delete(id as any)
       ;(originalClearTimeout as any)(id)
     }) as any

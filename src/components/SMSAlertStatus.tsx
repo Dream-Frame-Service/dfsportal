@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,7 +28,7 @@ const SMSAlertStatus: React.FC<SMSAlertStatusProps> = ({ className = '' }) => {
       setLoading(true);
 
       // Load active contacts
-      const contactsResponse = await window.ezsite.apis.tablePage('12612', {
+      const contactsResponse = await DatabaseService.tablePage('12612', {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'id',
@@ -40,7 +41,7 @@ const SMSAlertStatus: React.FC<SMSAlertStatusProps> = ({ className = '' }) => {
       }
 
       // Load active settings
-      const settingsResponse = await window.ezsite.apis.tablePage('12611', {
+      const settingsResponse = await DatabaseService.tablePage('12611', {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'id',
@@ -56,7 +57,7 @@ const SMSAlertStatus: React.FC<SMSAlertStatusProps> = ({ className = '' }) => {
       const weekAgo = new Date();
       weekAgo.setDate(weekAgo.getDate() - 7);
 
-      const historyResponse = await window.ezsite.apis.tablePage('12613', {
+      const historyResponse = await DatabaseService.tablePage('12613', {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'sent_date',
@@ -81,7 +82,7 @@ const SMSAlertStatus: React.FC<SMSAlertStatusProps> = ({ className = '' }) => {
       const testMessage = "Test SMS: This is a test message from DFS Manager License Alert System.";
 
       // Get active contacts
-      const contactsResponse = await window.ezsite.apis.tablePage('12612', {
+      const contactsResponse = await DatabaseService.tablePage('12612', {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'id',
@@ -104,7 +105,7 @@ const SMSAlertStatus: React.FC<SMSAlertStatusProps> = ({ className = '' }) => {
 
       // Send test SMS to all active contacts
       for (const contact of contacts) {
-        await window.ezsite.apis.tableCreate('12613', {
+        await DatabaseService.tableCreate('12613', {
           license_id: 0, // Test SMS
           contact_id: contact.id,
           mobile_number: contact.mobile_number,

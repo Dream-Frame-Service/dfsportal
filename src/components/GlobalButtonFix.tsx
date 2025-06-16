@@ -1,4 +1,5 @@
 import React from 'react';
+import DatabaseService from '@/services/databaseService';
 import { toast } from '@/hooks/use-toast';
 
 // Global button functionality fixes and improvements
@@ -49,7 +50,7 @@ export const useButtonFix = (options: ButtonFixOptions = {}) => {
         console.log(`Attempting to delete from table ${tableId}:`, { ID: itemId });
       }
 
-      const { error } = await window.ezsite.apis.tableDelete(tableId, { ID: itemId });
+      const { error } = await DatabaseService.tableDelete(tableId, { ID: itemId });
 
       if (error) {
         console.error('API returned error:', error);
@@ -114,12 +115,12 @@ export const useButtonFix = (options: ButtonFixOptions = {}) => {
         if (logActions) {
           console.log(`Updating record in table ${tableId}:`, { ID: itemId, ...data });
         }
-        result = await window.ezsite.apis.tableUpdate(tableId, { ID: itemId, ...data });
+        result = await DatabaseService.tableUpdate(tableId, { ID: itemId, ...data });
       } else {
         if (logActions) {
           console.log(`Creating new record in table ${tableId}:`, data);
         }
-        result = await window.ezsite.apis.tableCreate(tableId, data);
+        result = await DatabaseService.tableCreate(tableId, data);
       }
 
       if (result.error) {
@@ -237,7 +238,7 @@ export const ButtonTestComponent: React.FC = () => {
 
   const testApiCall = async () => {
     await safeApiCall(
-      () => window.ezsite.apis.tablePage("11726", {
+      () => DatabaseService.tablePage("11726", {
         PageNo: 1,
         PageSize: 1,
         OrderByField: "ID",

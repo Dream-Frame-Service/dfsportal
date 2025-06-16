@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -126,59 +127,59 @@ const AdminRealTimeDashboard: React.FC = () => {
       _deliveryData] =
       await Promise.all([
       // Users
-      window.ezsite.apis.tablePage(11725, { PageNo: 1, PageSize: 1 }),
+      DatabaseService.tablePage(11725, { PageNo: 1, PageSize: 1 }),
       // All employees
-      window.ezsite.apis.tablePage(11727, { PageNo: 1, PageSize: 1 }),
+      DatabaseService.tablePage(11727, { PageNo: 1, PageSize: 1 }),
       // Active employees
-      window.ezsite.apis.tablePage(11727, {
+      DatabaseService.tablePage(11727, {
         PageNo: 1, PageSize: 1,
         Filters: [{ name: 'is_active', op: 'Equal', value: true }]
       }),
       // Stations
-      window.ezsite.apis.tablePage(12599, { PageNo: 1, PageSize: 10 }),
+      DatabaseService.tablePage(12599, { PageNo: 1, PageSize: 10 }),
       // All sales reports
-      window.ezsite.apis.tablePage(12356, { PageNo: 1, PageSize: 1 }),
+      DatabaseService.tablePage(12356, { PageNo: 1, PageSize: 1 }),
       // Today's sales
-      window.ezsite.apis.tablePage(12356, {
+      DatabaseService.tablePage(12356, {
         PageNo: 1, PageSize: 100,
         Filters: [{ name: 'report_date', op: 'StringContains', value: today }]
       }),
       // This month's sales
-      window.ezsite.apis.tablePage(12356, {
+      DatabaseService.tablePage(12356, {
         PageNo: 1, PageSize: 500,
         Filters: [{ name: 'report_date', op: 'StringContains', value: thisMonth }]
       }),
       // Products
-      window.ezsite.apis.tablePage(11726, { PageNo: 1, PageSize: 500 }),
+      DatabaseService.tablePage(11726, { PageNo: 1, PageSize: 500 }),
       // All orders
-      window.ezsite.apis.tablePage(11730, { PageNo: 1, PageSize: 1 }),
+      DatabaseService.tablePage(11730, { PageNo: 1, PageSize: 1 }),
       // Pending orders
-      window.ezsite.apis.tablePage(11730, {
+      DatabaseService.tablePage(11730, {
         PageNo: 1, PageSize: 1,
         Filters: [{ name: 'status', op: 'Equal', value: 'Pending' }]
       }),
       // All licenses
-      window.ezsite.apis.tablePage(11731, { PageNo: 1, PageSize: 100 }),
+      DatabaseService.tablePage(11731, { PageNo: 1, PageSize: 100 }),
       // Active licenses
-      window.ezsite.apis.tablePage(11731, {
+      DatabaseService.tablePage(11731, {
         PageNo: 1, PageSize: 100,
         Filters: [{ name: 'status', op: 'Equal', value: 'Active' }]
       }),
       // SMS configuration
-      window.ezsite.apis.tablePage(12640, {
+      DatabaseService.tablePage(12640, {
         PageNo: 1, PageSize: 1,
         Filters: [{ name: 'is_active', op: 'Equal', value: true }]
       }),
       // Recent audit logs for activity
-      window.ezsite.apis.tablePage(12706, {
+      DatabaseService.tablePage(12706, {
         PageNo: 1, PageSize: 100,
         OrderByField: 'event_timestamp', IsAsc: false,
         Filters: [{ name: 'event_timestamp', op: 'GreaterThan', value: thirtyDaysAgo }]
       }),
       // Salary records
-      window.ezsite.apis.tablePage(11788, { PageNo: 1, PageSize: 1 }),
+      DatabaseService.tablePage(11788, { PageNo: 1, PageSize: 1 }),
       // Delivery records
-      window.ezsite.apis.tablePage(12196, { PageNo: 1, PageSize: 1 })]
+      DatabaseService.tablePage(12196, { PageNo: 1, PageSize: 1 })]
       );
 
       // Process metrics

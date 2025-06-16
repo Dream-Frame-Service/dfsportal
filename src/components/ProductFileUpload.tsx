@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -261,7 +262,7 @@ const ProductFileUpload: React.FC<ProductFileUploadProps> = ({ onDataImport, dis
 
   const fetchExistingProducts = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11726, {
+      const { data, error } = await DatabaseService.tablePage(11726, {
         PageNo: 1,
         PageSize: 1000, // Get all products to check for duplicates
         OrderByField: 'product_name',

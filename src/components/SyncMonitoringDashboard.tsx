@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -76,7 +77,7 @@ const SyncMonitoringDashboard: React.FC = () => {
       // Check each table to see if it's accessible/active
       for (const tableId of tableIds) {
         try {
-          const { error } = await window.ezsite.apis.tablePage(tableId, {
+          const { error } = await DatabaseService.tablePage(tableId, {
             PageNo: 1,
             PageSize: 1,
             Filters: []
@@ -124,7 +125,7 @@ const SyncMonitoringDashboard: React.FC = () => {
         }}return Math.max(activeTableCount, 1); // At least 1 table should be available
     } catch {return 21; // Default to total expected tables
     }};const loadSyncData = async () => {try {console.log('Loading real sync monitoring data...'); // Get audit logs for database sync activities
-      const { data: auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, { PageNo: 1, PageSize: 50, OrderByField: 'event_timestamp', IsAsc: false, Filters: [{ name: 'action_performed', op: 'StringContains', value: 'sync' }] });let realLogs: SyncLog[] = [];if (!auditError && auditData?.List) {realLogs = auditData.List.map((audit: any, index: number) => ({ id: audit.id?.toString() || index.toString(), timestamp: audit.event_timestamp || new Date().toISOString(), type: audit.action_performed?.includes('create') ? 'create' : audit.action_performed?.includes('update') ? 'update' : audit.action_performed?.includes('delete') ? 'delete' : audit.event_status === 'Failed' ? 'error' : 'scan', tableName: audit.resource_accessed || 'system', status: audit.event_status === 'Success' ? 'success' : audit.event_status === 'Failed' ? 'failed' : 'pending', details: audit.additional_data || audit.failure_reason || 'Database sync operation', duration: Math.floor(Math.random() * 2000) + 500 // Estimated duration
+      const { data: auditData, error: auditError } = await DatabaseService.tablePage(12706, { PageNo: 1, PageSize: 50, OrderByField: 'event_timestamp', IsAsc: false, Filters: [{ name: 'action_performed', op: 'StringContains', value: 'sync' }] });let realLogs: SyncLog[] = [];if (!auditError && auditData?.List) {realLogs = auditData.List.map((audit: any, index: number) => ({ id: audit.id?.toString() || index.toString(), timestamp: audit.event_timestamp || new Date().toISOString(), type: audit.action_performed?.includes('create') ? 'create' : audit.action_performed?.includes('update') ? 'update' : audit.action_performed?.includes('delete') ? 'delete' : audit.event_status === 'Failed' ? 'error' : 'scan', tableName: audit.resource_accessed || 'system', status: audit.event_status === 'Success' ? 'success' : audit.event_status === 'Failed' ? 'failed' : 'pending', details: audit.additional_data || audit.failure_reason || 'Database sync operation', duration: Math.floor(Math.random() * 2000) + 500 // Estimated duration
           }));}
 
       // If no audit logs, create minimal real status logs

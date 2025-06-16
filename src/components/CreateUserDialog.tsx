@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, User, Mail, _Phone, Building2, Shield, _Calendar, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import DatabaseService from '@/services/databaseService';
 
 interface CreateUserDialogProps {
   isOpen: boolean;
@@ -109,7 +110,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
 
       // Step 1: Register user with Supabase Auth
       console.warn('Registering user with email:', formData.email);
-      const { error: authError } = await window.ezsite.apis.register({
+      const { error: authError } = await DatabaseService.register({
         email: formData.email,
         password: formData.password
       });
@@ -129,7 +130,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
       // Retry logic to get user info after registration
       while (retryCount < maxRetries) {
         try {
-          const { data, error: userInfoError } = await window.ezsite.apis.getUserInfo();
+          const { data, error: userInfoError } = await DatabaseService.getUserInfo();
           if (!userInfoError && data) {
             userInfo = data;
             break;
@@ -183,7 +184,7 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
       };
 
       console.warn('Creating user profile with data:', profileData);
-      const { error: profileError } = await window.ezsite.apis.tableCreate(11725, profileData);
+      const { error: profileError } = await DatabaseService.tableCreate(11725, profileData);
 
       if (profileError) {
         console.error('Profile creation failed:', profileError);
@@ -223,8 +224,8 @@ const CreateUserDialog: React.FC<CreateUserDialogProps> = ({ isOpen, onClose, on
           </div>
         `;
 
-        await window.ezsite.apis.sendEmail({
-          from: 'support@ezsite.ai',
+        await DatabaseService.sendEmail({
+          from: 'support@dfsportal.com',
           to: [formData.email],
           subject: 'Welcome to DFS Manager Portal - Account Created',
           html: emailContent

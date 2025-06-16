@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -81,7 +82,7 @@ const SMSServiceManager: React.FC = () => {
       setLoading(true);
 
       // Check if SMS provider configuration exists
-      const { data, error } = await window.ezsite.apis.tablePage('12640', {
+      const { data, error } = await DatabaseService.tablePage('12640', {
         PageNo: 1,
         PageSize: 1,
         OrderByField: 'id',
@@ -185,7 +186,7 @@ const SMSServiceManager: React.FC = () => {
       saveTestResults(newResults);
 
       // Log to SMS history
-      await window.ezsite.apis.tableCreate('12613', {
+      await DatabaseService.tableCreate('12613', {
         mobile_number: testPhone,
         message_content: testMessage,
         sent_date: new Date().toISOString(),

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -103,45 +104,45 @@ const RoleBasedDashboardV2: React.FC = () => {
       userStationSalesData] =
       await Promise.all([
       // Employees count
-      window.ezsite.apis.tablePage(11727, {
+      DatabaseService.tablePage(11727, {
         PageNo: 1, PageSize: 1,
         Filters: [{ name: 'is_active', op: 'Equal', value: true }]
       }),
       // Stations count
-      window.ezsite.apis.tablePage(12599, {
+      DatabaseService.tablePage(12599, {
         PageNo: 1, PageSize: 10
       }),
       // All sales data
-      window.ezsite.apis.tablePage(12356, {
+      DatabaseService.tablePage(12356, {
         PageNo: 1, PageSize: 100,
         OrderByField: 'report_date', IsAsc: false
       }),
       // Today's sales
-      window.ezsite.apis.tablePage(12356, {
+      DatabaseService.tablePage(12356, {
         PageNo: 1, PageSize: 50,
         Filters: [{ name: 'report_date', op: 'StringContains', value: today }]
       }),
       // This month's sales
-      window.ezsite.apis.tablePage(12356, {
+      DatabaseService.tablePage(12356, {
         PageNo: 1, PageSize: 100,
         Filters: [{ name: 'report_date', op: 'StringContains', value: thisMonth }]
       }),
       // Products for inventory
-      window.ezsite.apis.tablePage(11726, {
+      DatabaseService.tablePage(11726, {
         PageNo: 1, PageSize: 200
       }),
       // Active orders
-      window.ezsite.apis.tablePage(11730, {
+      DatabaseService.tablePage(11730, {
         PageNo: 1, PageSize: 1,
         Filters: [{ name: 'status', op: 'Equal', value: 'Pending' }]
       }),
       // Licenses for expiry check
-      window.ezsite.apis.tablePage(11731, {
+      DatabaseService.tablePage(11731, {
         PageNo: 1, PageSize: 50,
         Filters: [{ name: 'status', op: 'Equal', value: 'Active' }]
       }),
       // User station specific sales
-      currentUser && currentUser !== 'ALL' ? window.ezsite.apis.tablePage(12356, {
+      currentUser && currentUser !== 'ALL' ? DatabaseService.tablePage(12356, {
         PageNo: 1, PageSize: 50,
         Filters: [
         { name: 'station', op: 'Equal', value: currentUser },

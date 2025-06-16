@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -185,7 +186,7 @@ const AdminDiagnostics: React.FC = () => {
       switch (testId) {
         case 'database': {
           // Test database connectivity by querying user profiles
-          const { error: dbError } = await window.ezsite.apis.tablePage(11725, {
+          const { error: dbError } = await DatabaseService.tablePage(11725, {
             PageNo: 1,
             PageSize: 1,
             Filters: []
@@ -201,9 +202,9 @@ const AdminDiagnostics: React.FC = () => {
         case 'api': {
           // Test multiple API endpoints
           const apiTests = await Promise.all([
-          window.ezsite.apis.tablePage(11726, { PageNo: 1, PageSize: 1, Filters: [] }),
-          window.ezsite.apis.tablePage(11727, { PageNo: 1, PageSize: 1, Filters: [] }),
-          window.ezsite.apis.tablePage(12599, { PageNo: 1, PageSize: 1, Filters: [] })]
+          DatabaseService.tablePage(11726, { PageNo: 1, PageSize: 1, Filters: [] }),
+          DatabaseService.tablePage(11727, { PageNo: 1, PageSize: 1, Filters: [] }),
+          DatabaseService.tablePage(12599, { PageNo: 1, PageSize: 1, Filters: [] })]
           );
           const apiDuration = Date.now() - startTime;
           const failedApis = apiTests.filter((result) => result.error).length;
@@ -216,7 +217,7 @@ const AdminDiagnostics: React.FC = () => {
 
         case 'sms': {
           // Test SMS configuration
-          const { error: smsError } = await window.ezsite.apis.tablePage(12640, {
+          const { error: smsError } = await DatabaseService.tablePage(12640, {
             PageNo: 1,
             PageSize: 1,
             Filters: [{ name: 'is_active', op: 'Equal', value: true }]
@@ -231,7 +232,7 @@ const AdminDiagnostics: React.FC = () => {
 
         case 'auth': {
           // Test authentication by checking current user
-          const { error: authError } = await window.ezsite.apis.getUserInfo();
+          const { error: authError } = await DatabaseService.getUserInfo();
           const authDuration = Date.now() - startTime;
           return {
             passed: !authError,
@@ -242,7 +243,7 @@ const AdminDiagnostics: React.FC = () => {
 
         case 'permissions': {
           // Test permissions by checking user profiles
-          const { data: permData, error: permError } = await window.ezsite.apis.tablePage(11725, {
+          const { data: permData, error: permError } = await DatabaseService.tablePage(11725, {
             PageNo: 1,
             PageSize: 10,
             Filters: []
@@ -259,7 +260,7 @@ const AdminDiagnostics: React.FC = () => {
 
         case 'backup': {
           // Test backup by checking audit logs exist
-          const { data: _auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, {
+          const { data: _auditData, error: auditError } = await DatabaseService.tablePage(12706, {
             PageNo: 1,
             PageSize: 1,
             Filters: []
@@ -291,7 +292,7 @@ const AdminDiagnostics: React.FC = () => {
   const updateRealMetrics = async () => {
     try {
       // Get real user count
-      const { data: userData } = await window.ezsite.apis.tablePage(11725, {
+      const { data: userData } = await DatabaseService.tablePage(11725, {
         PageNo: 1,
         PageSize: 1,
         Filters: [{ name: 'is_active', op: 'Equal', value: true }]
@@ -303,7 +304,7 @@ const AdminDiagnostics: React.FC = () => {
       let totalRecords = 0;
       for (const tableId of tables) {
         try {
-          const { data } = await window.ezsite.apis.tablePage(tableId, {
+          const { data } = await DatabaseService.tablePage(tableId, {
             PageNo: 1,
             PageSize: 1,
             Filters: []

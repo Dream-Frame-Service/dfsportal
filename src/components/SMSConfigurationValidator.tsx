@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -318,13 +319,13 @@ const SMSConfigurationValidator: React.FC = () => {
 
       if (existingConfig?.ID) {
         // Update existing configuration
-        await window.ezsite.apis.tableUpdate(12640, {
+        await DatabaseService.tableUpdate(12640, {
           ID: existingConfig.ID,
           ...configData
         });
       } else {
         // Create new configuration
-        await window.ezsite.apis.tableCreate(12640, configData);
+        await DatabaseService.tableCreate(12640, configData);
       }
 
       toast({

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -77,20 +78,20 @@ const AdminFirstTimeSetup: React.FC = () => {
   const checkSetupProgress = async () => {
     try {
       // Check if admin users exist
-      const { data: adminData, error: adminError } = await window.ezsite.apis.tablePage(11725, {
+      const { data: adminData, error: adminError } = await DatabaseService.tablePage(11725, {
         "PageNo": 1,
         "PageSize": 1,
         "Filters": [{ "name": "role", "op": "Equal", "value": "Administrator" }]
       });
 
       // Check if stations are configured
-      const { data: stationData, error: stationError } = await window.ezsite.apis.tablePage(12599, {
+      const { data: stationData, error: stationError } = await DatabaseService.tablePage(12599, {
         "PageNo": 1,
         "PageSize": 1
       });
 
       // Check if SMS is configured
-      const { data: smsData, error: smsError } = await window.ezsite.apis.tablePage(12640, {
+      const { data: smsData, error: smsError } = await DatabaseService.tablePage(12640, {
         "PageNo": 1,
         "PageSize": 1,
         "Filters": [{ "name": "is_active", "op": "Equal", "value": true }]
@@ -158,7 +159,7 @@ const AdminFirstTimeSetup: React.FC = () => {
       setLoading(true);
 
       // Create user profile record
-      const { error } = await window.ezsite.apis.tableCreate(11725, {
+      const { error } = await DatabaseService.tableCreate(11725, {
         user_id: 1, // Mock user ID - in real app this would come from auth system
         role: adminForm.role,
         station: adminForm.station,
@@ -241,7 +242,7 @@ const AdminFirstTimeSetup: React.FC = () => {
 
 
       for (const station of defaultStations) {
-        const { error } = await window.ezsite.apis.tableCreate(12599, {
+        const { error } = await DatabaseService.tableCreate(12599, {
           ...station,
           last_updated: new Date().toISOString(),
           created_by: 1

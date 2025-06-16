@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -127,13 +128,13 @@ const TwilioConfigManager: React.FC<TwilioConfigManagerProps> = ({ onConfigurati
       };
 
       if (config.ID) {
-        const { error } = await window.ezsite.apis.tableUpdate(12640, {
+        const { error } = await DatabaseService.tableUpdate(12640, {
           ID: config.ID,
           ...configData
         });
         if (error) throw new Error(error);
       } else {
-        const { error } = await window.ezsite.apis.tableCreate(12640, configData);
+        const { error } = await DatabaseService.tableCreate(12640, configData);
         if (error) throw new Error(error);
       }
 

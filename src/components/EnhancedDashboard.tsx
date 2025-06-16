@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -78,13 +79,13 @@ const EnhancedDashboard: React.FC = () => {
 
       // Fetch all data in parallel
       const [userData, empData, stationData, salesData, orderData, prodData, deliveryData] = await Promise.all([
-      window.ezsite.apis.tablePage(11725, { PageNo: 1, PageSize: 1, Filters: [] }),
-      window.ezsite.apis.tablePage(11727, { PageNo: 1, PageSize: 1, Filters: [] }),
-      window.ezsite.apis.tablePage(12599, { PageNo: 1, PageSize: 100, Filters: [] }),
-      window.ezsite.apis.tablePage(12356, { PageNo: 1, PageSize: 100, OrderByField: "report_date", IsAsc: false, Filters: [] }),
-      window.ezsite.apis.tablePage(11730, { PageNo: 1, PageSize: 1, Filters: [{ name: "status", op: "Equal", value: "Pending" }] }),
-      window.ezsite.apis.tablePage(11726, { PageNo: 1, PageSize: 100, Filters: [] }),
-      window.ezsite.apis.tablePage(12196, { PageNo: 1, PageSize: 1, Filters: [] })]
+      DatabaseService.tablePage(11725, { PageNo: 1, PageSize: 1, Filters: [] }),
+      DatabaseService.tablePage(11727, { PageNo: 1, PageSize: 1, Filters: [] }),
+      DatabaseService.tablePage(12599, { PageNo: 1, PageSize: 100, Filters: [] }),
+      DatabaseService.tablePage(12356, { PageNo: 1, PageSize: 100, OrderByField: "report_date", IsAsc: false, Filters: [] }),
+      DatabaseService.tablePage(11730, { PageNo: 1, PageSize: 1, Filters: [{ name: "status", op: "Equal", value: "Pending" }] }),
+      DatabaseService.tablePage(11726, { PageNo: 1, PageSize: 100, Filters: [] }),
+      DatabaseService.tablePage(12196, { PageNo: 1, PageSize: 1, Filters: [] })]
       );
 
       // Calculate values
@@ -182,7 +183,7 @@ const EnhancedDashboard: React.FC = () => {
 
   const checkAdminUsers = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11725, {
+      const { data, error } = await DatabaseService.tablePage(11725, {
         "PageNo": 1,
         "PageSize": 1,
         "Filters": [{ "name": "role", "op": "Equal", "value": "Administrator" }]
@@ -195,7 +196,7 @@ const EnhancedDashboard: React.FC = () => {
 
   const checkStationsSetup = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12599, {
+      const { data, error } = await DatabaseService.tablePage(12599, {
         "PageNo": 1,
         "PageSize": 5
       });
@@ -207,7 +208,7 @@ const EnhancedDashboard: React.FC = () => {
 
   const checkSMSConfig = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
+      const { data, error } = await DatabaseService.tablePage(12640, {
         "PageNo": 1,
         "PageSize": 1,
         "Filters": [{ "name": "is_active", "op": "Equal", "value": true }]
@@ -220,7 +221,7 @@ const EnhancedDashboard: React.FC = () => {
 
   const checkLicensesSetup = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11731, {
+      const { data, error } = await DatabaseService.tablePage(11731, {
         "PageNo": 1,
         "PageSize": 1
       });
@@ -233,7 +234,7 @@ const EnhancedDashboard: React.FC = () => {
   const checkCriticalAlerts = async () => {
     try {
       // Check for expiring licenses
-      const { data, error } = await window.ezsite.apis.tablePage(11731, {
+      const { data, error } = await DatabaseService.tablePage(11731, {
         "PageNo": 1,
         "PageSize": 10,
         "Filters": [{ "name": "status", "op": "Equal", "value": "Active" }]
@@ -261,7 +262,7 @@ const EnhancedDashboard: React.FC = () => {
   const checkPendingTasks = async () => {
     try {
       // Check for pending sales reports
-      const { data, error } = await window.ezsite.apis.tablePage(12356, {
+      const { data, error } = await DatabaseService.tablePage(12356, {
         "PageNo": 1,
         "PageSize": 10,
         "OrderByField": "report_date",

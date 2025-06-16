@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import {
   Dialog,
   DialogContent,
@@ -84,7 +85,7 @@ export default function StationEditDialog({
         created_by: station.created_by
       };
 
-      const { error } = await window.ezsite.apis.tableUpdate(12599, updateData);
+      const { error } = await DatabaseService.tableUpdate(12599, updateData);
 
       if (error) throw error;
 

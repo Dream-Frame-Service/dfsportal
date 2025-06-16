@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/hooks/use-toast';
+import DatabaseService from '@/services/databaseService';
 import {
   Shield,
   Users,
@@ -135,7 +136,7 @@ const UserPermissionManager: React.FC = () => {
 
   const fetchUserProfiles = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11725, {
+      const { data, error } = await DatabaseService.tablePage(11725, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: "id",
@@ -244,7 +245,7 @@ const UserPermissionManager: React.FC = () => {
 
     setSaving(true);
     try {
-      const { error } = await window.ezsite.apis.tableUpdate(11725, {
+      const { error } = await DatabaseService.tableUpdate(11725, {
         id: selectedUser.id,
         detailed_permissions: JSON.stringify(permissions)
       });

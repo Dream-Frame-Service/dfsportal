@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { useToast } from '@/hooks/use-toast';
 
 interface RealTimeData {
@@ -52,7 +53,7 @@ export const RealTimeDataProvider: React.FC<RealTimeDataProviderProps> = ({ chil
 
   const fetchTableData = async (tableId: string, maxRecords = 100) => {
     try {
-      const { data: response, error } = await window.ezsite.apis.tablePage(tableId, {
+      const { data: response, error } = await DatabaseService.tablePage(tableId, {
         PageNo: 1,
         PageSize: maxRecords,
         OrderByField: 'id',

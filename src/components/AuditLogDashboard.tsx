@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -45,7 +46,7 @@ const AuditLogDashboard: React.FC = () => {
       // Fetching real-time audit log data
 
       // Fetch recent audit logs (table ID: 12706)
-      const { data: auditData, error: auditError } = await window.ezsite.apis.tablePage(12706, {
+      const { data: auditData, error: auditError } = await DatabaseService.tablePage(12706, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: "event_timestamp",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -79,7 +80,7 @@ const SMSAlertTrigger: React.FC = () => {
   const loadLicenses = async () => {
     try {
       setLoading(true);
-      const { data, error } = await window.ezsite.apis.tablePage('11731', {
+      const { data, error } = await DatabaseService.tablePage('11731', {
         PageNo: 1,
         PageSize: 1000,
         OrderByField: 'expiry_date',

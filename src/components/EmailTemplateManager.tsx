@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -350,9 +351,9 @@ const EmailTemplateManager: React.FC = () => {
         processedContent = processedContent.replace(new RegExp(placeholder, 'g'), value as string);
       });
 
-      const { error } = await window.ezsite.apis.sendEmail({
-        from: 'DFS Manager <support@ezsite.ai>',
-        to: ['support@ezsite.ai'], // Send to configured email
+      const { error } = await DatabaseService.sendEmail({
+        from: 'DFS Manager <support@dfsportal.com>',
+        to: ['support@dfsportal.com'], // Send to configured email
         subject: `TEST: ${processedSubject}`,
         html: processedContent,
         text: template.text_content

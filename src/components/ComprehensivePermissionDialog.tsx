@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -378,7 +379,7 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
   const fetchUserProfiles = async () => {
     try {
       setLoading(true);
-      const { data, error } = await window.ezsite.apis.tablePage(11725, {
+      const { data, error } = await DatabaseService.tablePage(11725, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: "id",
@@ -631,7 +632,7 @@ const ComprehensivePermissionDialog: React.FC<ComprehensivePermissionDialogProps
 
     setSaving(true);
     try {
-      const { error } = await window.ezsite.apis.tableUpdate(11725, {
+      const { error } = await DatabaseService.tableUpdate(11725, {
         id: selectedUser.id,
         detailed_permissions: JSON.stringify(permissions)
       });

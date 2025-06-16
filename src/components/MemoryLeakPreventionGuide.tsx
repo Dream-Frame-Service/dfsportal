@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -381,7 +382,7 @@ function MyComponent() {
   
   useEffect(() => {
     safeApiCall(
-      () => window.ezsite.apis.tablePage(tableId, params),
+      () => DatabaseService.tablePage(tableId, params),
       {
         onSuccess: (result) => setData(result.data),
         onError: (error) => console.error(error)

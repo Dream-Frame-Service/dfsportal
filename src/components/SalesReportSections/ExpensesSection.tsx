@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,7 +41,7 @@ const ExpensesSection: React.FC<ExpensesSectionProps> = ({
 
   const loadVendors = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11729, {
+      const { data, error } = await DatabaseService.tablePage(11729, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'vendor_name',
@@ -93,7 +94,7 @@ const ExpensesSection: React.FC<ExpensesSectionProps> = ({
 
   const uploadInvoice = async (index: number, file: File) => {
     try {
-      const { data: fileId, error } = await window.ezsite.apis.upload({
+      const { data: fileId, error } = await DatabaseService.upload({
         filename: file.name,
         file
       });

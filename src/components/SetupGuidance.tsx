@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -229,7 +230,7 @@ const SetupGuidance: React.FC = () => {
   // Status checking functions (mock implementations)
   const checkAdminAccountsStatus = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11725, {
+      const { data, error } = await DatabaseService.tablePage(11725, {
         "PageNo": 1,
         "PageSize": 5,
         "Filters": [
@@ -245,7 +246,7 @@ const SetupGuidance: React.FC = () => {
 
   const checkStationConfigStatus = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12599, {
+      const { data, error } = await DatabaseService.tablePage(12599, {
         "PageNo": 1,
         "PageSize": 5
       });
@@ -258,7 +259,7 @@ const SetupGuidance: React.FC = () => {
 
   const checkSMSConfigStatus = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12640, {
+      const { data, error } = await DatabaseService.tablePage(12640, {
         "PageNo": 1,
         "PageSize": 1,
         "Filters": [
@@ -274,7 +275,7 @@ const SetupGuidance: React.FC = () => {
 
   const checkEmployeeProfilesStatus = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11727, {
+      const { data, error } = await DatabaseService.tablePage(11727, {
         "PageNo": 1,
         "PageSize": 5
       });
@@ -287,7 +288,7 @@ const SetupGuidance: React.FC = () => {
 
   const checkProductInventoryStatus = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11726, {
+      const { data, error } = await DatabaseService.tablePage(11726, {
         "PageNo": 1,
         "PageSize": 5
       });
@@ -300,7 +301,7 @@ const SetupGuidance: React.FC = () => {
 
   const checkLicensesStatus = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11731, {
+      const { data, error } = await DatabaseService.tablePage(11731, {
         "PageNo": 1,
         "PageSize": 5
       });

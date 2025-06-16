@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import {
   Dialog,
   DialogContent,
@@ -43,7 +44,7 @@ const ProductLogs: React.FC<ProductLogsProps> = ({ isOpen, onClose, productId, p
       setLoading(true);
       console.log('Loading product logs for product ID:', productId);
 
-      const { data, error } = await window.ezsite.apis.tablePage('11756', {
+      const { data, error } = await DatabaseService.tablePage('11756', {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'change_date',

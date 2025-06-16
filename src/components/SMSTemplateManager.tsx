@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -129,7 +130,7 @@ const SMSTemplateManager: React.FC<SMSTemplateManagerProps> = ({ onTemplateSelec
   const loadTemplates = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12641, {
+      const { data, error } = await DatabaseService.tablePage(12641, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'ID',
@@ -179,7 +180,7 @@ const SMSTemplateManager: React.FC<SMSTemplateManagerProps> = ({ onTemplateSelec
       };
 
       if (editingTemplate?.ID) {
-        const { error } = await window.ezsite.apis.tableUpdate(12641, {
+        const { error } = await DatabaseService.tableUpdate(12641, {
           ID: editingTemplate.ID,
           ...templateData
         });
@@ -190,7 +191,7 @@ const SMSTemplateManager: React.FC<SMSTemplateManagerProps> = ({ onTemplateSelec
           description: 'Template updated successfully'
         });
       } else {
-        const { error } = await window.ezsite.apis.tableCreate(12641, templateData);
+        const { error } = await DatabaseService.tableCreate(12641, templateData);
         if (error) throw new Error(error);
         
         toast({
@@ -225,7 +226,7 @@ const SMSTemplateManager: React.FC<SMSTemplateManagerProps> = ({ onTemplateSelec
 
   const deleteTemplate = async (templateId: number) => {
     try {
-      const { error } = await window.ezsite.apis.tableDelete(12641, { ID: templateId });
+      const { error } = await DatabaseService.tableDelete(12641, { ID: templateId });
       if (error) throw new Error(error);
       
       toast({

@@ -1,4 +1,5 @@
 import React from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,7 +61,7 @@ const DocumentsUploadSection: React.FC<DocumentsUploadSectionProps> = ({
 
   const uploadDocument = async (field: string, file: File) => {
     try {
-      const { data: fileId, error } = await window.ezsite.apis.upload({
+      const { data: fileId, error } = await DatabaseService.upload({
         filename: file.name,
         file
       });

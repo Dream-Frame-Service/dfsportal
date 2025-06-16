@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { _Input } from '@/components/ui/input';
@@ -226,7 +227,7 @@ const EmailAutomationManager: React.FC = () => {
       const automation = automations.find((a) => a.id === automationId);
       if (!automation) return;
 
-      const { error } = await window.ezsite.apis.sendEmail({
+      const { error } = await DatabaseService.sendEmail({
         from: `${automation.from_name} <${automation.from_email}>`,
         to: [automation.from_email], // Send to self for testing
         subject: `TEST: ${automation.automation_name} - ${new Date().toLocaleString()}`,

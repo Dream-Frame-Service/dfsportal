@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -83,7 +84,7 @@ const AlertScheduler: React.FC = () => {
   const loadSchedules = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12642, {
+      const { data, error } = await DatabaseService.tablePage(12642, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'ID',
@@ -110,7 +111,7 @@ const AlertScheduler: React.FC = () => {
 
   const loadTemplates = async () => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(12641, {
+      const { data, error } = await DatabaseService.tablePage(12641, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'ID',
@@ -161,7 +162,7 @@ const AlertScheduler: React.FC = () => {
       };
 
       if (editingSchedule?.ID) {
-        const { error } = await window.ezsite.apis.tableUpdate(12642, {
+        const { error } = await DatabaseService.tableUpdate(12642, {
           ID: editingSchedule.ID,
           ...scheduleData
         });
@@ -172,7 +173,7 @@ const AlertScheduler: React.FC = () => {
           description: 'Schedule updated successfully'
         });
       } else {
-        const { error } = await window.ezsite.apis.tableCreate(12642, scheduleData);
+        const { error } = await DatabaseService.tableCreate(12642, scheduleData);
         if (error) throw new Error(error);
         
         toast({
@@ -208,7 +209,7 @@ const AlertScheduler: React.FC = () => {
 
   const deleteSchedule = async (scheduleId: number) => {
     try {
-      const { error } = await window.ezsite.apis.tableDelete(12642, { ID: scheduleId });
+      const { error } = await DatabaseService.tableDelete(12642, { ID: scheduleId });
       if (error) throw new Error(error);
       
       toast({
@@ -229,7 +230,7 @@ const AlertScheduler: React.FC = () => {
 
   const toggleSchedule = async (schedule: AlertSchedule) => {
     try {
-      const { error } = await window.ezsite.apis.tableUpdate(12642, {
+      const { error } = await DatabaseService.tableUpdate(12642, {
         ID: schedule.ID!,
         is_active: !schedule.is_active
       });
@@ -258,7 +259,7 @@ const AlertScheduler: React.FC = () => {
     try {
       await processLicenseExpiryAlerts(schedule);
       
-      await window.ezsite.apis.tableUpdate(12642, {
+      await DatabaseService.tableUpdate(12642, {
         ID: schedule.ID,
         last_run: new Date().toISOString()
       });
@@ -283,7 +284,7 @@ const AlertScheduler: React.FC = () => {
 
   const processLicenseExpiryAlerts = async (schedule: AlertSchedule) => {
     try {
-      const { data, error } = await window.ezsite.apis.tablePage(11731, {
+      const { data, error } = await DatabaseService.tablePage(11731, {
         PageNo: 1,
         PageSize: 100,
         OrderByField: 'expiry_date',
@@ -305,7 +306,7 @@ const AlertScheduler: React.FC = () => {
           return daysUntilExpiry <= schedule.days_before_expiry && daysUntilExpiry > 0;
         });
 
-        const { data: contactsData } = await window.ezsite.apis.tablePage(12612, {
+        const { data: contactsData } = await DatabaseService.tablePage(12612, {
           PageNo: 1,
           PageSize: 100,
           OrderByField: 'ID',
@@ -337,7 +338,7 @@ const AlertScheduler: React.FC = () => {
                 }
               });
 
-              await window.ezsite.apis.tableCreate(12613, {
+              await DatabaseService.tableCreate(12613, {
                 license_id: license.ID,
                 contact_id: contact.ID,
                 mobile_number: contact.mobile_number,

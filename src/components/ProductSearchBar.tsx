@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import DatabaseService from '@/services/databaseService';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -87,7 +88,7 @@ const ProductSearchBar: React.FC<ProductSearchBarProps> = ({
       setIsLoading(true);
       console.log('Loading all products from products table...');
 
-      const { data, error } = await window.ezsite.apis.tablePage('11726', {
+      const { data, error } = await DatabaseService.tablePage('11726', {
         PageNo: 1,
         PageSize: 1000, // Load a large number to get all products
         OrderByField: 'product_name',

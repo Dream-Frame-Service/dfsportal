@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { GlobalErrorBoundary } from '@/components/ErrorBoundary';
 import { GlobalFallback } from '@/components/GlobalFallback';
 import { SupabaseAuthProvider } from '@/contexts/SupabaseAuthContext';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Lazy load components for better performance
 const Dashboard = React.lazy(() => import('@/pages/Dashboard'));
@@ -130,7 +130,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <GlobalErrorBoundary fallback={<GlobalFallback />}>
+    <GlobalErrorBoundary fallback={GlobalFallback}>
       <QueryClientProvider client={queryClient}>
         <SupabaseAuthProvider>
           <Router>

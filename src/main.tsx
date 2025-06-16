@@ -2,9 +2,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import "@/lib/ezsitePolyfill"; // ← add this line early
+import "@/lib/ezsitePolyfill";
 
-// Enhanced error handling for production
+// Production environment setup
 console.log('🚀 Starting DFS Manager Portal...');
 console.log('Environment:', import.meta.env.MODE);
 console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL ? 'Configured ✅' : 'Missing ❌');

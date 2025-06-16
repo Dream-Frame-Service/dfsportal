@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { SecurityService } from '@/services/securityService';
 import { useSessionTimeout } from '@/hooks/use-session-timeout';
-import { AccessDenied } from '@/components/AccessDenied';
+import AccessDenied from '@/components/AccessDenied';
 import { useToast } from '@/hooks/use-toast';
 
 interface ProtectedRouteProps {

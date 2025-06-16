@@ -403,10 +403,8 @@ export class AuthService {
   }
 }
 
-// Helpers so `import { supabase } ...` and
-// `import realtimeManager ...` keep compiling.
+// Helpers so `import { supabase } ...` keeps compiling
 export { supabase }; // named export
-export default supabase; // default export (common pattern)
 
 // Lo-fi realtime stub – replace with real manager later.
 export const realtimeManager = {

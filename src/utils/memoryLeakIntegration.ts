@@ -314,11 +314,3 @@ export default {
   MEMORY_LEAK_DETECTION_ENABLED,
   DEFAULT_CONFIG,
 };
-  DEFAULT_CONFIG,
-};
-  useComponentMemoryTracking,
-  forceGarbageCollection,
-  getMemoryUsage,
-  MEMORY_LEAK_DETECTION_ENABLED,
-  DEFAULT_CONFIG,
-};
